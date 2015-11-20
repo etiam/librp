@@ -1,0 +1,6 @@
+verbose:
+	$(MAKE) all V=1
+
+checkinstall:
+	$(MAKE) check
+	$(MAKE) install

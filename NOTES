@@ -1,0 +1,15 @@
+build-essential libboost-program-options1.42-dev libboost-regex1.42-dev libboost-signals1.42-dev libboost-test1.42-dev libboost1.42-dev autoreconf autoconf libtool doxygen ccache graphviz libopenexr-dev zlib1g-dev
+
+tree notes:
+Sg::LeafNode to be child of Sg::Node
+Sg::RootNode to be child of Sg::Node
+
+Ov::Core::Node to be child of Sg::LeafNode
+Ov::Core::Reference to be child of Sg::RootNode
+
+Sg::TreeManager has member attr m_tree of type tree<Sg::Node>
+
+Sg::Node has member attr m_treeIterator of type tree<Node>::iterator
+
+global add/remove insert and remove Sg::TreeManager::m_tree
+

@@ -1,0 +1,6 @@
+sg (Scene Graph Library)
+
+code base of core image processing routines.
+
+underlying image representation based on
+OpenEXR libraries.

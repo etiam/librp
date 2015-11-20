@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: sg
+Description: sg (scene graph) library
+Version: @VERSION@
+Libs: -L${libdir} -lsgcore 
+Cflags: -I${includedir} 
