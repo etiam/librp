@@ -7,7 +7,7 @@
 
 extern void yyerror(char*);
 extern int  iLineNum;
-int	    iTokenEnd = FALSE;
+int        iTokenEnd = FALSE;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wwritable-strings"
@@ -17,112 +17,117 @@ int	    iTokenEnd = FALSE;
 
 %}
 
-ws		[ \t]+
-nl		\n
-string		\"[^\"\n]*[\"\n]
-stringbracket	\[\"[^\"\n]*[\"\n]\]
-number		-?([0-9]+|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
-comment		#.*\n
+ws              [ \t]+
+nl              \n
+string          \"[^\"\n]*[\"\n]
+stringbracket   \[\"[^\"\n]*[\"\n]\]
+number          -?([0-9]+|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
+comment         #.*\n
 %%
 
-{ws}		{}
-{nl}+		{ iLineNum++; }
-{string}	{
-		 yylval.string = strdup(yytext);
-		 memcpy(&yylval.string[0],&yylval.string[1],yyleng-1);
-		 if(yylval.string[yyleng-2] != '"')
-		  yyerror("Unterminated character string");
-		 else
-		  yylval.string[yyleng-2] = 0;
-		 return STRING;
-		}
-{stringbracket}	{
-		 yylval.string = strdup(yytext);
-		 memcpy(&yylval.string[0],&yylval.string[2],yyleng-1);
-		 if(yylval.string[yyleng-4] != '"')
-		  yyerror("Unterminated character string");
-		 else
-		  yylval.string[yyleng-4] = 0;
-		 return STRINGBRACKET;
-		}
-{number}	{
-		 yylval.dval = atof(yytext);
-		 return NUMBER;
-		}
-{comment}		{ iLineNum++; }
-atmosphere		{}
-attribute		{ return ATTRIBUTE; }
-attributebegin		{ return ATTRIBUTEBEGIN; }
-attributeend		{ return ATTRIBUTEEND; }
-basis			{}
-clipping		{ return CLIPPING; }
-color			{ return COLOR; }
-concattransform		{ return CONCATTRANSFORM; }
-cone			{}
-coordinatesystem	{ return COORDINATESYSTEM; }
-cropwindow		{ return CROPWINDOW; }
-cylinder		{ return CYLINDER; }
-declare			{ return DECLARE; }
-detail			{}
-detailrange		{}
-disk			{}
-displacement		{}
-display			{ return DISPLAY; }
-exposure		{ return EXPOSURE; }
-format			{ return FORMAT; }
-frameaspectratio	{ return FRAMEASPECTRATIO; }
-frameaspectwindow	{}
-framebegin		{ return FRAMEBEGIN; }
-frameend		{}
-generalpolygon		{}
-geometry		{}
-hider			{ return HIDER; }
-hyperboloid		{}
-identity		{ return IDENTITY; }
-illuminate		{}
-lightsource		{ return LIGHTSOURCE; }
-makecubefaceenvironment	{}
-makeshadow		{}
-nupatch			{ return NUPATCH; }
-objectbegin		{}
-objectend		{}
-objectinstance		{}
-opacity			{ return OPACITY; }
-option			{ return OPTION; }
-orientation		{ return ORIENTATION; }
-paraboloid		{}
-patch			{}
-patchmesh		{}
-pixelfilter		{}
-pixelsamples		{ return PIXELSAMPLES; }
-pointspolygons		{ return POINTSPOLYGONS; }
-pointsgeneralpolygons	{ return POINTSGENERALPOLYGONS; }
-polygon			{ return POLYGON; }
-projection		{ return PROJECTION; }
-relativedetail		{}
-reverseorientation	{ return REVERSEORIENTATION; }
-rotate			{ return ROTATE; }
-scale			{ return SCALE; }
-screenwindow		{ return SCREENWINDOW; }
-shadingrate		{ return SHADINGRATE; }
-shadinginterpolation	{ return SHADINGINTERPOLATION; }
-shutter			{ return SHUTTER; }
-sides			{}
-solidbegin		{}
-solidend		{}
-sphere			{ return SPHERE; }
-surface			{ return SURFACE; }
-texturecoordinates	{}
-torus			{}
-transform		{ return TRANSFORM; }
-transformbegin		{ return TRANSFORMBEGIN; }
-transformend		{ return TRANSFORMEND; }
-translate		{ return TRANSLATE; }
-trimcurve		{ return TRIMCURVE; }
-worldbegin		{ return WORLDBEGIN; }
-worldend		{ return WORLDEND; }
-version			{ return VERSION; }
-.			{ return yytext[0]; }
+{ws}            {}
+{nl}+           { iLineNum++; }
+{comment}       { iLineNum++; }
+
+{string}        {
+                    yylval.string = strdup(yytext);
+                    memcpy(&yylval.string[0],&yylval.string[1],yyleng-1);
+                    if(yylval.string[yyleng-2] != '"')
+                        yyerror("Unterminated character string");
+                    else
+                        yylval.string[yyleng-2] = 0;
+                    return tSTRING;
+                }
+
+{stringbracket} {
+                    yylval.string = strdup(yytext);
+                    memcpy(&yylval.string[0],&yylval.string[2],yyleng-1);
+                    if(yylval.string[yyleng-4] != '"')
+                        yyerror("Unterminated character string");
+                    else
+                        yylval.string[yyleng-4] = 0;
+                    return tSTRINGBRACKET;
+                }
+
+{number}        {
+                    yylval.dval = atof(yytext);
+                    return tNUMBER;
+                }
+
+attribute                       { return tATTRIBUTE; }
+attributebegin                  { return tATTRIBUTEBEGIN; }
+attributeend                    { return tATTRIBUTEEND; }
+basis                           { return tBASIS; }
+begin                           { return tBEGIN; }
+camera                          { return tCAMERA; }
+clipping                        { return tCLIPPING; }
+color                           { return tCOLOR; }
+concattransform                 { return tCONCATTRANSFORM; }
+coordinatesystem                { return tCOORDINATESYSTEM; }
+cropwindow                      { return tCROPWINDOW; }
+cylinder                        { return tCYLINDER; }
+declare                         { return tDECLARE; }
+displacement                    { return tDISPLACEMENT; }
+display                         { return tDISPLAY; }
+displaychannel                  { return tDISPLAYCHANNEL; }
+end                             { return tEND; }
+errorhandler                    { return tERRORHANDLER; }
+exposure                        { return tEXPOSURE; }
+format                          { return tFORMAT; }
+frameaspectratio                { return tFRAMEASPECTRATIO; }
+framebegin                      { return tFRAMEBEGIN; }
+frameend                        { return tFRAMEEND; }
+geometricapproximation          { return tGEOMETRICAPPROXIMATION; }
+hider                           { return tHIDER; }
+hierarchicalsubdivisionmesh     { return tHIERARCHICALSUBDIVISIONMESH; }
+identity                        { return tIDENTITY; }
+illuminate                      { return tILLUMINATE; }
+lightsource                     { return tLIGHTSOURCE; }
+matte                           { return tMATTE; }
+motionbegin                     { return tMOTIONBEGIN; }
+motionend                       { return tMOTIONEND; }
+nupatch                         { return tNUPATCH; }
+opacity                         { return tOPACITY; }
+option                          { return tOPTION; }
+orientation                     { return tORIENTATION; }
+pixelsamples                    { return tPIXELSAMPLES; }
+pixelfilter                     { return tPIXELFILTER; }
+pixelvariance                   { return tPIXELVARIANCE; }
+pointsgeneralpolygons           { return tPOINTSGENERALPOLYGONS; }
+pointspolygons                  { return tPOINTSPOLYGONS; }
+polygon                         { return tPOLYGON; }
+procedural                      { return tPROCEDURAL; }
+projection                      { return tPROJECTION; }
+quantize                        { return tQUANTIZE; }
+readarchive                     { return tREADARCHIVE; }
+relativedetail                  { return tRELATIVEDETAIL; }
+resource                        { return tRESOURCE; }
+resourcebegin                   { return tRESOURCEBEGIN; }
+resourceend                     { return tRESOURCEEND; }
+reverseorientation              { return tREVERSEORIENTATION; }
+rotate                          { return tROTATE; }
+scale                           { return tSCALE; }
+screenwindow                    { return tSCREENWINDOW; }
+shader                          { return tSHADER; }
+shadinginterpolation            { return tSHADINGINTERPOLATION; }
+shadingrate                     { return tSHADINGRATE; }
+shutter                         { return tSHUTTER; }
+sides                           { return tSIDES; }
+sphere                          { return tSPHERE; }
+subdivisionmesh                 { return tSUBDIVISIONMESH; }
+surface                         { return tSURFACE; }
+system                          { return tSYSTEM; }
+transform                       { return tTRANSFORM; }
+transformbegin                  { return tTRANSFORMBEGIN; }
+transformend                    { return tTRANSFORMEND; }
+translate                       { return tTRANSLATE; }
+trimcurve                       { return tTRIMCURVE; }
+version                         { return tVERSION; }
+worldbegin                      { return tWORLDBEGIN; }
+worldend                        { return tWORLDEND; }
+number                          { return tNUMBER; }
+
+.                               { return yytext[0]; }
 %%
 
 #pragma clang diagnostic pop

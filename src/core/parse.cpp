@@ -7,7 +7,7 @@ namespace Rp
 void
 parseRib(const std::string &filename)
 {
-    parse(filename);
+    parse(filename, false);
 }
 
 }

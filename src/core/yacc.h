@@ -3,14 +3,17 @@
 
 #include <string>
 
-bool parse(const std::string &filename);
+bool parse(const std::string &filename, bool debug=false);
 
 typedef struct strArgNode
 {
- int            iType,iListCount,iListSize;
- char           *sLabel,*sValue;
- float          *dValue;
- strArgNode     *Next;
+    int             iType;
+    int             iListCount;
+    int             iListSize;
+    char *          sLabel;
+    char *          sValue;
+    float *         dValue;
+    strArgNode *    Next;
 } ArgNode;
 
 #endif
