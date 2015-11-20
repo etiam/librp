@@ -266,14 +266,6 @@
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
-			<target name="attrtest.log" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>attrtest.log</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
 			<target name="check" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
@@ -514,26 +506,34 @@
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
+			<target name="docs/librp.tag" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>docs/librp.tag</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
+			<target name="doxygen-doc" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>doxygen-doc</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
+			<target name="doxygen-run" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>doxygen-run</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
 			<target name="dvi" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
 				<buildTarget>dvi</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="eventtest.log" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>eventtest.log</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="factorytest.log" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>factorytest.log</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
@@ -610,10 +610,10 @@
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
-			<target name="install-libsgcoreincludeHEADERS" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="install-librpcoreincludeHEADERS" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>install-libsgcoreincludeHEADERS</buildTarget>
+				<buildTarget>install-librpcoreincludeHEADERS</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
@@ -674,18 +674,18 @@
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
-			<target name="libsg.pc" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="librp.pc" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>libsg.pc</buildTarget>
+				<buildTarget>librp.pc</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
-			<target name="libsgcore.la" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="librpcore.la" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>libsgcore.la</buildTarget>
+				<buildTarget>librpcore.la</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
@@ -730,10 +730,10 @@
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
-			<target name="nametest.log" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="parsetest.log" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>nametest.log</buildTarget>
+				<buildTarget>parsetest.log</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
@@ -762,250 +762,42 @@
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
-			<target name="relationshiptest.log" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="src/check/core/parsetest-parsetest.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>relationshiptest.log</buildTarget>
+				<buildTarget>src/check/core/parsetest-parsetest.o</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
-			<target name="src/check/core/attrtest-attrtest.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="src/check/core/parsetest-parsetest.obj" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/check/core/attrtest-attrtest.o</buildTarget>
+				<buildTarget>src/check/core/parsetest-parsetest.obj</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
-			<target name="src/check/core/attrtest-attrtest.obj" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="src/core/librpcore_la-parse.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/check/core/attrtest-attrtest.obj</buildTarget>
+				<buildTarget>src/core/librpcore_la-parse.lo</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
-			<target name="src/check/core/eventtest-eventtest.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="src/utils/test-test.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/check/core/eventtest-eventtest.o</buildTarget>
+				<buildTarget>src/utils/test-test.o</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
-			<target name="src/check/core/eventtest-eventtest.obj" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="src/utils/test-test.obj" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/check/core/eventtest-eventtest.obj</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/check/core/factorytest-factorytest.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/check/core/factorytest-factorytest.o</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/check/core/factorytest-factorytest.obj" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/check/core/factorytest-factorytest.obj</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/check/core/nametest-nametest.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/check/core/nametest-nametest.o</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/check/core/nametest-nametest.obj" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/check/core/nametest-nametest.obj</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/check/core/relationshiptest-relationshiptest.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/check/core/relationshiptest-relationshiptest.o</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/check/core/relationshiptest-relationshiptest.obj" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/check/core/relationshiptest-relationshiptest.obj</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-attribute.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-attribute.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-dagManager.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-dagManager.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-driver.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-driver.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-eventManager.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-eventManager.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-global.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-global.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-master.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-master.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-nameTree.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-nameTree.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-node.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-node.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-nodeManager.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-nodeManager.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-object.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-object.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-ostreamhelpers.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-ostreamhelpers.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-relation.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-relation.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-relationship.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-relationship.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-relationshipManager.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-relationshipManager.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-relationshipType.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-relationshipType.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-selectionManager.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-selectionManager.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-timer.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-timer.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/core/libsgcore_la-timestamp.lo" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/core/libsgcore_la-timestamp.lo</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/utils/plugindump-plugindump.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/utils/plugindump-plugindump.o</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>false</runAllBuilders>
-			</target>
-			<target name="src/utils/plugindump-plugindump.obj" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>soundmake</buildCommand>
-				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>src/utils/plugindump-plugindump.obj</buildTarget>
+				<buildTarget>src/utils/test-test.obj</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
@@ -1042,10 +834,10 @@
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
-			<target name="uninstall-libsgcoreincludeHEADERS" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="uninstall-librpcoreincludeHEADERS" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
-				<buildTarget>uninstall-libsgcoreincludeHEADERS</buildTarget>
+				<buildTarget>uninstall-librpcoreincludeHEADERS</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
@@ -1062,6 +854,14 @@
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
 				<buildTarget>verbose</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
+			<target name="extra" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>extra</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>

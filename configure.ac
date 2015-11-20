@@ -10,8 +10,8 @@ AC_PREREQ([2.69])
 ## ------------------------ ##
 
 # Autoconf
-AC_INIT([libsg],[0.0.1],[rosson@gmail.com])
-AC_CONFIG_SRCDIR([src/core/master.h])
+AC_INIT([librp],[0.0.1],[rosson@gmail.com])
+AC_CONFIG_SRCDIR([src/core/parse.h])
 AC_CONFIG_AUX_DIR([scripts])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])
@@ -21,6 +21,7 @@ AC_SUBST(VERSION)
 AM_INIT_AUTOMAKE([1.11 foreign -Wgnu subdir-objects])
 AM_MAINTAINER_MODE
 AM_SANITY_CHECK
+AM_PROG_LEX
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 
 # Libtool 
@@ -40,6 +41,7 @@ AC_PROG_MAKE_SET
 AC_PROG_AWK
 AC_PROG_GREP
 AC_PROG_SED
+AC_PROG_YACC
 
 PKG_PROG_PKG_CONFIG
 
@@ -57,26 +59,12 @@ AC_HEADER_STDBOOL
 ## Checks for libraries    ##
 ## ----------------------- ##
 
-# libut
-PKG_CHECK_MODULES(LIBUT, libut >= 0.0.1)
-
 # liblog
 PKG_CHECK_MODULES(LIBLOG, liblog >= 0.0.1)
 
-# ilmbase 
-PKG_CHECK_MODULES(ILMBASE, IlmBase >= 1.0.1)
-
 # boost
 BOOST_REQUIRE(1.55)
-BOOST_THREAD
 BOOST_TEST
-BOOST_SIGNALS2
-BOOST_UUID
-BOOST_SYSTEM
-BOOST_LOG
-BOOST_IOSTREAMS
-BOOST_UTILITY
-BOOST_REGEX
 
 ## ----------------------- ##
 ## Optional arguments      ##
@@ -94,19 +82,6 @@ then
 fi
 eval "eval LIB_DIR=$libdir"
 AC_SUBST(LIB_DIR)
-
-# PLUGIN_PATH
-AC_ARG_WITH([plugin-path],
-            [AS_HELP_STRING([--with-plugin-path=DIR], [where to install plugins (default: $libdir/sg/plugins)])])
-
-if test x"$with_plugin_path" = x; then
-  PLUGIN_PATH="${LIB_DIR}/sg/plugins"
-else
-  PLUGIN_PATH=$with_plugin_path
-fi
-AC_MSG_NOTICE([PLUGIN_PATH=$PLUGIN_PATH])
-AC_DEFINE_UNQUOTED(PLUGIN_PATH, "$PLUGIN_PATH", [plugin path])
-AC_SUBST(PLUGIN_PATH)
 
 # remove autoconf's "-g -O2" defaults
 CFLAGS=`echo $CFLAGS | sed 's/-O.//g'`
@@ -163,6 +138,13 @@ fi
 AC_SUBST(CFLAGS)
 AC_SUBST(CXXLAGS)
 
+# yacc/bison stuff
+YFLAGS="-dvy -Dparse.trace" 
+LFLAGS="-i"
+AC_SUBST(YFLAGS)
+AC_SUBST(LFLAGS)
+AC_DEFINE([YYDEBUG], [1], [define to turn on yacc debugging])
+
 # --enable-logging
 AC_ARG_ENABLE([logging],
   [  --enable-logging        turn on console logging],
@@ -184,11 +166,11 @@ DX_RTF_FEATURE(OFF)
 DX_XML_FEATURE(OFF)
 DX_PDF_FEATURE(OFF)
 DX_PS_FEATURE(OFF)
-DX_INIT_DOXYGEN($PACKAGE, libsg.dox, docs)
+DX_INIT_DOXYGEN($PACKAGE, librp.dox, docs)
 
 # output Makefiles
 AC_CONFIG_FILES([
-        libsg.pc
+        librp.pc
         Makefile
 ])
 AC_OUTPUT

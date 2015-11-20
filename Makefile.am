@@ -1,6 +1,5 @@
 ACLOCAL_AMFLAGS           = -I m4 
 
-lib_LTLIBRARIES           =
 check_PROGRAMS            =
 noinst_PROGRAMS           =
 TESTS					  =
@@ -13,7 +12,7 @@ include src/utils/Makefile.am
 
 # PKGCONFIG SUPPORT
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libsg.pc
+pkgconfig_DATA = librp.pc
 
 # DOXYGEN SUPPORT
 include $(top_srcdir)/doxygen.am

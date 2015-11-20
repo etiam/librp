@@ -4,3 +4,7 @@ verbose:
 checkinstall:
 	$(MAKE) check
 	$(MAKE) install
+
+extra: install
+	$(MAKE) ribparse 
+

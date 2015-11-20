@@ -31,7 +31,6 @@ cmd  = 'cd {builddir}; ../configure -C CXX="ccache-clang++" CC="ccache-clang" \
 
 cmd += '; cd ..'
 
-appendpkgconfig('libut')
 appendpkgconfig('liblog')
 
 os.system(cmd)

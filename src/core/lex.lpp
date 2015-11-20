@@ -1,0 +1,128 @@
+%{
+#include <stdio.h>
+#include <string.h>
+#include "defs.h"
+#include "yacc.h"
+#include "yacc.hpp"
+
+extern void yyerror(char*);
+extern int  iLineNum;
+int	    iTokenEnd = FALSE;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wwritable-strings"
+#pragma clang diagnostic ignored "-Wdeprecated-register"
+#pragma clang diagnostic ignored "-Wunused-function"
+#pragma clang diagnostic ignored "-Wunneeded-internal-declaration"
+
+%}
+
+ws		[ \t]+
+nl		\n
+string		\"[^\"\n]*[\"\n]
+stringbracket	\[\"[^\"\n]*[\"\n]\]
+number		-?([0-9]+|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
+comment		#.*\n
+%%
+
+{ws}		{}
+{nl}+		{ iLineNum++; }
+{string}	{
+		 yylval.string = strdup(yytext);
+		 memcpy(&yylval.string[0],&yylval.string[1],yyleng-1);
+		 if(yylval.string[yyleng-2] != '"')
+		  yyerror("Unterminated character string");
+		 else
+		  yylval.string[yyleng-2] = 0;
+		 return STRING;
+		}
+{stringbracket}	{
+		 yylval.string = strdup(yytext);
+		 memcpy(&yylval.string[0],&yylval.string[2],yyleng-1);
+		 if(yylval.string[yyleng-4] != '"')
+		  yyerror("Unterminated character string");
+		 else
+		  yylval.string[yyleng-4] = 0;
+		 return STRINGBRACKET;
+		}
+{number}	{
+		 yylval.dval = atof(yytext);
+		 return NUMBER;
+		}
+{comment}		{ iLineNum++; }
+atmosphere		{}
+attribute		{ return ATTRIBUTE; }
+attributebegin		{ return ATTRIBUTEBEGIN; }
+attributeend		{ return ATTRIBUTEEND; }
+basis			{}
+clipping		{ return CLIPPING; }
+color			{ return COLOR; }
+concattransform		{ return CONCATTRANSFORM; }
+cone			{}
+coordinatesystem	{ return COORDINATESYSTEM; }
+cropwindow		{ return CROPWINDOW; }
+cylinder		{ return CYLINDER; }
+declare			{ return DECLARE; }
+detail			{}
+detailrange		{}
+disk			{}
+displacement		{}
+display			{ return DISPLAY; }
+exposure		{ return EXPOSURE; }
+format			{ return FORMAT; }
+frameaspectratio	{ return FRAMEASPECTRATIO; }
+frameaspectwindow	{}
+framebegin		{ return FRAMEBEGIN; }
+frameend		{}
+generalpolygon		{}
+geometry		{}
+hider			{ return HIDER; }
+hyperboloid		{}
+identity		{ return IDENTITY; }
+illuminate		{}
+lightsource		{ return LIGHTSOURCE; }
+makecubefaceenvironment	{}
+makeshadow		{}
+nupatch			{ return NUPATCH; }
+objectbegin		{}
+objectend		{}
+objectinstance		{}
+opacity			{ return OPACITY; }
+option			{ return OPTION; }
+orientation		{ return ORIENTATION; }
+paraboloid		{}
+patch			{}
+patchmesh		{}
+pixelfilter		{}
+pixelsamples		{ return PIXELSAMPLES; }
+pointspolygons		{ return POINTSPOLYGONS; }
+pointsgeneralpolygons	{ return POINTSGENERALPOLYGONS; }
+polygon			{ return POLYGON; }
+projection		{ return PROJECTION; }
+relativedetail		{}
+reverseorientation	{ return REVERSEORIENTATION; }
+rotate			{ return ROTATE; }
+scale			{ return SCALE; }
+screenwindow		{ return SCREENWINDOW; }
+shadingrate		{ return SHADINGRATE; }
+shadinginterpolation	{ return SHADINGINTERPOLATION; }
+shutter			{ return SHUTTER; }
+sides			{}
+solidbegin		{}
+solidend		{}
+sphere			{ return SPHERE; }
+surface			{ return SURFACE; }
+texturecoordinates	{}
+torus			{}
+transform		{ return TRANSFORM; }
+transformbegin		{ return TRANSFORMBEGIN; }
+transformend		{ return TRANSFORMEND; }
+translate		{ return TRANSLATE; }
+trimcurve		{ return TRIMCURVE; }
+worldbegin		{ return WORLDBEGIN; }
+worldend		{ return WORLDEND; }
+version			{ return VERSION; }
+.			{ return yytext[0]; }
+%%
+
+#pragma clang diagnostic pop

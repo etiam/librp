@@ -35,7 +35,7 @@
 <flagvalue id="cflags-gprof" value="false"/>
 <flagvalue id="cflags-gcov" value="false"/>
 </flag>
-<option id="user" value="-C --enable-silent-rules --with-plugin-path=${ProjDirPath}/build-${ConfigName}-${HostArchName}/src/plugins/.libs --enable-logging --enable-debug"/>
+<option id="user" value="-C --enable-silent-rules --enable-logging --enable-debug"/>
 <option id="autogen" value="autogen.sh"/>
 <option id="autogenOpts" value=""/>
 </configuration>
@@ -74,7 +74,7 @@
 <flagvalue id="cflags-gprof" value="false"/>
 <flagvalue id="cflags-gcov" value="false"/>
 </flag>
-<option id="user" value="-C --enable-silent-rules --with-plugin-path=${ProjDirPath}/build-${ConfigName}-${HostArchName}/src/plugins/.libs --enable-opt"/>
+<option id="user" value="-C --enable-silent-rules --enable-opt"/>
 <option id="autogen" value="autogen.sh"/>
 <option id="autogenOpts" value=""/>
 </configuration>
@@ -113,7 +113,7 @@
 <flagvalue id="cflags-gprof" value="false"/>
 <flagvalue id="cflags-gcov" value="false"/>
 </flag>
-<option id="user" value="-C --enable-silent-rules --with-plugin-path=${ProjDirPath}/build-${ConfigName}-${HostArchName}/src/plugins/.libs --enable-profile"/>
+<option id="user" value="-C --enable-silent-rules --enable-profile"/>
 <option id="autogen" value="autogen.sh"/>
 <option id="autogenOpts" value=""/>
 </configuration>
