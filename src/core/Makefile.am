@@ -3,7 +3,7 @@ lib_LTLIBRARIES             = librpcore.la
 librpcore_la_SOURCES        =                                   \
                               src/core/parse.cpp                \
                               src/core/rr.cpp                   \
-                              src/core/yacc.ypp                 \
+                              src/core/yacc.yy                  \
                               src/core/lex.lpp
                               
 librpcoreinclude_HEADERS    =                                   \

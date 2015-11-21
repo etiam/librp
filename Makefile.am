@@ -6,7 +6,8 @@ TESTS					  =
 EXTRA_DIST                =
 EXTRA_PROGRAMS            =
 
-include src/core/Makefile.am
+#include src/core/Makefile.am
+include src/c++/Makefile.am
 include src/check/core/Makefile.am
 include src/utils/Makefile.am
 

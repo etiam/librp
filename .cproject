@@ -22,7 +22,12 @@
 					<folderInfo id="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506." name="/" resourcePath="">
 						<toolChain id="org.eclipse.linuxtools.cdt.autotools.core.toolChain.1837212398" name="GNU Autotools Toolchain" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolChain">
 							<targetPlatform id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.targetPlatform.1828398895" isAbstract="false" name="GNU Autotools Target Platform" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.targetPlatform"/>
-							<builder arguments="-j${NUMCORES}" buildPath="${ProjDirPath}/build-${ConfigName}-${HostArchName}" command="soundmake" id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder.1555586686" incrementalBuildTarget="install" keepEnvironmentInBuildfile="false" managedBuildOn="true" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder"/>
+							<builder arguments="-j${NUMCORES}" buildPath="${ProjDirPath}/build-${ConfigName}-${HostArchName}" command="soundmake" id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder.1555586686" incrementalBuildTarget="install" keepEnvironmentInBuildfile="false" managedBuildOn="true" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder">
+								<outputEntries>
+									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="build-dbg-amd64"/>
+									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name=""/>
+								</outputEntries>
+							</builder>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure.322765075" name="configure" superClass="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure">
 								<option id="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name.345597993" name="Name" superClass="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name" value="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506" valueType="string"/>
 							</tool>
@@ -35,6 +40,9 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<sourceEntries>
+						<entry excluding="c++" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -73,6 +81,10 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<sourceEntries>
+						<entry excluding="src/c++|c++" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/c++"/>
+					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -111,6 +123,10 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<sourceEntries>
+						<entry excluding="src/c++|c++" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src/c++"/>
+					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -326,6 +342,14 @@
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
 				<buildTarget>clean-local</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
+			<target name="clean-noinstLIBRARIES" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>clean-noinstLIBRARIES</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
@@ -610,6 +634,14 @@
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
+			<target name="install-librpcorenewincludeHEADERS" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>install-librpcorenewincludeHEADERS</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
 			<target name="install-man" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
@@ -682,6 +714,14 @@
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
+			<target name="librpcorenew.a" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>librpcorenew.a</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
 			<target name="maintainer-clean" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
@@ -750,6 +790,54 @@
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
 				<buildTarget>recheck</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
+			<target name="src/c++/librpcorenew_a-mc_driver.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>src/c++/librpcorenew_a-mc_driver.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
+			<target name="src/c++/librpcorenew_a-mc_driver.obj" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>src/c++/librpcorenew_a-mc_driver.obj</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
+			<target name="src/c++/librpcorenew_a-mc_lexer.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>src/c++/librpcorenew_a-mc_lexer.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
+			<target name="src/c++/librpcorenew_a-mc_lexer.obj" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>src/c++/librpcorenew_a-mc_lexer.obj</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
+			<target name="src/c++/librpcorenew_a-mc_parser.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>src/c++/librpcorenew_a-mc_parser.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
+			<target name="src/c++/librpcorenew_a-mc_parser.obj" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>src/c++/librpcorenew_a-mc_parser.obj</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
@@ -854,6 +942,14 @@
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>
 				<buildTarget>uninstall-librpcoreincludeHEADERS</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
+			<target name="uninstall-librpcorenewincludeHEADERS" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>uninstall-librpcorenewincludeHEADERS</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
