@@ -16,7 +16,6 @@ public:
 
    void parse( const char *filename );
 
-
    void add_upper();
    void add_lower();
    void add_word( const std::string &word );
@@ -24,6 +23,7 @@ public:
    void add_char();
 
    std::ostream& print(std::ostream &stream);
+
 private:
    int chars      = 0;
    int words      = 0;
@@ -35,4 +35,5 @@ private:
 };
 
 } /* end namespace MC */
+
 #endif /* END __MCDRIVER_HPP__ */
