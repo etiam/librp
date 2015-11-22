@@ -2,9 +2,12 @@
 #include <fstream>
 #include <cassert>
 
-#include "mc_driver.hpp"
+#include "driver.h"
 
-MC::MC_Driver::~MC_Driver()
+namespace Rp
+{
+
+Driver::~Driver()
 { 
    delete(scanner);
    scanner = nullptr;
@@ -13,7 +16,7 @@ MC::MC_Driver::~MC_Driver()
 }
 
 void 
-MC::MC_Driver::parse( const char * const filename )
+Driver::parse( const char * const filename )
 {
    assert( filename != nullptr );
    std::ifstream in_file( filename );
@@ -22,7 +25,7 @@ MC::MC_Driver::parse( const char * const filename )
    delete(scanner);
    try
    {
-      scanner = new MC::MC_Scanner( &in_file );
+      scanner = new Scanner( &in_file );
    }
    catch( std::bad_alloc &ba )
    {
@@ -34,7 +37,7 @@ MC::MC_Driver::parse( const char * const filename )
    delete(parser); 
    try
    {
-      parser = new MC::MC_Parser( (*scanner) /* scanner */, 
+      parser = new Parser( (*scanner) /* scanner */,
                                   (*this) /* driver */ );
    }
    catch( std::bad_alloc &ba )
@@ -51,7 +54,7 @@ MC::MC_Driver::parse( const char * const filename )
 }
 
 void 
-MC::MC_Driver::add_upper()
+Driver::add_upper()
 { 
    uppercase++; 
    chars++; 
@@ -59,7 +62,7 @@ MC::MC_Driver::add_upper()
 }
 
 void 
-MC::MC_Driver::add_lower()
+Driver::add_lower()
 { 
    lowercase++; 
    chars++; 
@@ -67,7 +70,7 @@ MC::MC_Driver::add_lower()
 }
 
 void 
-MC::MC_Driver::add_word( const std::string &word )
+Driver::add_word( const std::string &word )
 {
    words++; 
    chars += word.length();
@@ -84,21 +87,21 @@ MC::MC_Driver::add_word( const std::string &word )
 }
 
 void 
-MC::MC_Driver::add_newline()
+Driver::add_newline()
 { 
    lines++; 
    chars++; 
 }
 
 void 
-MC::MC_Driver::add_char()
+Driver::add_char()
 { 
    chars++; 
 }
 
 
 std::ostream& 
-MC::MC_Driver::print( std::ostream &stream )
+Driver::print( std::ostream &stream )
 {
    stream << "Uppercase: " << uppercase << "\n";
    stream << "Lowercase: " << lowercase << "\n";
@@ -106,4 +109,6 @@ MC::MC_Driver::print( std::ostream &stream )
    stream << "Words: " << words << "\n";
    stream << "Characters: " << chars << "\n";
    return(stream);
+}
+
 }

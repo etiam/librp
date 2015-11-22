@@ -11,9 +11,9 @@ test_LDADD                  = librpcorenew.a
 noinst_LIBRARIES            = librpcorenew.a
 
 librpcorenew_a_SOURCES      =                                   \
-                              src/c++/mc_parser.yy              \
-                              src/c++/mc_lexer.lpp              \
-                              src/c++/mc_driver.cpp
+                              src/c++/parser.yy                 \
+                              src/c++/lexer.lpp                 \
+                              src/c++/driver.cpp
 
                               
 #librpcorenewinclude_HEADERS =                                   \
@@ -30,8 +30,8 @@ librpcorenew_a_CPPFLAGS     =                                   \
                               -I$(top_srcdir)/src/c++           \
                               @LIBLOG_CFLAGS@
 
-# lexer.lpp does an "#include "mc_parser.hh" (built from mc_parser.yy)
-src/c++/mc_lexer.cpp: src/c++/mc_parser.hh
+# lexer.lpp does an "#include "parser.hh" (built from parser.yy)
+src/c++/lexer.cpp: src/c++/parser.hh
 
 .lpp.cpp:
 	$(AM_V_LEX)$(am__skiplex) $(SHELL) $(YLWRAP) $< $(LEX_OUTPUT_ROOT).c $@ -- $(LEXCOMPILE) -o $(notdir $@)

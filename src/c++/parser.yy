@@ -2,18 +2,20 @@
 %require  "3.0"
 %debug 
 %defines 
-%define api.namespace {MC}
-%define parser_class_name {MC_Parser}
+%define api.namespace {Rp}
+%define parser_class_name {Parser}
 
-%code requires{
-   namespace MC {
-      class MC_Driver;
-      class MC_Scanner;
+%code requires
+{
+   namespace Rp 
+   {
+      class Driver;
+      class Scanner;
    }
 }
 
-%parse-param { MC_Scanner  &scanner  }
-%parse-param { MC_Driver  &driver  }
+%parse-param { Scanner  &scanner  }
+%parse-param { Driver  &driver  }
 
 %code{
    #include <iostream>
@@ -21,7 +23,7 @@
    #include <fstream>
    
    /* include for all driver functions */
-   #include "mc_driver.hpp"
+   #include "driver.h"
 
 #undef yylex
 #define yylex scanner.yylex
@@ -65,7 +67,7 @@ item
 
 
 void 
-MC::MC_Parser::error( const std::string &err_message )
+Rp::Parser::error(const std::string &err_message)
 {
    std::cerr << "Error: " << err_message << "\n"; 
 }

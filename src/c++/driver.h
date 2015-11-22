@@ -3,16 +3,18 @@
 
 #include <string>
 #include <cstdint>
-#include "mc_scanner.hpp"
-#include "mc_parser.hh"
+#include "scanner.h"
+#include "parser.hh"
 
-namespace MC{
+namespace Rp
+{
 
-class MC_Driver{
-public:
-   MC_Driver() = default;
+class Driver
+{
+  public:
+   Driver() = default;
 
-   virtual ~MC_Driver();
+   virtual ~Driver();
 
    void parse( const char *filename );
 
@@ -30,10 +32,10 @@ private:
    int lines      = 0;
    int uppercase  = 0;
    int lowercase  = 0;
-   MC::MC_Parser  *parser  = nullptr;
-   MC::MC_Scanner *scanner = nullptr;
+   Parser  *parser  = nullptr;
+   Scanner *scanner = nullptr;
 };
 
-} /* end namespace MC */
+}
 
-#endif /* END __MCDRIVER_HPP__ */
+#endif
