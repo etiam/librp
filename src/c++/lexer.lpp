@@ -1,8 +1,10 @@
 %{
-/* C++ string header, for string ops below */
 #include <string>
-/* Implementation of yyFlexScanner */ 
+#include "yacc.h"
 #include "scanner.h"
+
+extern void yyerror(char*);
+extern int  iLineNum;
 
 /* typedef to make the returns for the tokens shorter */
 typedef Rp::Parser::token token;
@@ -11,10 +13,7 @@ typedef Rp::Parser::token token;
 #define STOKEN( x ) ( new std::string( x ) )
 
 /* define yyterminate as this instead of NULL */
-#define yyterminate() return( token::END )
-
-/* msvc2010 requires that we exclude this header file. */
-#define YY_NO_UNISTD_H
+#define yyterminate() return( token::tEND )
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wwritable-strings"
@@ -30,23 +29,122 @@ typedef Rp::Parser::token token;
 %option noyywrap 
 %option c++
 
+ws              [ \t]+
+nl              \n
+string          \"[^\"\n]*[\"\n]
+stringbracket   \[\"[^\"\n]*[\"\n]\]
+number          -?([0-9]+|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
+comment         #.*\n
 %%
-[a-z]       { 
-               return( token::LOWER );     
-            }
 
-[a-zA-Z]+   { 
-               yylval->sval = STOKEN( yytext );  
-               return( token::WORD );      
-            }
+{ws}            {}
+{nl}+           { iLineNum++; }
+{comment}       { iLineNum++; }
 
-\n          { 
-               return( token::NEWLINE );   
-            }
+{string}        {
+                    yylval->string = strdup(yytext);
+                    memcpy(&yylval->string[0], &yylval->string[1], yyleng-1);
+                    
+                    if(yylval->string[yyleng-2] != '"')
+                        yyerror("Unterminated character string");
+                    else
+                        yylval->string[yyleng-2] = 0;
+                    
+                    return token::tSTRING;
+                }
 
-.           { 
-               return( token::CHAR );      
-            }
+{stringbracket} {
+                    yylval->string = strdup(yytext);
+                    memcpy(&yylval->string[0], &yylval->string[2], yyleng-1);
+                    
+                    if(yylval->string[yyleng-4] != '"')
+                        yyerror("Unterminated character string");
+                    else
+                        yylval->string[yyleng-4] = 0;
+                    
+                    return token::tSTRINGBRACKET;
+                }
+
+{number}        {
+                    yylval->dval = atof(yytext);
+                    return token::tNUMBER;
+                }
+
+attribute                       { return token::tATTRIBUTE; }
+attributebegin                  { return token::tATTRIBUTEBEGIN; }
+attributeend                    { return token::tATTRIBUTEEND; }
+basis                           { return token::tBASIS; }
+begin                           { return token::tBEGIN; }
+camera                          { return token::tCAMERA; }
+clipping                        { return token::tCLIPPING; }
+color                           { return token::tCOLOR; }
+concattransform                 { return token::tCONCATTRANSFORM; }
+coordinatesystem                { return token::tCOORDINATESYSTEM; }
+cropwindow                      { return token::tCROPWINDOW; }
+cylinder                        { return token::tCYLINDER; }
+declare                         { return token::tDECLARE; }
+displacement                    { return token::tDISPLACEMENT; }
+display                         { return token::tDISPLAY; }
+displaychannel                  { return token::tDISPLAYCHANNEL; }
+end                             { return token::tEND; }
+errorhandler                    { return token::tERRORHANDLER; }
+exposure                        { return token::tEXPOSURE; }
+format                          { return token::tFORMAT; }
+frameaspectratio                { return token::tFRAMEASPECTRATIO; }
+framebegin                      { return token::tFRAMEBEGIN; }
+frameend                        { return token::tFRAMEEND; }
+geometricapproximation          { return token::tGEOMETRICAPPROXIMATION; }
+hider                           { return token::tHIDER; }
+hierarchicalsubdivisionmesh     { return token::tHIERARCHICALSUBDIVISIONMESH; }
+identity                        { return token::tIDENTITY; }
+illuminate                      { return token::tILLUMINATE; }
+lightsource                     { return token::tLIGHTSOURCE; }
+matte                           { return token::tMATTE; }
+motionbegin                     { return token::tMOTIONBEGIN; }
+motionend                       { return token::tMOTIONEND; }
+nupatch                         { return token::tNUPATCH; }
+opacity                         { return token::tOPACITY; }
+option                          { return token::tOPTION; }
+orientation                     { return token::tORIENTATION; }
+pixelsamples                    { return token::tPIXELSAMPLES; }
+pixelfilter                     { return token::tPIXELFILTER; }
+pixelvariance                   { return token::tPIXELVARIANCE; }
+pointsgeneralpolygons           { return token::tPOINTSGENERALPOLYGONS; }
+pointspolygons                  { return token::tPOINTSPOLYGONS; }
+polygon                         { return token::tPOLYGON; }
+procedural                      { return token::tPROCEDURAL; }
+projection                      { return token::tPROJECTION; }
+quantize                        { return token::tQUANTIZE; }
+readarchive                     { return token::tREADARCHIVE; }
+relativedetail                  { return token::tRELATIVEDETAIL; }
+resource                        { return token::tRESOURCE; }
+resourcebegin                   { return token::tRESOURCEBEGIN; }
+resourceend                     { return token::tRESOURCEEND; }
+reverseorientation              { return token::tREVERSEORIENTATION; }
+rotate                          { return token::tROTATE; }
+scale                           { return token::tSCALE; }
+screenwindow                    { return token::tSCREENWINDOW; }
+shader                          { return token::tSHADER; }
+shadinginterpolation            { return token::tSHADINGINTERPOLATION; }
+shadingrate                     { return token::tSHADINGRATE; }
+shutter                         { return token::tSHUTTER; }
+sides                           { return token::tSIDES; }
+sphere                          { return token::tSPHERE; }
+subdivisionmesh                 { return token::tSUBDIVISIONMESH; }
+surface                         { return token::tSURFACE; }
+system                          { return token::tSYSTEM; }
+transform                       { return token::tTRANSFORM; }
+transformbegin                  { return token::tTRANSFORMBEGIN; }
+transformend                    { return token::tTRANSFORMEND; }
+translate                       { return token::tTRANSLATE; }
+trimcurve                       { return token::tTRIMCURVE; }
+version                         { return token::tVERSION; }
+worldbegin                      { return token::tWORLDBEGIN; }
+worldend                        { return token::tWORLDEND; }
+number                          { return token::tNUMBER; }
+
+.                               { return yytext[0]; }
+
 %%
 
 #pragma clang diagnostic pop

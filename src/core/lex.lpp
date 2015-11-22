@@ -7,7 +7,6 @@
 
 extern void yyerror(char*);
 extern int  iLineNum;
-int        iTokenEnd = FALSE;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wwritable-strings"

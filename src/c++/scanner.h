@@ -15,7 +15,7 @@ class Scanner : public yyFlexLexer
   public:
 
     Scanner (std::istream *in) :
-            yyFlexLexer (in), yylval (nullptr) {};
+        yyFlexLexer (in), yylval (nullptr) {};
 
     int yylex (Parser::semantic_type * const lval)
     {
