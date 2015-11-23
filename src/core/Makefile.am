@@ -19,5 +19,7 @@ librpcore_la_CPPFLAGS       =                                   \
                               -I$(top_srcdir)/src/core          \
                               @LIBLOG_CFLAGS@
                               
-clean-local:
-	-rm -f src/core/yacc.cpp src/core/yacc.hpp src/core/lex.cpp
+CLEAN                      += stack.hh                          \
+                              src/core/yacc.cpp                 \
+                              src/core/yacc.hpp                 \
+                              src/core/lex.cpp

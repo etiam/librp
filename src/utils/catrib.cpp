@@ -21,6 +21,10 @@ void
 Catrib::Attribute(Token name, int n, Token nms[], RtPointer vals[], int lengths[])
 {
     std::cout << "Attribute " << "\"" << name << "\"";
+    for (int i=0; i < n; i++)
+    {
+        std::cout << " " << nms[i] << " " << static_cast<char*>(vals[i]);
+    }
     std::cout << std::endl;
 }
 

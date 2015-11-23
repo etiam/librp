@@ -59,7 +59,7 @@ typedef     RtFloat     RtPoint[3];
 typedef     RtFloat     RtMatrix[4][4];
 typedef     RtPointer   RtLightHandle;
 
-void            yyerror(char*);
+//void            yyerror(char*);
 //int             yyparse();
 //extern int      yywrap();
 //extern FILE *   yyin;
@@ -72,6 +72,7 @@ void            debug();
 char *          sSource;
 char            sErrorString[100];
 int             iLineNum = 1;
+
 int             iTLS = 0, iTLC, iTLCS;
 int             iPPnv,iPPvll,iPGPnlp;
 int             iVOrder,iVOrderL;
@@ -90,7 +91,6 @@ RtInt           plengths[MAX_ARGS];
 
 %}
 
-/* token types */
 %union
 {
    float       dval;
@@ -99,6 +99,7 @@ RtInt           plengths[MAX_ARGS];
    float *     dValue;
 }
 
+/* token types */
 %token tATTRIBUTE
 %token tATTRIBUTEBEGIN
 %token tATTRIBUTEEND
@@ -291,7 +292,7 @@ color:              tCOLOR {iTLC = 0; iTLCS = 0;} bracketnumberlist
     if(iTLC - iTLCS != 3)
     {
         sprintf(sErrorString,"Wrong number of color samples: %i, expecting 3", iTLC - iTLCS);
-        yyerror(sErrorString);
+        Rp::Parser::error(sErrorString);
     }
     else
     {
@@ -309,7 +310,7 @@ color:              tCOLOR {iTLC = 0; iTLCS = 0;} bracketnumberlist
     if(iTLC - iTLCS != 3)
     {
         sprintf(sErrorString,"Wrong number of color samples: %i, expecting 3", iTLC - iTLCS);
-        yyerror(sErrorString);
+        Rp::Parser::error(sErrorString);
     }
     else
     {
@@ -327,7 +328,7 @@ concattransform:    tCONCATTRANSFORM {iTLC = 0; iTLCS = 0;} bracketnumberlist
     if(iTLC - iTLCS != 16)
     {
         sprintf(sErrorString,"Bad number of numeric parameters to Transform: %i", iTLC - iTLCS);
-        yyerror(sErrorString);
+        Rp::Parser::error(sErrorString);
     }
     else
     {
@@ -681,7 +682,7 @@ arg:                tSTRING tSTRINGBRACKET
     anTempNode->sValue = $2;
     $$ = anTempNode;
 }
-        |           tSTRING{iTLCS = iTLC;}numberlist
+        |           tSTRING {iTLCS = iTLC;} numberlist
 {
     anTempNode = NewNode();
     anTempNode->iType = ARGNUMLIST;
@@ -690,7 +691,7 @@ arg:                tSTRING tSTRINGBRACKET
     anTempNode->iListCount = iTLC - iTLCS;
 $$ = anTempNode;
 }
-        |           tSTRING{iTLCS = iTLC;}bracketnumberlist
+        |           tSTRING {iTLCS = iTLC;} bracketnumberlist
 {
     anTempNode = NewNode();
     anTempNode->iType = ARGNUMLIST;
@@ -798,8 +799,8 @@ void debug()
 }
 
 void
-Rp::Parser::error(const std::string &err_message)
+Rp::Parser::error(const std::string &message)
 {
 //   std::cerr << "Error: " << err_message << "\n";
-   std::cerr << "Error: " << err_message << " (at line " << iLineNum << " in " << "source" << ")\n";
+   std::cerr << "Error: " << message << " (at line " << iLineNum << " in " << "source" << ")\n";
 }

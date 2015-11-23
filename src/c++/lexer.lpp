@@ -40,24 +40,24 @@ comment         #.*\n
 
 {string}        {
                     yylval->string = strdup(yytext);
-                    memcpy(&yylval->string[0], &yylval->string[1], yyleng-1);
+//                    memcpy(&yylval->string[0], &yylval->string[1], yyleng-1);
                     
-                    if(yylval->string[yyleng-2] != '"')
-                        yyerror("Unterminated character string");
-                    else
-                        yylval->string[yyleng-2] = 0;
+//                    if(yylval->string[yyleng-2] != '"')
+//                        yyerror("Unterminated character string");
+//                    else
+//                        yylval->string[yyleng-2] = 0;
                     
                     return token::tSTRING;
                 }
 
 {stringbracket} {
                     yylval->string = strdup(yytext);
-                    memcpy(&yylval->string[0], &yylval->string[2], yyleng-1);
+//                    memcpy(&yylval->string[0], &yylval->string[2], yyleng-1);
                     
-                    if(yylval->string[yyleng-4] != '"')
-                        yyerror("Unterminated character string");
-                    else
-                        yylval->string[yyleng-4] = 0;
+//                    if(yylval->string[yyleng-4] != '"')
+//                        yyerror("Unterminated character string");
+//                    else
+//                        yylval->string[yyleng-4] = 0;
                     
                     return token::tSTRINGBRACKET;
                 }
