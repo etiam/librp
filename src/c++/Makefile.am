@@ -31,7 +31,7 @@ librpcorenew_a_CPPFLAGS     =                                   \
                               @LIBLOG_CFLAGS@
 
 # lexer.lpp does an "#include "parser.hh" (built from parser.yy)
-src/c++/lexer.cpp: src/c++/parser.hh
+#src/c++/lexer.cpp: src/c++/parser.hh
 
 .lpp.cpp:
 	$(AM_V_LEX)$(am__skiplex) $(SHELL) $(YLWRAP) $< $(LEX_OUTPUT_ROOT).c $@ -- $(LEXCOMPILE) -o $(notdir $@)

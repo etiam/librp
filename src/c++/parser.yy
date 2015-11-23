@@ -1,17 +1,19 @@
 %skeleton "lalr1.cc"
 %require  "3.0"
-%debug 
-%defines 
+%debug
+%defines
 %define api.namespace {Rp}
 %define parser_class_name {Parser}
 
 %code requires
 {
-   namespace Rp 
-   {
-      class Driver;
-      class Scanner;
-   }
+#include "yacc.h"
+
+namespace Rp
+{
+  class Driver;
+  class Scanner;
+}
 }
 
 %parse-param { Scanner  &scanner  }
@@ -25,6 +27,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 
 #include "yacc.h"
@@ -32,16 +35,16 @@
 
 #undef yylex
 #define yylex scanner.yylex
-    
+
 #define        ALLOC_BLOCK 20000
 #define        MAX_ARGS    100
 
-enum 
+enum
 {
     ARGSTRING,
     ARGNUMLIST
 };
-    
+
 typedef     int         RtInt;
 typedef     float       RtFloat;
 typedef     short       RtBoolean;
@@ -55,7 +58,7 @@ typedef     RtPointer   RtLightHandle;
 
 #define     RtVoid      void
 #define     RI_NULL     ((RtToken)0)
- 
+
 void            yyerror(char*);
 int             yyparse();
 extern int      yywrap();
@@ -85,7 +88,7 @@ RtInt           plengths[MAX_ARGS];
 %}
 
 /* token types */
-%union 
+%union
 {
    float       dval;
    char *      string;
@@ -167,7 +170,7 @@ RtInt           plengths[MAX_ARGS];
 
 %token <string> tSTRING
 %token <string> tSTRINGBRACKET
-%token <dval>   tNUMBER 
+%token <dval>   tNUMBER
 
 %type  <anNode> arg
 %type  <anNode> arglist
@@ -255,23 +258,23 @@ generic:            attribute
         |           version
         |           worldbegin
         |           worldend;
-        
+
 attribute:          tATTRIBUTE tSTRING {iTLC=0;} arglist
 {
     int     iArgCount;
-    
+
     iArgCount = buildRIarglist($4);
-    driver.RrAttributeV($2, iArgCount, tokens, parms, plengths); 
+    driver.RrAttributeV($2, iArgCount, tokens, parms, plengths);
 };
 
 attributebegin:     tATTRIBUTEBEGIN
 {
- RrAttributeBegin();
+    driver.RrAttributeBegin();
 };
 
 attributeend:       tATTRIBUTEEND
 {
- RrAttributeEnd();
+    driver.RrAttributeEnd();
 };
 
 clipping:           tCLIPPING tNUMBER tNUMBER
@@ -281,7 +284,7 @@ clipping:           tCLIPPING tNUMBER tNUMBER
 color:              tCOLOR {iTLC = 0; iTLCS = 0;} bracketnumberlist
 {
     RtColor    color;
-    
+
     if(iTLC - iTLCS != 3)
     {
         sprintf(sErrorString,"Wrong number of color samples: %i, expecting 3", iTLC - iTLCS);
@@ -292,14 +295,14 @@ color:              tCOLOR {iTLC = 0; iTLCS = 0;} bracketnumberlist
         color[0] = dTempList[0];
         color[1] = dTempList[1];
         color[2] = dTempList[2];
-        RrColor(color);
+        driver.RrColor(color);
     }
-}; 
+};
         |
                     tCOLOR {iTLC = 0; iTLCS = 0;} numberlist
 {
     RtColor    color;
-    
+
     if(iTLC - iTLCS != 3)
     {
         sprintf(sErrorString,"Wrong number of color samples: %i, expecting 3", iTLC - iTLCS);
@@ -310,14 +313,14 @@ color:              tCOLOR {iTLC = 0; iTLCS = 0;} bracketnumberlist
         color[0] = dTempList[0];
         color[1] = dTempList[1];
         color[2] = dTempList[2];
-        RrColor(color);
+        driver.RrColor(color);
     }
-}; 
+};
 
-concattransform:    tCONCATTRANSFORM {iTLC = 0; iTLCS = 0;} bracketnumberlist 
+concattransform:    tCONCATTRANSFORM {iTLC = 0; iTLCS = 0;} bracketnumberlist
 {
     RtMatrix    matrix;
-    
+
     if(iTLC - iTLCS != 16)
     {
         sprintf(sErrorString,"Bad number of numeric parameters to Transform: %i", iTLC - iTLCS);
@@ -341,7 +344,7 @@ concattransform:    tCONCATTRANSFORM {iTLC = 0; iTLCS = 0;} bracketnumberlist
         matrix[3][1] = dTempList[13];
         matrix[3][2] = dTempList[14];
         matrix[3][3] = dTempList[15];
-        RrConcatTransform(matrix);
+        driver.RrConcatTransform(matrix);
     }
 }
 
@@ -351,25 +354,25 @@ coordinatesystem:   tCOORDINATESYSTEM tSTRING
 
 cropwindow:         tCROPWINDOW tNUMBER tNUMBER tNUMBER tNUMBER
 {
-    RrCropWindow($2,$3,$4,$5);
+    driver.RrCropWindow($2,$3,$4,$5);
 };
 
 cylinder:           tCYLINDER tNUMBER tNUMBER tNUMBER tNUMBER
 {
-    RrCylinder($2,$3,$4,$5);
+    driver.RrCylinder($2, $3, $4, $5);
 };
 
 declare:            tDECLARE tSTRING tSTRING
 {
-    RrDeclare($2,$3);
+    driver.RrDeclare($2,$3);
 }
 
 display:            tDISPLAY tSTRING tSTRING tSTRING {iTLC = 0;} arglist
 {
     int     iArgCount;
-    
+
     iArgCount = buildRIarglist($6);
-    RrDisplayV($2,$3,$4,iArgCount,tokens,parms,plengths);
+    driver.RrDisplayV($2, $3, $4, iArgCount, tokens, parms, plengths);
 };
 
 exposure:           tEXPOSURE tNUMBER tNUMBER
@@ -378,12 +381,12 @@ exposure:           tEXPOSURE tNUMBER tNUMBER
 
 format:             tFORMAT tNUMBER tNUMBER tNUMBER
 {
-    RrFormat((int)$2,(int)$3,(float)$4);
+    driver.RrFormat((int)$2,(int)$3,(float)$4);
 };
 
 frameaspectratio:   tFRAMEASPECTRATIO tNUMBER
 {
-    RrFrameAspectRatio($2);
+    driver.RrFrameAspectRatio($2);
 };
 
 framebegin:         tFRAMEBEGIN tNUMBER
@@ -405,20 +408,20 @@ identity:           tIDENTITY
 lightsource:        tLIGHTSOURCE {iTLC=0;} tSTRING tNUMBER arglist
 {
     int     iArgCount;
-    
+
     iArgCount = buildRIarglist($5);
-    RrLightSourceV($3,iArgCount,tokens,parms,plengths); 
+    driver.RrLightSourceV($3, iArgCount, tokens, parms, plengths);
 };
 
-nupatch:            tNUPATCH 
-                    tNUMBER tNUMBER {iTLC = 0; iTLCS = 0;} bracketnumberlist 
+nupatch:            tNUPATCH
+                    tNUMBER tNUMBER {iTLC = 0; iTLCS = 0;} bracketnumberlist
                     tNUMBER tNUMBER
                     tNUMBER tNUMBER {iVOrder = iTLC;} bracketnumberlist
                     tNUMBER tNUMBER {iVOrderL = iTLC;} arglist
 {
     int        i,iArgCount;
     RtFloat    *uknot,*vknot;
-    
+
     uknot = new RtFloat[(int)$2+(int)$3];
     for(i=0; i < iVOrder; i++)
         uknot[i] = dTempList[i];
@@ -426,14 +429,14 @@ nupatch:            tNUPATCH
     for(i=iVOrder; i < iVOrderL; i++)
         vknot[i-iVOrder] = dTempList[i];
     iArgCount = buildRIarglist($15);
-    RrNuPatch((int)$2,(int)$3,uknot,$6,$7,(int)$8,(int)$9,vknot,$12,$13, iArgCount,tokens,parms,plengths);
+    driver.RrNuPatch((int)$2, (int)$3, uknot, $6, $7, (int)$8, (int)$9, vknot, $12, $13, iArgCount, tokens, parms, plengths);
     delete(uknot);
     delete(vknot);
 };
 
 opacity:            tOPACITY {iTLC = 0; iTLCS = 0;} bracketnumberlist
 {
-}; 
+};
 
 option:             tOPTION tSTRING {iTLC=0;} arglist
 {
@@ -445,13 +448,13 @@ orientation:        tORIENTATION tSTRING
 
 pixelsamples:       tPIXELSAMPLES tNUMBER tNUMBER
 {
-    RrPixelSamples($2,$3);
+    driver.RrPixelSamples($2, $3);
 };
 
-pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS 
-            {iTLC = 0; iTLCS = 0;} bracketnumberlist 
+pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS
+            {iTLC = 0; iTLCS = 0;} bracketnumberlist
             {iPGPnlp = iTLC;} bracketnumberlist
-            {iPPnv = iTLC;} bracketnumberlist 
+            {iPPnv = iTLC;} bracketnumberlist
             {iPPvll = iTLC;} arglist
 {
  int    i,iArgCount;
@@ -464,18 +467,18 @@ pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS
  for(i=iPPnv; i < iPPvll; i++)
   verts[i-iPPnv] = (int)dTempList[i];
  iArgCount = buildRIarglist($9);
- RrPointsPolygonsV(iPPnv-iPGPnlp,nverts,verts,iArgCount,tokens,parms,plengths);
+ driver.RrPointsPolygonsV(iPPnv - iPGPnlp, nverts, verts, iArgCount, tokens, parms, plengths);
  delete nverts;
  delete verts;
 };
 
-pointspolygons:     tPOINTSPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumberlist 
-                                    {iPPnv = iTLC;} bracketnumberlist 
+pointspolygons:     tPOINTSPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumberlist
+                                    {iPPnv = iTLC;} bracketnumberlist
                                     {iPPvll = iTLC;} arglist
 {
     int    i,iArgCount;
     RtInt    *nverts,*verts;
-    
+
     nverts = new RtInt[iPPnv];
     verts = new RtInt[iPPvll-iPPnv];
     for(i=0; i < iPPnv; i++)
@@ -483,7 +486,7 @@ pointspolygons:     tPOINTSPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumberlist
     for(i=iPPnv; i < iPPvll; i++)
         verts[i-iPPnv] = (int)dTempList[i];
     iArgCount = buildRIarglist($7);
-    RrPointsPolygonsV(iPPnv,nverts,verts,iArgCount,tokens,parms,plengths);
+    driver.RrPointsPolygonsV(iPPnv, nverts, verts, iArgCount, tokens, parms, plengths);
     delete nverts;
     delete verts;
 };
@@ -491,32 +494,32 @@ pointspolygons:     tPOINTSPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumberlist
 polygon:            tPOLYGON {iTLC = 0;} arglist
 {
     int    iArgCount;
-    
+
     iArgCount = buildRIarglist($3);
-    RrPolygonV($3->iListCount/3,iArgCount,tokens,parms,plengths); 
+    driver.RrPolygonV($3->iListCount / 3, iArgCount, tokens, parms, plengths);
 };
 
 projection:         tPROJECTION tSTRING
 {
-    RrProjectionV($2,0,NULL,NULL,NULL);
+    driver.RrProjectionV($2, 0, NULL, NULL, NULL);
 };
         |
                     tPROJECTION tSTRING {iTLC = 0;} arglist
 {
     int    iArgCount;
-    
+
     iArgCount = buildRIarglist($4);
-    RrProjectionV($2,iArgCount,tokens,parms,plengths);
+    driver.RrProjectionV($2, iArgCount, tokens, parms, plengths);
 };
 
 reverseorientation: tREVERSEORIENTATION
 {
-    RrReverseOrientation();
+    driver.RrReverseOrientation();
 };
 
 rotate:             tROTATE tNUMBER tNUMBER tNUMBER tNUMBER
 {
-    RrRotate($2,$3,$4,$5);
+    driver.RrRotate($2, $3, $4, $5);
 };
 
 scale:              tSCALE tNUMBER tNUMBER tNUMBER
@@ -537,20 +540,20 @@ shadinginterpolation:   tSHADINGINTERPOLATION tSTRING
 
 sphere:             tSPHERE tNUMBER tNUMBER tNUMBER tNUMBER
 {
-    RrSphere($2,$3,$4,$5);
+    driver.RrSphere($2, $3, $4, $5);
 };
 
 surface:            tSURFACE tSTRING {iTLC = 0;} arglist
 {
     int    iArgCount;
-    
+
     iArgCount = buildRIarglist($4);
-    RrSurfaceV($2,iArgCount,tokens,parms,plengths); 
+    driver.RrSurfaceV($2, iArgCount, tokens, parms, plengths);
 };
 
 surface:            tSURFACE tSTRING
 {
-    RrSurfaceV($2,0,NULL,NULL,NULL);
+    driver.RrSurfaceV($2, 0, NULL, NULL, NULL);
 };
 
 shutter:            tSHUTTER tNUMBER tNUMBER
@@ -559,7 +562,7 @@ shutter:            tSHUTTER tNUMBER tNUMBER
 
 translate:          tTRANSLATE tNUMBER tNUMBER tNUMBER
 {
-    RrTranslate($2,$3,$4);
+    driver.RrTranslate($2, $3, $4);
 };
 
 trimcurve:          tTRIMCURVE {iTLC = 0; iTLCS = 0;} bracketnumberlist
@@ -575,7 +578,7 @@ trimcurve:          tTRIMCURVE {iTLC = 0; iTLCS = 0;} bracketnumberlist
     int         i;
     RtInt        *ncurves,*order,*n;
     RtFloat    *knot,*min,*max,*u,*v,*w;
-    
+
     ncurves = new RtInt[iNC];
     order = new RtInt[iNO-iNC];
     knot = new RtFloat[iNK-iNO];
@@ -603,22 +606,22 @@ trimcurve:          tTRIMCURVE {iTLC = 0; iTLCS = 0;} bracketnumberlist
         v[i-iNU] = dTempList[i];
     for(i=iNV; i < iTLC; i++)
         w[i-iNV] = dTempList[i];
-    
-    RrTrimCurve(iNC,ncurves,order,knot,min,max,n,u,v,w); 
+
+    driver.RrTrimCurve(iNC, ncurves, order, knot, min, max, n, u, v, w);
 };
 
 transform:          tTRANSFORM bracketnumberlist
 {
 };
- 
-transformbegin:     tTRANSFORMBEGIN 
+
+transformbegin:     tTRANSFORMBEGIN
 {
-    RrTransformBegin();
+    driver.RrTransformBegin();
 };
 
 transformend:       tTRANSFORMEND
 {
-    RrTransformEnd();
+    driver.RrTransformEnd();
 };
 
 version:            tVERSION tNUMBER
@@ -627,23 +630,23 @@ version:            tVERSION tNUMBER
 
 worldbegin:         tWORLDBEGIN
 {
-    RrWorldBegin();
+    driver.RrWorldBegin();
 };
 
 worldend:           tWORLDEND
 {
-    RrWorldEnd();
+    driver.RrWorldEnd();
 };
 
-arglist:            arglist arg 
+arglist:            arglist arg
 {
     ArgNode *   anTemp;
-    
+
     for(anTemp = $1;anTemp->Next; anTemp=anTemp->Next);
     anTemp->Next = $2;
     $$ = $1;
 };
-        |           arg 
+        |           arg
 {
     $$ = $1;
 };
@@ -653,7 +656,7 @@ arg:                tSTRING tSTRINGBRACKET
     anTempNode = NewNode();
     anTempNode->iType = ARGSTRING;
     anTempNode->sLabel = $1;
-    anTempNode->sValue = $2; 
+    anTempNode->sValue = $2;
     $$ = anTempNode;
 }
         |           tSTRING tSTRING
@@ -661,10 +664,10 @@ arg:                tSTRING tSTRINGBRACKET
     anTempNode = NewNode();
     anTempNode->iType = ARGSTRING;
     anTempNode->sLabel = $1;
-    anTempNode->sValue = $2; 
+    anTempNode->sValue = $2;
     $$ = anTempNode;
 }
-        |           tSTRING{iTLCS = iTLC;}numberlist 
+        |           tSTRING{iTLCS = iTLC;}numberlist
 {
     anTempNode = NewNode();
     anTempNode->iType = ARGNUMLIST;
@@ -673,7 +676,7 @@ arg:                tSTRING tSTRINGBRACKET
     anTempNode->iListCount = iTLC - iTLCS;
 $$ = anTempNode;
 }
-        |           tSTRING{iTLCS = iTLC;}bracketnumberlist 
+        |           tSTRING{iTLCS = iTLC;}bracketnumberlist
 {
     anTempNode = NewNode();
     anTempNode->iType = ARGNUMLIST;
@@ -697,7 +700,7 @@ numberlist:         numberlist number
     $$ = $1;
 };
 
-number:             tNUMBER 
+number:             tNUMBER
 {
     if(iTLC+1 > iTLS)
     {
@@ -706,7 +709,7 @@ number:             tNUMBER
     }
     dTempList[iTLC++] = $1;
     $$ = &dTempList[iTLCS];
-}    
+}
 %%
 
 #pragma clang diagnostic pop
@@ -719,22 +722,22 @@ bool alloctemplist(int iSize)
         fprintf(stderr,"ERROR: alloctemplist(): outta memory\n");
         exit(1);
     }
-    return(TRUE);
+    return(true);
 }
 
-bool 
+bool
 parse(const std::string &filename, bool debug)
 {
     FILE           *fPtr;
 
-    RrBegin(RI_NULL);
+//    driver.RrBegin(RI_NULL);
     if(!filename.empty())
     {
         fPtr = fopen(filename.c_str(),"r");
         if(!fPtr)
         {
             fprintf(stderr,"couldn't open \"%s\"\n", filename.c_str());
-            return(FALSE);
+            return(false);
         }
         yyin = fPtr;
         sSource = strdup(filename.c_str());
@@ -744,15 +747,15 @@ parse(const std::string &filename, bool debug)
         yyin = stdin;
         sSource = strdup("stdin");
     }
-    yydebug = static_cast<int>(debug);
+//    yydebug = static_cast<int>(debug);
     yyparse();
-    RrEnd();
-    return(TRUE);
+//    driver.RrEnd();
+    return(true);
 }
 
 void yyerror(char *s)
 {
-    fprintf(stderr,"%s (at line %d in %s)\n",s,iLineNum,sSource);
+    fprintf(stderr, "%s (at line %d in %s)\n", s, iLineNum, sSource);
 }
 
 ArgNode *
@@ -785,7 +788,7 @@ int buildRIarglist(ArgNode *anNode)
         break;
         }
         iArgCount++;
-    } 
+    }
     return(iArgCount);
 }
 
@@ -803,8 +806,8 @@ void debug()
     printf("debug");
 }
 
-void 
+void
 Rp::Parser::error(const std::string &err_message)
 {
-   std::cerr << "Error: " << err_message << "\n"; 
+   std::cerr << "Error: " << err_message << "\n";
 }
