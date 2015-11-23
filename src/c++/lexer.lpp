@@ -40,6 +40,9 @@ comment         #.*\n
 
 {string}        {
                     yylval->string = strdup(yytext);
+                    
+                    m_parser->error("foobar");
+                    
 //                    memcpy(&yylval->string[0], &yylval->string[1], yyleng-1);
                     
 //                    if(yylval->string[yyleng-2] != '"')

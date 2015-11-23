@@ -47,6 +47,7 @@ Driver::parse(const std::string &filename)
         std::cerr << "Failed to allocate parser: (" << ba.what() << "), exiting!!\n";
         exit(EXIT_FAILURE);
     }
+    scanner->setParser(parser);
     scanner->set_debug(m_debugLexer);
     parser->set_debug_level(m_debugParser);
 

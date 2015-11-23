@@ -13,19 +13,24 @@ namespace Rp
 class Scanner : public yyFlexLexer
 {
   public:
-    Scanner (std::istream *in) :
-        yyFlexLexer (in), yylval (nullptr) {};
+    Scanner(std::istream *in) : yyFlexLexer(in) {};
 
-    int yylex (Parser::semantic_type * const lval)
+    int yylex(Parser::semantic_type *const lval)
     {
         yylval = lval;
         return (yylex ());
     }
 
+    void setParser(Parser *parser)
+    {
+        m_parser = parser;
+    }
+
   private:
     int yylex ();
 
-    Parser::semantic_type *yylval;
+    Parser::semantic_type * yylval = nullptr;
+    Parser *                m_parser = nullptr;
 };
 
 }

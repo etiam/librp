@@ -740,10 +740,10 @@ bool alloctemplist(int iSize)
     return(true);
 }
 
-void yyerror(char *s)
-{
-    fprintf(stderr, "%s (at line %d in %s)\n", s, iLineNum, sSource);
-}
+//void yyerror(char *s)
+//{
+//    fprintf(stderr, "%s (at line %d in %s)\n", s, iLineNum, sSource);
+//}
 
 ArgNode *
 NewNode()
