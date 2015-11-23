@@ -4,7 +4,3 @@ verbose:
 checkinstall:
 	$(MAKE) check
 	$(MAKE) install
-
-extra: install
-	$(MAKE) parserib_old parserib_new 
-

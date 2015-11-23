@@ -3,17 +3,30 @@
 #endif
 
 #include <cstdlib>
+#include <iostream>
 
 #include "rp/driver.h"
+
+class Catrib : public Rp::Driver
+{
+  public:
+   virtual void             TransformBegin();
+};
+
+void
+Catrib::TransformBegin()
+{
+    std::cout << "TransformBegin" << std::endl;
+}
 
 int
 main (int argc, char **argv)
 {
     if (argc != 2)
         return (EXIT_FAILURE);
-    Rp::Driver driver;
-    driver.trace_parsing = true;
-//    driver.trace_scanning = true;
+
+    Catrib driver;
+//    driver.debug(true, true);
     driver.parse(argv[1]);
 
     return 1;

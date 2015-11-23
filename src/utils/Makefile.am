@@ -8,7 +8,7 @@ parserib_old_CPPFLAGS       =                                               \
                               -I$(top_builddir)/install/include
 
 parserib_old_LDADD          =                                               \
-                              $(top_builddir)/install/lib/librpcore.la      \
+                              $(top_builddir)/librpcore.la                  \
                               -lfl
 
 EXTRA_PROGRAMS             += parserib_new
@@ -21,6 +21,23 @@ parserib_new_CPPFLAGS       =                                               \
                               -I$(top_builddir)/install/include
 
 parserib_new_LDADD          =                                               \
-                              $(top_builddir)/install/lib/librpcorenew.la   \
+                              $(top_builddir)/librpcorenew.la               \
                               -lfl
                               
+EXTRA_PROGRAMS             += catrib
+
+catrib_SOURCES              = src/utils/catrib.cpp
+catrib_LDFLAGS              = -Wl,-E
+
+catrib_CPPFLAGS             =                                               \
+                              -I$(top_builddir)                             \
+                              -I$(top_builddir)/install/include
+
+catrib_LDADD                =                                               \
+                              $(top_builddir)/librpcorenew.la               \
+                              -lfl
+
+extra:
+	$(MAKE) parserib_old parserib_new catrib
+
+CLEAN                      += parserib_old parserib_new catrib

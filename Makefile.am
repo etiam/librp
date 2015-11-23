@@ -6,10 +6,12 @@ noinst_PROGRAMS           =
 TESTS					  =
 EXTRA_DIST                =
 EXTRA_PROGRAMS            =
+CLEAN                     =
+EXTRACLEAN                =
 
-include src/core/Makefile.am
+#include src/core/Makefile.am
 include src/c++/Makefile.am
-include src/check/core/Makefile.am
+#include src/check/core/Makefile.am
 include src/utils/Makefile.am
 
 # PKGCONFIG SUPPORT
@@ -22,3 +24,6 @@ MOSTLYCLEANFILES          = $(DX_CLEANFILES)
 EXTRA_DIST               += $(DX_CONFIG)
 
 include $(top_srcdir)/extra.am
+
+clean-local:
+	-rm -f $(CLEAN)

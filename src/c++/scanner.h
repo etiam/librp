@@ -1,7 +1,7 @@
-#ifndef __MCSCANNER_HPP__
-#define __MCSCANNER_HPP__ 1
+#ifndef __SCANNER_HPP__
+#define __SCANNER_HPP__
 
-#if ! defined(yyFlexLexerOnce)
+#if !defined(yyFlexLexerOnce)
 #include <FlexLexer.h>
 #endif
 
@@ -13,7 +13,6 @@ namespace Rp
 class Scanner : public yyFlexLexer
 {
   public:
-
     Scanner (std::istream *in) :
         yyFlexLexer (in), yylval (nullptr) {};
 

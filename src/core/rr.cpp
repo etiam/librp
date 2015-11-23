@@ -30,7 +30,7 @@
 //Matrix			mCurrent;
 //Attribute		aCurrent;
 
-RtVoid RrAttributeV(RtToken name, RtInt n, RtToken tokens[], RtPointer parms[],
+RtVoid RrAttribute(RtToken name, RtInt n, RtToken tokens[], RtPointer parms[],
 		    RtInt plengths[])
 {
 // if(strcmp(name,"identifier") == 0)

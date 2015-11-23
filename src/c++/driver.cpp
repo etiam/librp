@@ -18,9 +18,10 @@ Driver::~Driver()
 }
 
 void
-Driver::parse(const char *const filename)
+Driver::parse(const std::string &filename)
 {
-    assert(filename != nullptr);
+    assert(!filename.empty());
+
     std::ifstream in_file(filename);
     if (!in_file.good())
         exit(EXIT_FAILURE);
@@ -46,8 +47,8 @@ Driver::parse(const char *const filename)
         std::cerr << "Failed to allocate parser: (" << ba.what() << "), exiting!!\n";
         exit(EXIT_FAILURE);
     }
-    scanner->set_debug(trace_scanning);
-    parser->set_debug_level(trace_parsing);
+    scanner->set_debug(m_debugLexer);
+    parser->set_debug_level(m_debugParser);
 
     const int accept(0);
     if (parser->parse() != accept)
@@ -57,207 +58,180 @@ Driver::parse(const char *const filename)
 }
 
 void
-Driver::RrAttributeV(RtToken, RtInt int1, RtToken[], RtPointer[], RtInt[])
+Driver::debug(bool debugLexer, bool debugParser)
+{
+    m_debugLexer = debugLexer;
+    m_debugParser = debugParser;
+}
+
+void
+Driver::Attribute(Token name, int n, Token nms[], RtPointer vals[], int lengths[])
 {
 }
 
 void
-Driver::RrAttributeBegin()
+Driver::AttributeBegin()
 {
 }
 
 void
-Driver::RrAttributeEnd()
+Driver::AttributeEnd()
 {
 }
 
 void
-Driver::RrBegin(RtToken)
+Driver::Begin(Token)
 {
 }
 
 void
-Driver::RrColor(RtColor)
+Driver::Color(RtColor)
 {
 }
 
 void
-Driver::RrCoordinateSystem(RtString)
+Driver::CoordinateSystem(RtString)
 {
 }
 
 void
-Driver::RrConcatTransform(RtMatrix)
+Driver::ConcatTransform(RtMatrix)
 {
 }
 
 void
-Driver::RrCropWindow(RtFloat float1, RtFloat float2, RtFloat float3, RtFloat float4)
-{
-}
-
-RtToken
-Driver::RrDeclare(char *, char *)
-{
-    return nullptr;
-}
-
-void
-Driver::RrDisplayV(RtString, RtToken, RtToken, RtInt int1, RtToken[], RtPointer[], RtInt[])
+Driver::CropWindow(float float1, float float2, float float3, float float4)
 {
 }
 
 void
-Driver::RrCylinder(RtFloat float1, RtFloat float2, RtFloat float3, RtFloat float4)
+Driver::Declare(RtString, RtString)
 {
 }
 
 void
-Driver::RrEnd(void)
+Driver::Display(RtString, Token, Token, int int1, Token[], RtPointer[], int[])
 {
 }
 
 void
-Driver::RrHider(RtString, RtInt int1, RtToken[], RtPointer[], RtInt[])
+Driver::Cylinder(float float1, float float2, float float3, float float4)
 {
 }
 
 void
-Driver::RrFormat(RtInt int1, RtInt int2, RtFloat float1)
+Driver::End()
 {
 }
 
 void
-Driver::RrFrameAspectRatio(RtFloat float1)
-{
-}
-
-RtLightHandle
-Driver::RrLightSourceV(RtToken, RtInt int1, RtToken[], RtPointer[], RtInt[])
-{
-    return nullptr;
-}
-
-void
-Driver::RrNuPatch(RtInt int1,
-    RtInt int2,
-    RtFloat[],
-    RtFloat float1,
-    RtFloat float2,
-    RtInt int3,
-    RtInt int4,
-    RtFloat[],
-    RtFloat float3,
-    RtFloat float4,
-    RtInt int5,
-    RtToken[],
-    RtPointer[],
-    RtInt[])
+Driver::Hider(RtString, int int1, Token[], RtPointer[], int[])
 {
 }
 
 void
-Driver::RrOption(RtString, RtInt int1, RtToken[], RtPointer[], RtInt[])
+Driver::Format(int int1, int int2, float float1)
 {
 }
 
 void
-Driver::RrOrientation(RtString)
+Driver::FrameAspectRatio(float float1)
 {
 }
 
 void
-Driver::RrPixelSamples(RtFloat float1, RtFloat float2)
+Driver::LightSource(Token, int int1, Token[], RtPointer[], int[])
 {
 }
 
 void
-Driver::RrPointsPolygonsV(RtInt int1, RtInt[], RtInt[], RtInt int2, RtToken[], RtPointer[], RtInt[])
+Driver::NuPatch(int int1, int int2, float[], float float1, float float2, int int3, int int4, float[], float float3, float float4, int int5, Token[], RtPointer[], int[])
 {
 }
 
 void
-Driver::RrPolygonV(RtInt int1, RtInt int2, RtToken[], RtPointer[], RtInt[])
+Driver::Option(RtString, int int1, Token[], RtPointer[], int[])
 {
 }
 
 void
-Driver::RrProjectionV(RtToken, RtInt int1, RtToken[], RtPointer[], RtInt[])
+Driver::Orientation(RtString)
 {
 }
 
 void
-Driver::RrReverseOrientation()
+Driver::PixelSamples(float float1, float float2)
 {
 }
 
 void
-Driver::RrRotate(RtFloat float1, RtFloat float2, RtFloat float3, RtFloat float4)
+Driver::PointsPolygons(int int1, int[], int[], int int2, Token[], RtPointer[], int[])
 {
 }
 
 void
-Driver::RrShadingInterpolation(RtString)
+Driver::Polygon(int int1, int int2, Token[], RtPointer[], int[])
 {
 }
 
 void
-Driver::RrSphere(RtFloat float1, RtFloat float2, RtFloat float3, RtFloat float4)
-{
-}
-
-void Driver::RrSurface(RtToken)
+Driver::Projection(Token, int int1, Token[], RtPointer[], int[])
 {
 }
 
 void
-Driver::RrSurfaceV(RtToken, RtInt int1, RtToken[], RtPointer[], RtInt[])
+Driver::ReverseOrientation()
 {
 }
 
 void
-Driver::RrTransformBegin(void)
+Driver::Rotate(float float1, float float2, float float3, float float4)
 {
 }
 
 void
-Driver::RrTransformEnd(void)
+Driver::ShadingInterpolation(RtString)
 {
 }
 
 void
-Driver::RrTranslate(RtFloat float1, RtFloat float2, RtFloat float3)
+Driver::Sphere(float float1, float float2, float float3, float float4)
 {
 }
 
 void
-Driver::RrTrimCurve(RtInt int1,
-    RtInt[],
-    RtInt[],
-    RtFloat[],
-    RtFloat[],
-    RtFloat[],
-    RtInt[],
-    RtFloat[],
-    RtFloat[],
-    RtFloat[])
+Driver::Surface(Token, int int1, Token[], RtPointer[], int[])
 {
 }
 
 void
-Driver::RrWorldBegin(void)
+Driver::TransformBegin()
 {
 }
 
 void
-Driver::RrWorldEnd(void)
+Driver::TransformEnd()
 {
 }
 
-std::ostream &
-Driver::print(std::ostream &stream)
+void
+Driver::Translate(float float1, float float2, float float3)
 {
-   return(stream);
+}
+
+void
+Driver::TrimCurve(int int1, int[], int[], float[], float[], float[], int[], float[], float[], float[])
+{
+}
+
+void
+Driver::WorldBegin()
+{
+}
+
+void
+Driver::WorldEnd()
+{
 }
 
 }

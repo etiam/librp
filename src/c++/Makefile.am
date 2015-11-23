@@ -1,13 +1,3 @@
-#EXTRA_PROGRAMS             += test 
-#
-#test_SOURCES                = src/c++/main.cpp
-#
-#test_CPPFLAGS               =                                   \
-#                              -I$(top_builddir)                 \
-#                              -I$(top_builddir)/src/c++
-#
-#test_LDADD                  = librpcorenew.a
-
 lib_LTLIBRARIES            += librpcorenew.la
 
 librpcorenew_la_SOURCES     =                                   \
@@ -17,10 +7,7 @@ librpcorenew_la_SOURCES     =                                   \
 
                               
 librpcorenewinclude_HEADERS =                                   \
-                              src/c++/scanner.h                 \
                               src/c++/driver.h
-
-#librpcorenew_la_LDFLAGS      = -version-info @LIBRARY_VERSION@ -no-undefined
 
 librpcorenewincludedir      = $(includedir)/rp
 
@@ -38,5 +25,11 @@ librpcorenew_la_CPPFLAGS    =                                   \
 	$(AM_V_LEX)$(am__skiplex) $(SHELL) $(YLWRAP) $< $(LEX_OUTPUT_ROOT).c $@ -- $(LEXCOMPILE) -o $(notdir $@)
 	$(am__mv) $(notdir $@) $(top_builddir)/$@
 
-clean-local:
-	-rm -f src/c++/* test stack.hh
+#clean-local:
+#	-rm -f src/c++/* test stack.h
+
+CLEAN                      += stack.hh                          \
+                              src/c++/parser.cc                 \
+                              src/c++/parser.hh                 \
+                              src/c++/parser.output             \
+                              src/c++/lexer.cpp

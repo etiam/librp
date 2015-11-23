@@ -222,7 +222,7 @@ attribute:          tATTRIBUTE tSTRING {iTLC=0;} arglist
     int     iArgCount;
     
     iArgCount = buildRIarglist($4);
-    RrAttributeV($2,iArgCount,tokens,parms,plengths); 
+    RrAttribute($2,iArgCount,tokens,parms,plengths); 
 };
 
 attributebegin:     tATTRIBUTEBEGIN

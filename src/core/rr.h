@@ -15,7 +15,7 @@ typedef     RtPointer   RtLightHandle;
 #define     RtVoid      void
 #define     RI_NULL     ((RtToken)0)
 
-RtVoid          RrAttributeV(RtToken,RtInt,RtToken[],RtPointer[],RtInt[]);
+RtVoid          RrAttribute(RtToken,RtInt,RtToken[],RtPointer[],RtInt[]);
 RtVoid          RrAttributeBegin();
 RtVoid          RrAttributeEnd();
 RtVoid          RrBegin(RtToken);
