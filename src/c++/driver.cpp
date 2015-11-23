@@ -1,5 +1,6 @@
 #include <cctype>
 #include <fstream>
+#include <sstream>
 #include <cassert>
 
 #include "scanner.h"
@@ -91,7 +92,7 @@ Driver::Color(RtColor)
 }
 
 void
-Driver::CoordinateSystem(RtString)
+Driver::CoordinateSystem(Token)
 {
 }
 
@@ -106,12 +107,17 @@ Driver::CropWindow(float float1, float float2, float float3, float float4)
 }
 
 void
-Driver::Declare(RtString, RtString)
+Driver::Declare(Token, Token)
 {
 }
 
 void
-Driver::Display(RtString, Token, Token, int int1, Token[], RtPointer[], int[])
+Driver::Display(Token, Token, Token, int int1, Token[], RtPointer[], int[])
+{
+}
+
+void
+Driver::Camera(Token)
 {
 }
 
@@ -126,7 +132,17 @@ Driver::End()
 }
 
 void
-Driver::Hider(RtString, int int1, Token[], RtPointer[], int[])
+Driver::ErrorHandler(Token allocator)
+{
+}
+
+void
+Driver::Exposure(float, float)
+{
+}
+
+void
+Driver::Hider(Token, int int1, Token[], RtPointer[], int[])
 {
 }
 
@@ -151,12 +167,12 @@ Driver::NuPatch(int int1, int int2, float[], float float1, float float2, int int
 }
 
 void
-Driver::Option(RtString, int int1, Token[], RtPointer[], int[])
+Driver::Option(Token, int int1, Token[], RtPointer[], int[])
 {
 }
 
 void
-Driver::Orientation(RtString)
+Driver::Orientation(Token)
 {
 }
 
@@ -166,7 +182,12 @@ Driver::PixelSamples(float float1, float float2)
 }
 
 void
-Driver::PointsPolygons(int int1, int[], int[], int int2, Token[], RtPointer[], int[])
+Driver::PointsGeneralPolygons(int npolys, int nloops[], int nverts[], int verts[], int n, Token nms[], RtPointer vals[], int lengths[])
+{
+}
+
+void
+Driver::PointsPolygons(int npolys, int nverts[], int verts[], int n, Token nms[], RtPointer vals[])
 {
 }
 
@@ -191,7 +212,7 @@ Driver::Rotate(float float1, float float2, float float3, float float4)
 }
 
 void
-Driver::ShadingInterpolation(RtString)
+Driver::ShadingInterpolation(Token)
 {
 }
 
@@ -233,6 +254,39 @@ Driver::WorldBegin()
 void
 Driver::WorldEnd()
 {
+}
+
+std::string
+Driver::argListToString(int n, Token nms[], RtPointer vals[], int lengths[])
+{
+    std::stringstream out;
+
+    for (auto i = 0; i < n; ++i)
+    {
+        auto v = vals[i];
+
+        out << " \"" << nms[i] << "\" [";
+
+        if (nms[i].find("string") != std::string::npos)
+            out << "\"" << static_cast<char*>(v) << "\"";
+        else if (nms[i].find("int") != std::string::npos)
+        {
+            for (auto j=0; j < lengths[i] / sizeof(float); ++j)
+            {
+                out << static_cast<int>(static_cast<float*>(v)[j]) << " ";
+            }
+        }
+        else if (nms[i].find("float") != std::string::npos ||
+                 nms[i].find("P") != std::string::npos)
+        {
+            for (auto j=0; j < lengths[i] / sizeof(float); ++j)
+            {
+                out << static_cast<float*>(v)[j] << " ";
+            }
+        }
+        out << "]";
+    }
+    return out.str();
 }
 
 }

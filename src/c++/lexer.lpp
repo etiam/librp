@@ -39,9 +39,12 @@ comment         #.*\n
 {comment}       { iLineNum++; }
 
 {string}        {
-                    yylval->string = strdup(yytext);
+                    auto temp = std::string(yytext);
+                    temp = temp.substr(1, yyleng-2);
+                    yylval->string = new std::string(temp);
                     
-                    m_parser->error("foobar");
+//                    yylval->string = strdup(yytext);
+//                    m_parser->error("foobar");
                     
 //                    memcpy(&yylval->string[0], &yylval->string[1], yyleng-1);
                     
@@ -54,7 +57,12 @@ comment         #.*\n
                 }
 
 {stringbracket} {
-                    yylval->string = strdup(yytext);
+                    auto temp = std::string(yytext);
+                    temp = temp.substr(2, yyleng-4);
+                    yylval->string = new std::string(temp);
+    
+//                    yylval->string = new std::string(yytext);
+//                    yylval->string = strdup(yytext);
 //                    memcpy(&yylval->string[0], &yylval->string[2], yyleng-1);
                     
 //                    if(yylval->string[yyleng-4] != '"')
