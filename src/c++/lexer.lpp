@@ -12,9 +12,6 @@ typedef Rp::Parser::token token;
 /* define to keep from re-typing the same code over and over */
 #define STOKEN( x ) ( new std::string( x ) )
 
-/* define yyterminate as this instead of NULL */
-#define yyterminate() return( token::tEND )
-
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wwritable-strings"
 #pragma clang diagnostic ignored "-Wdeprecated-register"

@@ -32,6 +32,7 @@ namespace Rp
 
 #include "yacc.h"
 #include "driver.h"
+#include "scanner.h"
 
 #undef yylex
 #define yylex scanner.yylex
@@ -170,7 +171,7 @@ RtInt           plengths[MAX_ARGS];
 
 %token <string> tSTRING
 %token <string> tSTRINGBRACKET
-%token <dval>   tNUMBER
+%token <dval>   tNUMBER 
 
 %type  <anNode> arg
 %type  <anNode> arglist
@@ -258,7 +259,7 @@ generic:            attribute
         |           version
         |           worldbegin
         |           worldend;
-
+        
 attribute:          tATTRIBUTE tSTRING {iTLC=0;} arglist
 {
     int     iArgCount;
@@ -350,6 +351,7 @@ concattransform:    tCONCATTRANSFORM {iTLC = 0; iTLCS = 0;} bracketnumberlist
 
 coordinatesystem:   tCOORDINATESYSTEM tSTRING
 {
+    driver.RrCoordinateSystem($2);
 };
 
 cropwindow:         tCROPWINDOW tNUMBER tNUMBER tNUMBER tNUMBER
@@ -399,6 +401,10 @@ frameend:           tFRAMEEND
 
 hider:              tHIDER tSTRING {iTLC=0;} arglist
 {
+    int     iArgCount;
+
+    iArgCount = buildRIarglist($4);
+    driver.RrHider($2, iArgCount, tokens, parms, plengths);
 };
 
 identity:           tIDENTITY
@@ -440,10 +446,15 @@ opacity:            tOPACITY {iTLC = 0; iTLCS = 0;} bracketnumberlist
 
 option:             tOPTION tSTRING {iTLC=0;} arglist
 {
+    int     iArgCount;
+
+    iArgCount = buildRIarglist($4);
+    driver.RrOption($2, iArgCount, tokens, parms, plengths);
 };
 
 orientation:        tORIENTATION tSTRING
 {
+    driver.RrOrientation($2);
 };
 
 pixelsamples:       tPIXELSAMPLES tNUMBER tNUMBER
@@ -536,6 +547,7 @@ shadingrate:        tSHADINGRATE tNUMBER
 
 shadinginterpolation:   tSHADINGINTERPOLATION tSTRING
 {
+    driver.RrShadingInterpolation($2);
 };
 
 sphere:             tSPHERE tNUMBER tNUMBER tNUMBER tNUMBER
@@ -725,33 +737,33 @@ bool alloctemplist(int iSize)
     return(true);
 }
 
-bool
-parse(const std::string &filename, bool debug)
-{
-    FILE           *fPtr;
-
-//    driver.RrBegin(RI_NULL);
-    if(!filename.empty())
-    {
-        fPtr = fopen(filename.c_str(),"r");
-        if(!fPtr)
-        {
-            fprintf(stderr,"couldn't open \"%s\"\n", filename.c_str());
-            return(false);
-        }
-        yyin = fPtr;
-        sSource = strdup(filename.c_str());
-    }
-    else
-    {
-        yyin = stdin;
-        sSource = strdup("stdin");
-    }
-//    yydebug = static_cast<int>(debug);
-    yyparse();
-//    driver.RrEnd();
-    return(true);
-}
+//bool
+//parse(const std::string &filename, bool debug)
+//{
+//    FILE           *fPtr;
+//
+////    driver.RrBegin(RI_NULL);
+//    if(!filename.empty())
+//    {
+//        fPtr = fopen(filename.c_str(),"r");
+//        if(!fPtr)
+//        {
+//            fprintf(stderr,"couldn't open \"%s\"\n", filename.c_str());
+//            return(false);
+//        }
+//        yyin = fPtr;
+//        sSource = strdup(filename.c_str());
+//    }
+//    else
+//    {
+//        yyin = stdin;
+//        sSource = strdup("stdin");
+//    }
+////    yydebug = static_cast<int>(debug);
+//    yyparse();
+////    driver.RrEnd();
+//    return(true);
+//}
 
 void yyerror(char *s)
 {
@@ -775,21 +787,23 @@ int buildRIarglist(ArgNode *anNode)
 {
     int        iArgCount = 0;
 
-    for(anTempNode = anNode; anTempNode ; anTempNode = anTempNode->Next)
+    for (anTempNode = anNode; anTempNode; anTempNode = anTempNode->Next)
     {
         tokens[iArgCount] = anTempNode->sLabel;
-        switch(anTempNode->iType)
+        switch (anTempNode->iType)
         {
-        case ARGSTRING : parms[iArgCount] = anTempNode->sValue;
-        plengths[iArgCount] = strlen(anTempNode->sValue);
-        break;
-        case ARGNUMLIST: parms[iArgCount] = anTempNode->dValue;
-        plengths[iArgCount] = sizeof(float)*anTempNode->iListCount;
-        break;
+        case ARGSTRING:
+            parms[iArgCount] = anTempNode->sValue;
+            plengths[iArgCount] = strlen(anTempNode->sValue);
+            break;
+        case ARGNUMLIST:
+            parms[iArgCount] = anTempNode->dValue;
+            plengths[iArgCount] = sizeof(float) * anTempNode->iListCount;
+            break;
         }
         iArgCount++;
     }
-    return(iArgCount);
+    return (iArgCount);
 }
 
 void FreeNode(ArgNode *anNode)
@@ -809,5 +823,6 @@ void debug()
 void
 Rp::Parser::error(const std::string &err_message)
 {
-   std::cerr << "Error: " << err_message << "\n";
+//   std::cerr << "Error: " << err_message << "\n";
+   std::cerr << "Error: " << err_message << " (at line " << iLineNum << " in " << "source" << ")\n";
 }

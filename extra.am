@@ -6,5 +6,5 @@ checkinstall:
 	$(MAKE) install
 
 extra: install
-	$(MAKE) ribparse 
+	$(MAKE) parserib_old parserib_new 
 

@@ -1,29 +1,30 @@
-EXTRA_PROGRAMS             += test 
+#EXTRA_PROGRAMS             += test 
+#
+#test_SOURCES                = src/c++/main.cpp
+#
+#test_CPPFLAGS               =                                   \
+#                              -I$(top_builddir)                 \
+#                              -I$(top_builddir)/src/c++
+#
+#test_LDADD                  = librpcorenew.a
 
-test_SOURCES                = src/c++/main.cpp
+lib_LTLIBRARIES            += librpcorenew.la
 
-test_CPPFLAGS               =                                   \
-                              -I$(top_builddir)                 \
-                              -I$(top_builddir)/src/c++
-
-test_LDADD                  = librpcorenew.a
-
-noinst_LIBRARIES            = librpcorenew.a
-
-librpcorenew_a_SOURCES      =                                   \
+librpcorenew_la_SOURCES     =                                   \
                               src/c++/parser.yy                 \
                               src/c++/lexer.lpp                 \
                               src/c++/driver.cpp
 
                               
-#librpcorenewinclude_HEADERS =                                   \
-#                              src/c++/parse.h
+librpcorenewinclude_HEADERS =                                   \
+                              src/c++/scanner.h                 \
+                              src/c++/driver.h
 
-#librpcorenew_a_LDFLAGS      = -version-info @LIBRARY_VERSION@ -no-undefined
+#librpcorenew_la_LDFLAGS      = -version-info @LIBRARY_VERSION@ -no-undefined
 
 librpcorenewincludedir      = $(includedir)/rp
 
-librpcorenew_a_CPPFLAGS     =                                   \
+librpcorenew_la_CPPFLAGS    =                                   \
                               -I$(top_builddir)                 \
                               -I$(top_builddir)/src/c++         \
                               -I$(top_srcdir)                   \
