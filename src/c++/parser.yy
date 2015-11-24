@@ -214,7 +214,7 @@ generic:            attribute
         |           identity
 //        |           illuminate
         |           lightsource
-//        |           matte
+        |           matte
 //        |           motionbegin
 //        |           motionend
         |           nupatch
@@ -222,7 +222,7 @@ generic:            attribute
         |           option
         |           orientation
         |           pixelsamples
-//        |           pixelfilter
+        |           pixelfilter
 //        |           pixelvariance
         |           pointsgeneralpolygons
         |           pointspolygons
@@ -231,7 +231,7 @@ generic:            attribute
         |           projection
 //        |           quantize
 //        |           readarchive
-//        |           relativedetail
+        |           relativedetail
 //        |           resource
 //        |           resourcebegin
 //        |           resourceend
@@ -243,7 +243,7 @@ generic:            attribute
         |           shadinginterpolation
         |           shadingrate
         |           shutter
-//        |           sides
+        |           sides
         |           sphere
 //        |           subdivisionmesh
         |           surface
@@ -383,6 +383,11 @@ declare:            tDECLARE tSTRING tSTRING
     driver.Declare(*$2, *$3);
 }
 
+display:            tDISPLAY tSTRING tSTRING tSTRING
+{
+    driver.Display(*$2, *$3, *$4, 0, nullptr, nullptr, nullptr);
+}
+
 display:            tDISPLAY tSTRING tSTRING tSTRING {iTLC = 0;} arglist
 {
     int     iArgCount;
@@ -439,6 +444,11 @@ lightsource:        tLIGHTSOURCE {iTLC=0;} tSTRING tNUMBER arglist
     driver.LightSource(*$3, iArgCount, &tokens[0], parms, plengths);
 };
 
+matte:              tMATTE tNUMBER
+{
+    driver.Matte($2);
+} 
+
 nupatch:            tNUPATCH
                     tNUMBER tNUMBER {iTLC = 0; iTLCS = 0;} bracketnumberlist
                     tNUMBER tNUMBER
@@ -476,6 +486,11 @@ orientation:        tORIENTATION tSTRING
 {
     driver.Orientation(*$2);
 };
+
+pixelfilter:        tPIXELFILTER tSTRING tNUMBER tNUMBER
+{
+    driver.PixelFilter(*$2, $3, $4);
+}
 
 pixelsamples:       tPIXELSAMPLES tNUMBER tNUMBER
 {
@@ -554,6 +569,11 @@ projection:         tPROJECTION tSTRING
     driver.Projection(*$2, iArgCount, &tokens[0], parms, plengths);
 };
 
+relativedetail:     tRELATIVEDETAIL tNUMBER
+{
+    driver.RelativeDetail($2);
+}
+
 reverseorientation: tREVERSEORIENTATION
 {
     driver.ReverseOrientation();
@@ -566,6 +586,7 @@ rotate:             tROTATE tNUMBER tNUMBER tNUMBER tNUMBER
 
 scale:              tSCALE tNUMBER tNUMBER tNUMBER
 {
+    driver.Scale($2, $3, $4);
 };
 
 screenwindow:       tSCREENWINDOW tNUMBER tNUMBER tNUMBER tNUMBER
@@ -580,6 +601,11 @@ shadinginterpolation:   tSHADINGINTERPOLATION tSTRING
 {
     driver.ShadingInterpolation(*$2);
 };
+
+sides:              tSIDES tNUMBER
+{
+    driver.Sides($2);
+}
 
 sphere:             tSPHERE tNUMBER tNUMBER tNUMBER tNUMBER
 {

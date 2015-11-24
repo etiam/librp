@@ -3,8 +3,8 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: sg
-Description: sg (scene graph) library
+Name: rp 
+Description: rp (rib parser) library
 Version: @VERSION@
-Libs: -L${libdir} -lsgcore 
+Libs: -L${libdir} -lrpcorenew
 Cflags: -I${includedir} 

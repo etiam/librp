@@ -27,7 +27,6 @@ Catrib::Attribute(Token name, int n, Token nms[], RtPointer vals[], int lengths[
 void
 Catrib::PointsGeneralPolygons(int npolys, int nloops[], int nverts[], int verts[], int n, Token nms[], RtPointer vals[], int lengths[])
 {
-
     std::cout << "PointsGeneralPolygons ";
 
     {
@@ -62,7 +61,6 @@ Catrib::PointsGeneralPolygons(int npolys, int nloops[], int nverts[], int verts[
         std::cout << verts[i] << " ";
     std::cout << "] ";
     }
-
 
     std::cout << argListToString(n, nms, vals, lengths) << std::endl;
 }

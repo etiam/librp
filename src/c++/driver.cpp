@@ -167,6 +167,11 @@ Driver::NuPatch(int int1, int int2, float[], float float1, float float2, int int
 }
 
 void
+Driver::Matte(bool onoff)
+{
+}
+
+void
 Driver::Option(Token, int int1, Token[], RtPointer[], int[])
 {
 }
@@ -178,6 +183,11 @@ Driver::Orientation(Token)
 
 void
 Driver::PixelSamples(float float1, float float2)
+{
+}
+
+void
+Driver::PixelFilter(Token func, float float1, float float2)
 {
 }
 
@@ -202,6 +212,11 @@ Driver::Projection(Token, int int1, Token[], RtPointer[], int[])
 }
 
 void
+Driver::RelativeDetail(float rel)
+{
+}
+
+void
 Driver::ReverseOrientation()
 {
 }
@@ -212,7 +227,17 @@ Driver::Rotate(float float1, float float2, float float3, float float4)
 }
 
 void
+Driver::Scale(float sx, float sy, float sz)
+{
+}
+
+void
 Driver::ShadingInterpolation(Token)
+{
+}
+
+void
+Driver::Sides(int n)
 {
 }
 
@@ -237,7 +262,7 @@ Driver::TransformEnd()
 }
 
 void
-Driver::Translate(float float1, float float2, float float3)
+Driver::Translate(float tx, float ty, float tz)
 {
 }
 
