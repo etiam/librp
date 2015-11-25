@@ -66,7 +66,7 @@ Driver::debug(bool debugLexer, bool debugParser)
 }
 
 void
-Driver::Attribute(Token name, int n, Token nms[], RtPointer vals[], int lengths[])
+Driver::Attribute(RtToken name, RtInt n, RtToken nms[], RtPointer vals[], RtInt lengths[])
 {
 }
 
@@ -81,7 +81,7 @@ Driver::AttributeEnd()
 }
 
 void
-Driver::Begin(Token)
+Driver::Begin(RtToken)
 {
 }
 
@@ -91,37 +91,37 @@ Driver::Color(RtColor)
 }
 
 void
-Driver::CoordinateSystem(Token)
+Driver::CoordinateSystem(RtToken)
 {
 }
 
 void
-Driver::ConcatTransform(RtMatrix)
+Driver::ConcatTransform(RtMatrix matrix)
 {
 }
 
 void
-Driver::CropWindow(float float1, float float2, float float3, float float4)
+Driver::CropWindow(RtFloat RtFloat1, RtFloat RtFloat2, RtFloat RtFloat3, RtFloat RtFloat4)
 {
 }
 
 void
-Driver::Declare(Token, Token)
+Driver::Declare(RtToken, RtToken)
 {
 }
 
 void
-Driver::Display(Token, Token, Token, int int1, Token[], RtPointer[], int[])
+Driver::Display(RtToken, RtToken, RtToken, RtInt int1, RtToken[], RtPointer[], int[])
 {
 }
 
 void
-Driver::Camera(Token)
+Driver::Camera(RtToken)
 {
 }
 
 void
-Driver::Cylinder(float float1, float float2, float float3, float float4)
+Driver::Cylinder(RtFloat RtFloat1, RtFloat RtFloat2, RtFloat RtFloat3, RtFloat RtFloat4)
 {
 }
 
@@ -131,42 +131,42 @@ Driver::End()
 }
 
 void
-Driver::ErrorHandler(Token allocator)
+Driver::ErrorHandler(RtToken allocator)
 {
 }
 
 void
-Driver::Exposure(float, float)
+Driver::Exposure(RtFloat, RtFloat)
 {
 }
 
 void
-Driver::GeometricApproximation(Token type, float value)
+Driver::GeometricApproximation(RtToken type, RtFloat value)
 {
 }
 
 void
-Driver::Hider(Token, int int1, Token[], RtPointer[], int[])
+Driver::Hider(RtToken, RtInt int1, RtToken[], RtPointer[], int[])
 {
 }
 
 void
-Driver::Format(int int1, int int2, float float1)
+Driver::Format(RtInt int1, RtInt int2, RtFloat RtFloat1)
 {
 }
 
 void
-Driver::FrameAspectRatio(float float1)
+Driver::FrameAspectRatio(RtFloat RtFloat1)
 {
 }
 
 void
-Driver::LightSource(Token, int int1, Token[], RtPointer[], int[])
+Driver::LightSource(RtToken, RtInt int1, RtToken[], RtPointer[], int[])
 {
 }
 
 void
-Driver::NuPatch(int int1, int int2, float[], float float1, float float2, int int3, int int4, float[], float float3, float float4, int int5, Token[], RtPointer[], int[])
+Driver::NuPatch(RtInt int1, RtInt int2, RtFloat[], RtFloat RtFloat1, RtFloat RtFloat2, RtInt int3, RtInt int4, RtFloat[], RtFloat RtFloat3, RtFloat RtFloat4, RtInt int5, RtToken[], RtPointer[], int[])
 {
 }
 
@@ -176,52 +176,52 @@ Driver::Matte(bool onoff)
 }
 
 void
-Driver::Option(Token, int int1, Token[], RtPointer[], int[])
+Driver::Option(RtToken, RtInt int1, RtToken[], RtPointer[], int[])
 {
 }
 
 void
-Driver::Orientation(Token)
+Driver::Orientation(RtToken)
 {
 }
 
 void
-Driver::PixelSamples(float float1, float float2)
+Driver::PixelSamples(RtFloat RtFloat1, RtFloat RtFloat2)
 {
 }
 
 void
-Driver::PixelFilter(Token func, float float1, float float2)
+Driver::PixelFilter(RtToken func, RtFloat RtFloat1, RtFloat RtFloat2)
 {
 }
 
 void
-Driver::PointsGeneralPolygons(int npolys, int nloops[], int nverts[], int verts[], int n, Token nms[], RtPointer vals[], int lengths[])
+Driver::PointsGeneralPolygons(RtInt npolys, RtInt nloops[], RtInt nverts[], RtInt verts[], RtInt n, RtToken nms[], RtPointer vals[], RtInt lengths[])
 {
 }
 
 void
-Driver::PointsPolygons(int npolys, int nverts[], int verts[], int n, Token nms[], RtPointer vals[])
+Driver::PointsPolygons(RtInt npolys, RtInt nverts[], RtInt verts[], RtInt n, RtToken nms[], RtPointer vals[])
 {
 }
 
 void
-Driver::Polygon(int int1, int int2, Token[], RtPointer[], int[])
+Driver::Polygon(RtInt int1, RtInt int2, RtToken[], RtPointer[], int[])
 {
 }
 
 void
-Driver::Projection(Token, int int1, Token[], RtPointer[], int[])
+Driver::Projection(RtToken, RtInt int1, RtToken[], RtPointer[], int[])
 {
 }
 
 void
-Driver::Quantize(Token type, int one, int min, int max, float dither)
+Driver::Quantize(RtToken type, RtInt one, RtInt min, RtInt max, RtFloat dither)
 {
 }
 
 void
-Driver::RelativeDetail(float rel)
+Driver::RelativeDetail(RtFloat rel)
 {
 }
 
@@ -231,32 +231,32 @@ Driver::ReverseOrientation()
 }
 
 void
-Driver::Rotate(float float1, float float2, float float3, float float4)
+Driver::Rotate(RtFloat RtFloat1, RtFloat RtFloat2, RtFloat RtFloat3, RtFloat RtFloat4)
 {
 }
 
 void
-Driver::Scale(float sx, float sy, float sz)
+Driver::Scale(RtFloat sx, RtFloat sy, RtFloat sz)
 {
 }
 
 void
-Driver::ShadingInterpolation(Token)
+Driver::ShadingInterpolation(RtToken)
 {
 }
 
 void
-Driver::Sides(int n)
+Driver::Sides(RtInt n)
 {
 }
 
 void
-Driver::Sphere(float float1, float float2, float float3, float float4)
+Driver::Sphere(RtFloat RtFloat1, RtFloat RtFloat2, RtFloat RtFloat3, RtFloat RtFloat4)
 {
 }
 
 void
-Driver::Surface(Token, int int1, Token[], RtPointer[], int[])
+Driver::Surface(RtToken, RtInt int1, RtToken[], RtPointer[], int[])
 {
 }
 
@@ -271,12 +271,12 @@ Driver::TransformEnd()
 }
 
 void
-Driver::Translate(float tx, float ty, float tz)
+Driver::Translate(RtFloat tx, RtFloat ty, RtFloat tz)
 {
 }
 
 void
-Driver::TrimCurve(int int1, int[], int[], float[], float[], float[], int[], float[], float[], float[])
+Driver::TrimCurve(RtInt int1, int[], int[], RtFloat[], RtFloat[], RtFloat[], int[], RtFloat[], RtFloat[], RtFloat[])
 {
 }
 

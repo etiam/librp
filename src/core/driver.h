@@ -4,16 +4,18 @@
 #include <string>
 #include <cstdint>
 #include <memory>
+#include <array>
 
-typedef     void *      RtPointer;
-typedef     float       RtColor[3];
-typedef     float       RtPoint[3];
-typedef     float       RtMatrix[4][4];
+using RtPointer = void *;
+using RtInt     = int;
+using RtFloat   = float;
+using RtToken   = std::string;
+using RtMatrix  = std::array<std::array<float, 4>, 4>;
+using RtColor   = std::array<float, 3>;
+using RtPoint   = std::array<float, 3>;
 
 namespace Rp
 {
-
-using Token = std::string;
 
 class Scanner;
 class Parser;
@@ -24,52 +26,52 @@ class Driver
     Driver();
     virtual ~Driver();
 
-    virtual void    parse(const std::string &filename);
+    virtual void    parse(const RtToken &filename);
     virtual void    debug(bool debugLexer, bool debugParser);
 
-    virtual void    Attribute(Token name, int n, Token nms[], RtPointer vals[], int lengths[]);
+    virtual void    Attribute(RtToken name, RtInt n, RtToken nms[], RtPointer vals[], RtInt lengths[]);
     virtual void    AttributeBegin();
     virtual void    AttributeEnd();
-    virtual void    Begin(Token);
+    virtual void    Begin(RtToken);
     virtual void    Color(RtColor);
-    virtual void    CoordinateSystem(Token);
-    virtual void    ConcatTransform(RtMatrix);
-    virtual void    CropWindow(float, float, float, float);
-    virtual void    Declare(Token, Token);
-    virtual void    Display(Token, Token, Token, int, Token[], RtPointer[], int[]);
-    virtual void    Camera(Token);
-    virtual void    Cylinder(float, float, float, float);
+    virtual void    CoordinateSystem(RtToken);
+    virtual void    ConcatTransform(RtMatrix matrix);
+    virtual void    CropWindow(RtFloat, RtFloat, RtFloat, RtFloat);
+    virtual void    Declare(RtToken, RtToken);
+    virtual void    Display(RtToken, RtToken, RtToken, RtInt, RtToken[], RtPointer[], RtInt[]);
+    virtual void    Camera(RtToken);
+    virtual void    Cylinder(RtFloat, RtFloat, RtFloat, RtFloat);
     virtual void    End();
-    virtual void    ErrorHandler(Token);
-    virtual void    Exposure(float, float);
-    virtual void    GeometricApproximation(Token type, float value);
-    virtual void    Hider(Token, int, Token[], RtPointer[], int[]);
-    virtual void    Format(int,int,float);
-    virtual void    FrameAspectRatio(float);
-    virtual void    LightSource(Token,int,Token[],RtPointer[],int[]);
-    virtual void    NuPatch(int, int, float[], float, float, int, int, float[], float, float, int, Token[], RtPointer[], int[]);
+    virtual void    ErrorHandler(RtToken);
+    virtual void    Exposure(RtFloat, RtFloat);
+    virtual void    GeometricApproximation(RtToken type, RtFloat value);
+    virtual void    Hider(RtToken, RtInt, RtToken[], RtPointer[], RtInt[]);
+    virtual void    Format(RtInt, RtInt, RtFloat);
+    virtual void    FrameAspectRatio(RtFloat);
+    virtual void    LightSource(RtToken, RtInt, RtToken[], RtPointer[], RtInt[]);
+    virtual void    NuPatch(RtInt, RtInt, RtFloat[], RtFloat, RtFloat, RtInt, RtInt, RtFloat[], RtFloat, RtFloat, RtInt, RtToken[], RtPointer[], RtInt[]);
     virtual void    Matte(bool onoff);
-    virtual void    Option(Token, int, Token[], RtPointer[], int[]);
-    virtual void    Orientation(Token);
-    virtual void    PixelFilter(Token func, float xwidth, float ywidth);
-    virtual void    PixelSamples(float, float);
-    virtual void    PointsGeneralPolygons(int npolys, int nloops[], int nverts[], int verts[], int n, Token nms[], RtPointer vals[], int lengths[]);
-    virtual void    PointsPolygons(int npolys, int nverts[], int verts[], int n, Token nms[], RtPointer vals[]);
-    virtual void    Polygon(int, int, Token[], RtPointer[], int[]);
-    virtual void    Projection(Token, int, Token[], RtPointer[], int[]);
-    virtual void    Quantize(Token type, int one, int min, int max, float dither);
-    virtual void    RelativeDetail(float rel);
+    virtual void    Option(RtToken, RtInt, RtToken[], RtPointer[], RtInt[]);
+    virtual void    Orientation(RtToken);
+    virtual void    PixelFilter(RtToken func, RtFloat xwidth, RtFloat ywidth);
+    virtual void    PixelSamples(RtFloat, RtFloat);
+    virtual void    PointsGeneralPolygons(RtInt npolys, RtInt nloops[], RtInt nverts[], RtInt verts[], RtInt n, RtToken nms[], RtPointer vals[], RtInt lengths[]);
+    virtual void    PointsPolygons(RtInt npolys, RtInt nverts[], RtInt verts[], RtInt n, RtToken nms[], RtPointer vals[]);
+    virtual void    Polygon(RtInt, RtInt, RtToken[], RtPointer[], RtInt[]);
+    virtual void    Projection(RtToken, RtInt, RtToken[], RtPointer[], RtInt[]);
+    virtual void    Quantize(RtToken type, RtInt one, RtInt min, RtInt max, RtFloat dither);
+    virtual void    RelativeDetail(RtFloat rel);
     virtual void    ReverseOrientation();
-    virtual void    Rotate(float angle, float dx, float dy, float dz);
-    virtual void    Scale(float sx, float sy, float sz);
-    virtual void    ShadingInterpolation(Token);
-    virtual void    Sides(int n);
-    virtual void    Sphere(float, float, float, float);
-    virtual void    Surface(Token, int, Token[], RtPointer[], int[]);
+    virtual void    Rotate(RtFloat angle, RtFloat dx, RtFloat dy, RtFloat dz);
+    virtual void    Scale(RtFloat sx, RtFloat sy, RtFloat sz);
+    virtual void    ShadingInterpolation(RtToken);
+    virtual void    Sides(RtInt n);
+    virtual void    Sphere(RtFloat, RtFloat, RtFloat, RtFloat);
+    virtual void    Surface(RtToken, RtInt, RtToken[], RtPointer[], RtInt[]);
     virtual void    TransformBegin();
     virtual void    TransformEnd();
-    virtual void    Translate(float tx, float ty, float tz);
-    virtual void    TrimCurve(int, int[], int[], float[], float[], float[], int[], float[], float[], float[]);
+    virtual void    Translate(RtFloat tx, RtFloat ty, RtFloat tz);
+    virtual void    TrimCurve(RtInt, RtInt[], RtInt[], RtFloat[], RtFloat[], RtFloat[], RtInt[], RtFloat[], RtFloat[], RtFloat[]);
     virtual void    WorldBegin();
     virtual void    WorldEnd();
 

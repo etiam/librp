@@ -13,24 +13,37 @@ using namespace Rp;
 class Catrib : public Driver
 {
   public:
-    virtual void            Attribute(Token name, int n, Token nms[], RtPointer vals[], int lengths[]);
-    virtual void            PointsGeneralPolygons(int npolys, int nloops[], int nverts[], int verts[], int n, Token nms[], RtPointer vals[], int lengths[]);
+    virtual void            Attribute(std::string name, int n, std::string nms[], RtPointer vals[], int lengths[]);
+    virtual void            ConcatTransform(RtMatrix matrix);
+    virtual void            PointsGeneralPolygons(int npolys, int nloops[], int nverts[], int verts[], int n, std::string nms[], RtPointer vals[], int lengths[]);
     virtual void            Rotate(float angle, float dx, float dy, float dz);
     virtual void            TransformBegin();
 
   private:
-    std::string             argListToString(int n, Token nms[], RtPointer vals[], int lengths[]);
+    std::string             argListToString(int n, std::string nms[], RtPointer vals[], int lengths[]);
 
 };
 
 void
-Catrib::Attribute(Token name, int n, Token nms[], RtPointer vals[], int lengths[])
+Catrib::Attribute(std::string name, int n, std::string nms[], RtPointer vals[], int lengths[])
 {
     std::cout << "Attribute " << "\"" << name << "\"" << argListToString(n, nms, vals, lengths) << std::endl;
 }
 
 void
-Catrib::PointsGeneralPolygons(int npolys, int nloops[], int nverts[], int verts[], int n, Token nms[], RtPointer vals[], int lengths[])
+Catrib::ConcatTransform(RtMatrix matrix)
+{
+    std::cout << "ConcatTransform ";
+    std::cout << "[";
+    std::cout << matrix[0][0] << " " << matrix[0][1] << " " <<  matrix[0][2] << " " << matrix[0][3] << " "
+              << matrix[1][0] << " " << matrix[1][1] << " " <<  matrix[1][2] << " " << matrix[0][3] << " "
+              << matrix[2][0] << " " << matrix[2][1] << " " <<  matrix[2][2] << " " << matrix[0][3] << " "
+              << matrix[3][0] << " " << matrix[3][1] << " " <<  matrix[3][2] << " " << matrix[0][3];
+    std::cout << "]" << std::endl;
+}
+
+void
+Catrib::PointsGeneralPolygons(int npolys, int nloops[], int nverts[], int verts[], int n, std::string nms[], RtPointer vals[], int lengths[])
 {
     std::cout << "PointsGeneralPolygons ";
 
@@ -83,7 +96,7 @@ Catrib::TransformBegin()
 }
 
 std::string
-Catrib::argListToString(int n, Token nms[], RtPointer vals[], int lengths[])
+Catrib::argListToString(int n, std::string nms[], RtPointer vals[], int lengths[])
 {
     std::stringstream out;
 

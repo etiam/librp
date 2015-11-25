@@ -48,17 +48,6 @@ enum
     ARGNUMLIST
 };
 
-typedef     int         RtInt;
-typedef     float       RtFloat;
-typedef     short       RtBoolean;
-typedef     char *      RtString;
-typedef     char *      RtToken;
-typedef     void *      RtPointer;
-typedef     RtFloat     RtColor[3];
-typedef     RtFloat     RtPoint[3];
-typedef     RtFloat     RtMatrix[4][4];
-typedef     RtPointer   RtLightHandle;
-
 ArgNode *       NewNode();
 int             buildRIarglist(ArgNode*);
 bool            alloctemplist(int);
@@ -78,7 +67,7 @@ ArgNode *       anTempNode;
 std::vector<std::string>    tokens;
 
 RtPointer       parms[MAX_ARGS];
-RtInt           plengths[MAX_ARGS];
+int             plengths[MAX_ARGS];
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wwritable-strings"
@@ -262,7 +251,7 @@ attribute:          tATTRIBUTE tSTRING {iTLC=0;} arglist
     int     iArgCount;
 
     iArgCount = buildRIarglist($4);
-    driver.Attribute(*$2, iArgCount, &tokens[0], parms, plengths);
+    driver.Attribute($2, iArgCount, &tokens[0], parms, plengths);
 };
 
 attributebegin:     tATTRIBUTEBEGIN
@@ -359,6 +348,7 @@ concattransform:    tCONCATTRANSFORM {iTLC = 0; iTLCS = 0;} bracketnumberlist
         matrix[3][1] = dTempList[13];
         matrix[3][2] = dTempList[14];
         matrix[3][3] = dTempList[15];
+        
         driver.ConcatTransform(matrix);
     }
 }
@@ -461,12 +451,12 @@ nupatch:            tNUPATCH
                     tNUMBER tNUMBER {iVOrderL = iTLC;} arglist
 {
     int        i,iArgCount;
-    RtFloat    *uknot,*vknot;
+    float    *uknot,*vknot;
 
-    uknot = new RtFloat[(int)$2+(int)$3];
+    uknot = new float[(int)$2+(int)$3];
     for(i=0; i < iVOrder; i++)
         uknot[i] = dTempList[i];
-    vknot = new RtFloat[(int)$8+(int)$9];
+    vknot = new float[(int)$8+(int)$9];
     for(i=iVOrder; i < iVOrderL; i++)
         vknot[i-iVOrder] = dTempList[i];
     iArgCount = buildRIarglist($15);
@@ -508,16 +498,16 @@ pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS {iTLC = 0; iTLCS = 0;} bracketn
                                                  {iPPvll = iTLC;} arglist
 {
     int     i, iArgCount;
-    RtInt   *nverts, *verts, *nloops;
+    int   *nverts, *verts, *nloops;
 
     auto npolys = iPGPnlp;
     auto nverts_size = 0;
     for(i=0; i < npolys; i++)
         nverts_size += static_cast<int>(dTempList[i]);
    
-    nloops = new RtInt[npolys];     
-    nverts = new RtInt[nverts_size];
-    verts = new RtInt[iPPvll-iPPnv];
+    nloops = new int[npolys];     
+    nverts = new int[nverts_size];
+    verts = new int[iPPvll-iPPnv];
     
     for(i=0; i < npolys; i++)
         nloops[i] = static_cast<int>(dTempList[i]);
@@ -539,10 +529,10 @@ pointspolygons:     tPOINTSPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumberlist
                                     {iPPvll = iTLC;} arglist
 {
     int     i,iArgCount;
-    RtInt   *nverts,*verts;
+    int   *nverts,*verts;
 
-    nverts = new RtInt[iPPnv];
-    verts = new RtInt[iPPvll-iPPnv];
+    nverts = new int[iPPnv];
+    verts = new int[iPPvll-iPPnv];
     for(i=0; i < iPPnv; i++)
         nverts[i] = (int)dTempList[i];
     for(i=iPPnv; i < iPPvll; i++)
@@ -655,18 +645,18 @@ trimcurve:          tTRIMCURVE {iTLC = 0; iTLCS = 0;} bracketnumberlist
                                {iNV = iTLC;} bracketnumberlist
 {
     int         i;
-    RtInt        *ncurves,*order,*n;
-    RtFloat    *knot,*min,*max,*u,*v,*w;
+    int        *ncurves,*order,*n;
+    float    *knot,*min,*max,*u,*v,*w;
 
-    ncurves = new RtInt[iNC];
-    order = new RtInt[iNO-iNC];
-    knot = new RtFloat[iNK-iNO];
-    min = new RtFloat[iNMn-iNK];
-    max = new RtFloat[iNMx-iNMn];
-    n = new RtInt[iNN-iNMx];
-    u = new RtFloat[iNU-iNN];
-    v = new RtFloat[iNV-iNU];
-    w = new RtFloat[iTLC-iNV];
+    ncurves = new int[iNC];
+    order = new int[iNO-iNC];
+    knot = new float[iNK-iNO];
+    min = new float[iNMn-iNK];
+    max = new float[iNMx-iNMn];
+    n = new int[iNN-iNMx];
+    u = new float[iNU-iNN];
+    v = new float[iNV-iNU];
+    w = new float[iTLC-iNV];
     for(i=0; i < iNC; i++)
         ncurves[i] = (int)dTempList[i];
     for(i=iNC; i < iNO; i++)
