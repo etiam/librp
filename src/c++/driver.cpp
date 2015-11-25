@@ -142,6 +142,11 @@ Driver::Exposure(float, float)
 }
 
 void
+Driver::GeometricApproximation(Token type, float value)
+{
+}
+
+void
 Driver::Hider(Token, int int1, Token[], RtPointer[], int[])
 {
 }
@@ -208,6 +213,11 @@ Driver::Polygon(int int1, int int2, Token[], RtPointer[], int[])
 
 void
 Driver::Projection(Token, int int1, Token[], RtPointer[], int[])
+{
+}
+
+void
+Driver::Quantize(Token type, int one, int min, int max, float dither)
 {
 }
 

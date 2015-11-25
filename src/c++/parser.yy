@@ -208,7 +208,7 @@ generic:            attribute
         |           frameaspectratio
         |           framebegin
         |           frameend
-//        |           geometricapproximation
+        |           geometricapproximation
         |           hider
 //        |           hierarchicalsubdivisionmesh
         |           identity
@@ -229,7 +229,7 @@ generic:            attribute
         |           polygon
 //        |           procedural
         |           projection
-//        |           quantize
+        |           quantize
 //        |           readarchive
         |           relativedetail
 //        |           resource
@@ -424,6 +424,11 @@ frameend:           tFRAMEEND
 {
 };
 
+geometricapproximation: tGEOMETRICAPPROXIMATION tSTRING tNUMBER
+{
+    driver.GeometricApproximation(*$2, $3);
+}
+
 hider:              tHIDER tSTRING {iTLC=0;} arglist
 {
     int     iArgCount;
@@ -568,6 +573,11 @@ projection:         tPROJECTION tSTRING
     iArgCount = buildRIarglist($4);
     driver.Projection(*$2, iArgCount, &tokens[0], parms, plengths);
 };
+
+quantize:           tQUANTIZE tSTRING tNUMBER tNUMBER tNUMBER tNUMBER
+{
+    driver.Quantize(*$2, $3, $4, $5, $6);
+}
 
 relativedetail:     tRELATIVEDETAIL tNUMBER
 {

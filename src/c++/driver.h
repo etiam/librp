@@ -41,6 +41,7 @@ class Driver
     virtual void            End();
     virtual void            ErrorHandler(Token);
     virtual void            Exposure(float, float);
+    virtual void            GeometricApproximation(Token type, float value);
     virtual void            Hider(Token, int, Token[], RtPointer[], int[]);
     virtual void            Format(int,int,float);
     virtual void            FrameAspectRatio(float);
@@ -55,6 +56,7 @@ class Driver
     virtual void            PointsPolygons(int npolys, int nverts[], int verts[], int n, Token nms[], RtPointer vals[]);
     virtual void            Polygon(int, int, Token[], RtPointer[], int[]);
     virtual void            Projection(Token, int, Token[], RtPointer[], int[]);
+    virtual void            Quantize(Token type, int one, int min, int max, float dither);
     virtual void            RelativeDetail(float rel);
     virtual void            ReverseOrientation();
     virtual void            Rotate(float angle, float dx, float dy, float dz);
