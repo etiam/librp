@@ -11,7 +11,7 @@ AC_PREREQ([2.69])
 
 # Autoconf
 AC_INIT([librp],[0.0.1],[rosson@gmail.com])
-AC_CONFIG_SRCDIR([src/core/parse.h])
+AC_CONFIG_SRCDIR([src/core/driver.h])
 AC_CONFIG_AUX_DIR([scripts])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])
@@ -59,12 +59,19 @@ AC_HEADER_STDBOOL
 ## Checks for libraries    ##
 ## ----------------------- ##
 
+# libut
+PKG_CHECK_MODULES(LIBUT, libut >= 0.0.1)
+
 # liblog
 PKG_CHECK_MODULES(LIBLOG, liblog >= 0.0.1)
+
+# ilmbase
+PKG_CHECK_MODULES(ILMBASE, IlmBase >= 2.1.0)
 
 # boost
 BOOST_REQUIRE(1.55)
 BOOST_TEST
+BOOST_IOSTREAMS
 
 ## ----------------------- ##
 ## Optional arguments      ##

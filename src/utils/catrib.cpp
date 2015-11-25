@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
 
 #include "driver.h"
 
@@ -16,6 +17,10 @@ class Catrib : public Driver
     virtual void            PointsGeneralPolygons(int npolys, int nloops[], int nverts[], int verts[], int n, Token nms[], RtPointer vals[], int lengths[]);
     virtual void            Rotate(float angle, float dx, float dy, float dz);
     virtual void            TransformBegin();
+
+  private:
+    std::string             argListToString(int n, Token nms[], RtPointer vals[], int lengths[]);
+
 };
 
 void
@@ -75,6 +80,39 @@ void
 Catrib::TransformBegin()
 {
     std::cout << "TransformBegin" << std::endl;
+}
+
+std::string
+Catrib::argListToString(int n, Token nms[], RtPointer vals[], int lengths[])
+{
+    std::stringstream out;
+
+    for (auto i = 0; i < n; ++i)
+    {
+        auto v = vals[i];
+
+        out << " \"" << nms[i] << "\" [";
+
+        if (nms[i].find("string") != std::string::npos)
+            out << "\"" << static_cast<char*>(v) << "\"";
+        else if (nms[i].find("int") != std::string::npos)
+        {
+            for (auto j=0; j < lengths[i] / sizeof(float); ++j)
+            {
+                out << static_cast<int>(static_cast<float*>(v)[j]) << " ";
+            }
+        }
+        else if (nms[i].find("float") != std::string::npos ||
+                 nms[i].find("P") != std::string::npos)
+        {
+            for (auto j=0; j < lengths[i] / sizeof(float); ++j)
+            {
+                out << static_cast<float*>(v)[j] << " ";
+            }
+        }
+        out << "]";
+    }
+    return out.str();
 }
 
 int

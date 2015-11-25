@@ -1,7 +1,8 @@
 #include <cctype>
-#include <fstream>
-#include <sstream>
 #include <cassert>
+#include <fstream>
+
+#include <ut/make_unique.h>
 
 #include "scanner.h"
 #include "parser.hh"
@@ -10,12 +11,12 @@
 namespace Rp
 {
 
+Driver::Driver()
+{
+}
+
 Driver::~Driver()
 {
-   delete(scanner);
-   scanner = nullptr;
-   delete(parser);
-   parser = nullptr;
 }
 
 void
@@ -27,10 +28,9 @@ Driver::parse(const std::string &filename)
     if (!in_file.good())
         exit(EXIT_FAILURE);
 
-    delete (scanner);
     try
     {
-        scanner = new Scanner(&in_file);
+        m_scanner = std::make_unique<Scanner>(&in_file);
     }
     catch (std::bad_alloc &ba)
     {
@@ -38,22 +38,21 @@ Driver::parse(const std::string &filename)
         exit(EXIT_FAILURE);
     }
 
-    delete (parser);
     try
     {
-        parser = new Parser((*scanner), (*this));
+        m_parser = std::make_unique<Parser>(*m_scanner, (*this));
     }
     catch (std::bad_alloc &ba)
     {
         std::cerr << "Failed to allocate parser: (" << ba.what() << "), exiting!!\n";
         exit(EXIT_FAILURE);
     }
-    scanner->setParser(parser);
-    scanner->set_debug(m_debugLexer);
-    parser->set_debug_level(m_debugParser);
+    //    scanner->setParser(parser);
+    m_scanner->set_debug(m_debugLexer);
+    m_parser->set_debug_level(m_debugParser);
 
     const int accept(0);
-    if (parser->parse() != accept)
+    if (m_parser->parse() != accept)
     {
         std::cerr << "Parse failed!!\n";
     }
@@ -289,39 +288,6 @@ Driver::WorldBegin()
 void
 Driver::WorldEnd()
 {
-}
-
-std::string
-Driver::argListToString(int n, Token nms[], RtPointer vals[], int lengths[])
-{
-    std::stringstream out;
-
-    for (auto i = 0; i < n; ++i)
-    {
-        auto v = vals[i];
-
-        out << " \"" << nms[i] << "\" [";
-
-        if (nms[i].find("string") != std::string::npos)
-            out << "\"" << static_cast<char*>(v) << "\"";
-        else if (nms[i].find("int") != std::string::npos)
-        {
-            for (auto j=0; j < lengths[i] / sizeof(float); ++j)
-            {
-                out << static_cast<int>(static_cast<float*>(v)[j]) << " ";
-            }
-        }
-        else if (nms[i].find("float") != std::string::npos ||
-                 nms[i].find("P") != std::string::npos)
-        {
-            for (auto j=0; j < lengths[i] / sizeof(float); ++j)
-            {
-                out << static_cast<float*>(v)[j] << " ";
-            }
-        }
-        out << "]";
-    }
-    return out.str();
 }
 
 }
