@@ -10,8 +10,7 @@ CLEAN                     =
 EXTRACLEAN                =
 
 include src/core/Makefile.am
-include src/c++/Makefile.am
-#include src/check/core/Makefile.am
+include src/check/core/Makefile.am
 include src/utils/Makefile.am
 
 # PKGCONFIG SUPPORT
