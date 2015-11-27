@@ -7,19 +7,35 @@
 
 %code requires
 {
-#include "yacc.h"
+#include <vector>
+#include <boost/any.hpp>
+#include "driver.h"
 
 namespace Rp
 {
   class Driver;
   class Scanner;
 }
+
+typedef struct strArgNode
+{
+    int             iType;
+    int             iListCount;
+    int             iListSize;
+    char *          sLabel;
+    char *          sValue;
+    std::vector<float>  dValue;
+    std::vector<boost::any>     vals;
+    strArgNode *    Next;
+} ArgNode;
+
 }
 
 %parse-param { Scanner  &scanner  }
 %parse-param { Driver  &driver  }
 
 %{
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -27,12 +43,11 @@ namespace Rp
 
 #include <cstdlib>
 #include <cstring>
-#include <vector>
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <fstream>
 
-#include "yacc.h"
 #include "driver.h"
 #include "scanner.h"
 
@@ -50,22 +65,25 @@ enum
 
 ArgNode *       NewNode();
 int             buildRIarglist(ArgNode*);
+int             buildRIarglist2(ArgNode*);
+RtMatrix        buildMatrix(int start);
 bool            alloctemplist(int);
-void            debug();
 
 char *          sSource;
-char            sErrorString[100];
 int             iLineNum = 1;
 
 int             iTLS = 0, iTLC, iTLCS;
 int             iPPnv,iPPvll,iPGPnlp;
 int             iVOrder,iVOrderL;
 int             iNC,iNO,iNK,iNMn,iNMx,iNN,iNU,iNV;
-float *         dTempList;
+//float *         numberList;
 ArgNode *       anTempNode;
+
+std::vector<float>  numberList;
 
 std::vector<std::string>    tokens;
 
+RtPointers      vals;
 RtPointer       parms[MAX_ARGS];
 int             plengths[MAX_ARGS];
 
@@ -156,7 +174,6 @@ int             plengths[MAX_ARGS];
 %token tWORLDEND
 
 %token <string> tSTRING
-%token <string> tSTRINGBRACKET
 %token <dval>   tNUMBER 
 
 %type  <anNode> arg
@@ -250,8 +267,9 @@ attribute:          tATTRIBUTE tSTRING {iTLC=0;} arglist
 {
     int     iArgCount;
 
-    iArgCount = buildRIarglist($4);
-    driver.Attribute($2, iArgCount, &tokens[0], parms, plengths);
+//    iArgCount = buildRIarglist($4);
+    iArgCount = buildRIarglist2($4);
+    driver.Attribute(*$2, iArgCount, &tokens[0], vals, plengths);
 };
 
 attributebegin:     tATTRIBUTEBEGIN
@@ -264,17 +282,63 @@ attributeend:       tATTRIBUTEEND
     driver.AttributeEnd();
 };
 
-basis:              tBASIS tSTRING number tSTRING number
+basis:              tBASIS tSTRING tNUMBER tSTRING tNUMBER
 {
+    RtMatrix umatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};;
+    RtMatrix vmatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};;
+    auto uname = *$2;
+    auto vname = *$4;
+    #pragma unused(uname)
+    #pragma unused(vname)
+    
+    driver.Basis(umatrix, $3, vmatrix, $5);
 }
-        |           tBASIS tSTRING number {iTLC = 0; iTLCS = 0;} bracketnumberlist number
+        |           tBASIS tSTRING tNUMBER {iTLC = 0; iTLCS = 0;} bracketnumberlist tNUMBER
 {
+    RtMatrix umatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};;
+    auto uname = *$2;
+    #pragma unused(uname)
+    
+    if(iTLC - iTLCS != 16)
+    {
+        std::stringstream err;
+        err << "Wrong number of numeric parameters to Basis: " <<  iTLC - iTLCS;
+        Rp::Parser::error(err.str());
+    }
+    else
+    {
+        driver.Basis(umatrix, $3, buildMatrix(iTLCS), $6);
+    }
 }
-        |           tBASIS {iTLC = 0; iTLCS = 0;} bracketnumberlist number tSTRING number
+        |           tBASIS {iTLC = 0; iTLCS = 0;} bracketnumberlist tNUMBER tSTRING tNUMBER
 {
+    RtMatrix vmatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};;
+    auto vname = *$5;
+    #pragma unused(vname)
+
+    if(iTLC - iTLCS != 16)
+    {
+        std::stringstream err;
+        err << "Wrong number of numeric parameters to Basis: " <<  iTLC - iTLCS;
+        Rp::Parser::error(err.str());
+    }
+    else
+    {
+        driver.Basis(buildMatrix(iTLCS), $4, vmatrix, $6);
+    }
 }
-        |           tBASIS {iTLC = 0; iTLCS = 0;} bracketnumberlist number {iTLC = 0; iTLCS = 0;} bracketnumberlist number
+        |           tBASIS {iTLC = 0; iTLCS = 0;} bracketnumberlist tNUMBER bracketnumberlist tNUMBER
 {
+    if(iTLC - iTLCS != 32)
+    {
+        std::stringstream err;
+        err << "Wrong number of numeric parameters to Basis: " <<  iTLC - iTLCS;
+        Rp::Parser::error(err.str());
+    }
+    else
+    {
+        driver.Basis(buildMatrix(iTLCS), $4, buildMatrix(iTLCS+16), $6);
+    }
 }
         
 camera:             tCAMERA tSTRING
@@ -292,14 +356,15 @@ color:              tCOLOR {iTLC = 0; iTLCS = 0;} bracketnumberlist
 
     if(iTLC - iTLCS != 3)
     {
-        sprintf(sErrorString,"Wrong number of color samples: %i, expecting 3", iTLC - iTLCS);
-        Rp::Parser::error(sErrorString);
+        std::stringstream err;
+        err << "Wrong number of color parameters to Color: " <<  iTLC - iTLCS;
+        Rp::Parser::error(err.str());
     }
     else
     {
-        color[0] = dTempList[0];
-        color[1] = dTempList[1];
-        color[2] = dTempList[2];
+        color[0] = numberList[0];
+        color[1] = numberList[1];
+        color[2] = numberList[2];
         driver.Color(color);
     }
 }
@@ -309,47 +374,30 @@ color:              tCOLOR {iTLC = 0; iTLCS = 0;} bracketnumberlist
 
     if(iTLC - iTLCS != 3)
     {
-        sprintf(sErrorString,"Wrong number of color samples: %i, expecting 3", iTLC - iTLCS);
-        Rp::Parser::error(sErrorString);
+        std::stringstream err;
+        err << "Wrong number of color parameters to Color: " <<  iTLC - iTLCS;
+        Rp::Parser::error(err.str());
     }
     else
     {
-        color[0] = dTempList[0];
-        color[1] = dTempList[1];
-        color[2] = dTempList[2];
+        color[0] = numberList[0];
+        color[1] = numberList[1];
+        color[2] = numberList[2];
         driver.Color(color);
     }
 };
 
 concattransform:    tCONCATTRANSFORM {iTLC = 0; iTLCS = 0;} bracketnumberlist
 {
-    RtMatrix    matrix;
-
     if(iTLC - iTLCS != 16)
     {
-        sprintf(sErrorString,"Bad number of numeric parameters to Transform: %i", iTLC - iTLCS);
-        Rp::Parser::error(sErrorString);
+        std::stringstream err;
+        err << "Wrong number of numeric parameters to ConcatTransform: " <<  iTLC - iTLCS;
+        Rp::Parser::error(err.str());
     }
     else
     {
-        matrix[0][0] = dTempList[0];
-        matrix[0][1] = dTempList[1];
-        matrix[0][2] = dTempList[2];
-        matrix[0][3] = dTempList[3];
-        matrix[1][0] = dTempList[4];
-        matrix[1][1] = dTempList[5];
-        matrix[1][2] = dTempList[6];
-        matrix[1][3] = dTempList[7];
-        matrix[2][0] = dTempList[8];
-        matrix[2][1] = dTempList[9];
-        matrix[2][2] = dTempList[10];
-        matrix[2][3] = dTempList[11];
-        matrix[3][0] = dTempList[12];
-        matrix[3][1] = dTempList[13];
-        matrix[3][2] = dTempList[14];
-        matrix[3][3] = dTempList[15];
-        
-        driver.ConcatTransform(matrix);
+        driver.ConcatTransform(buildMatrix(iTLCS));
     }
 }
 
@@ -455,10 +503,10 @@ nupatch:            tNUPATCH
 
     uknot = new float[(int)$2+(int)$3];
     for(i=0; i < iVOrder; i++)
-        uknot[i] = dTempList[i];
+        uknot[i] = numberList[i];
     vknot = new float[(int)$8+(int)$9];
     for(i=iVOrder; i < iVOrderL; i++)
-        vknot[i-iVOrder] = dTempList[i];
+        vknot[i-iVOrder] = numberList[i];
     iArgCount = buildRIarglist($15);
     driver.NuPatch((int)$2, (int)$3, uknot, $6, $7, (int)$8, (int)$9, vknot, $12, $13, iArgCount, &tokens[0], parms, plengths);
     delete(uknot);
@@ -503,20 +551,20 @@ pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS {iTLC = 0; iTLCS = 0;} bracketn
     auto npolys = iPGPnlp;
     auto nverts_size = 0;
     for(i=0; i < npolys; i++)
-        nverts_size += static_cast<int>(dTempList[i]);
+        nverts_size += static_cast<int>(numberList[i]);
    
     nloops = new int[npolys];     
     nverts = new int[nverts_size];
     verts = new int[iPPvll-iPPnv];
     
     for(i=0; i < npolys; i++)
-        nloops[i] = static_cast<int>(dTempList[i]);
+        nloops[i] = static_cast<int>(numberList[i]);
     
     for(i=iPGPnlp; i < iPPnv; i++)
-        nverts[i-iPGPnlp] = (int)dTempList[i];
+        nverts[i-iPGPnlp] = (int)numberList[i];
 
     for(i=iPPnv; i < iPPvll; i++)
-        verts[i-iPPnv] = (int)dTempList[i];
+        verts[i-iPPnv] = (int)numberList[i];
         
     iArgCount = buildRIarglist($9);
     driver.PointsGeneralPolygons(npolys, nloops, nverts, verts, iArgCount, &tokens[0], parms, plengths);
@@ -534,9 +582,9 @@ pointspolygons:     tPOINTSPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumberlist
     nverts = new int[iPPnv];
     verts = new int[iPPvll-iPPnv];
     for(i=0; i < iPPnv; i++)
-        nverts[i] = (int)dTempList[i];
+        nverts[i] = (int)numberList[i];
     for(i=iPPnv; i < iPPvll; i++)
-        verts[i-iPPnv] = (int)dTempList[i];
+        verts[i-iPPnv] = (int)numberList[i];
         
     iArgCount = buildRIarglist($7);
     driver.PointsPolygons(iPPnv, nverts, verts, iArgCount, &tokens[0], parms);
@@ -658,23 +706,23 @@ trimcurve:          tTRIMCURVE {iTLC = 0; iTLCS = 0;} bracketnumberlist
     v = new float[iNV-iNU];
     w = new float[iTLC-iNV];
     for(i=0; i < iNC; i++)
-        ncurves[i] = (int)dTempList[i];
+        ncurves[i] = (int)numberList[i];
     for(i=iNC; i < iNO; i++)
-        order[i-iNC] = (int)dTempList[i];
+        order[i-iNC] = (int)numberList[i];
     for(i=iNO; i < iNK; i++)
-        knot[i-iNO] = dTempList[i];
+        knot[i-iNO] = numberList[i];
     for(i=iNK; i < iNMn; i++)
-        min[i-iNK] = dTempList[i];
+        min[i-iNK] = numberList[i];
     for(i=iNMn; i < iNMx; i++)
-        max[i-iNMn] = dTempList[i];
+        max[i-iNMn] = numberList[i];
     for(i=iNMx; i < iNN; i++)
-        n[i-iNMx] = (int)dTempList[i];
+        n[i-iNMx] = (int)numberList[i];
     for(i=iNN; i < iNU; i++)
-        u[i-iNN] = dTempList[i];
+        u[i-iNN] = numberList[i];
     for(i=iNU; i < iNV; i++)
-        v[i-iNU] = dTempList[i];
+        v[i-iNU] = numberList[i];
     for(i=iNV; i < iTLC; i++)
-        w[i-iNV] = dTempList[i];
+        w[i-iNV] = numberList[i];
 
     driver.TrimCurve(iNC, ncurves, order, knot, min, max, n, u, v, w);
 };
@@ -707,28 +755,7 @@ worldend:           tWORLDEND
     driver.WorldEnd();
 };
 
-arglist:            arglist arg
-{
-    ArgNode *   anTemp;
-
-    for(anTemp = $1;anTemp->Next; anTemp=anTemp->Next);
-    anTemp->Next = $2;
-    $$ = $1;
-};
-        |           arg
-{
-    $$ = $1;
-};
-
-arg:                tSTRING tSTRINGBRACKET
-{
-    anTempNode = NewNode();
-    anTempNode->iType = ARGSTRING;
-    anTempNode->sLabel = const_cast<char*>($1->c_str());
-    anTempNode->sValue = const_cast<char*>($2->c_str());
-    $$ = anTempNode;
-}
-        |           tSTRING tSTRING
+arg:                tSTRING tSTRING
 {
     anTempNode = NewNode();
     anTempNode->iType = ARGSTRING;
@@ -741,7 +768,7 @@ arg:                tSTRING tSTRINGBRACKET
     anTempNode = NewNode();
     anTempNode->iType = ARGNUMLIST;
     anTempNode->sLabel = const_cast<char*>($1->c_str());
-    anTempNode->dValue = $3;
+//    anTempNode->dValue = $3;
     anTempNode->iListCount = iTLC - iTLCS;
     $$ = anTempNode;
 }
@@ -750,14 +777,43 @@ arg:                tSTRING tSTRINGBRACKET
     anTempNode = NewNode();
     anTempNode->iType = ARGNUMLIST;
     anTempNode->sLabel = const_cast<char*>($1->c_str());
-    anTempNode->dValue = $3;
+
+/*
+    auto p = $3;
+    anTempNode->dValue.reserve(iTLC - iTLCS);
+    std::copy(p, p + iTLC-iTLCS, std::back_inserter(anTempNode->dValue));
+*/
+    
+    auto p = $3;
+    anTempNode->vals.reserve(iTLC - iTLCS);
+    std::copy(p, p + iTLC-iTLCS, std::back_inserter(anTempNode->vals));
+    
     anTempNode->iListCount = iTLC - iTLCS;
     $$ = anTempNode;
 }
 
-bracketnumberlist:  '[' numberlist ']'
+arglist:            arglist arg
 {
-    $$ = $2;
+    ArgNode *   anTemp;
+
+    for(anTemp = $1; anTemp->Next; anTemp=anTemp->Next);
+    anTemp->Next = $2;
+    $$ = $1;
+};
+        |           arg
+{
+    $$ = $1;
+};
+
+number:             tNUMBER
+{
+    if (iTLC+1 > numberList.capacity())
+    {
+        numberList.reserve(numberList.capacity() + 100);
+        numberList.resize(numberList.capacity() + 100);
+    }
+    numberList[iTLC++] = $1;
+    $$ = &numberList[iTLCS];
 }
 
 numberlist:         numberlist number
@@ -769,30 +825,28 @@ numberlist:         numberlist number
     $$ = $1;
 };
 
-number:             tNUMBER
+bracketnumberlist:  '[' numberlist ']'
 {
-    if(iTLC+1 > iTLS)
-    {
-        iTLS += ALLOC_BLOCK;
-        alloctemplist(iTLS);
-    }
-    dTempList[iTLC++] = $1;
-    $$ = &dTempList[iTLCS];
+    $$ = $2;
 }
+
 %%
 
 #pragma clang diagnostic pop
 
-bool alloctemplist(int iSize)
+/*
+bool 
+alloctemplist(int iSize)
 {
-    dTempList = (float*)realloc((void*)dTempList,(iTLS*sizeof(float)));
-    if(dTempList == NULL)
+    numberList = (float*)realloc((void*)numberList,(iTLS*sizeof(float)));
+    if(numberList == NULL)
     {
         fprintf(stderr,"ERROR: alloctemplist(): outta memory\n");
         exit(1);
     }
     return(true);
 }
+*/
 
 ArgNode *
 NewNode()
@@ -803,11 +857,11 @@ NewNode()
     temp->sLabel = temp->sValue = NULL;
     temp->Next = NULL;
     temp->iListCount = 0;
-    temp->dValue = NULL;
     return(temp);
 }
 
-int buildRIarglist(ArgNode *anNode)
+int 
+buildRIarglist(ArgNode *anNode)
 {
     int        iArgCount = 0;
 
@@ -823,7 +877,7 @@ int buildRIarglist(ArgNode *anNode)
             break;
             
         case ARGNUMLIST:
-            parms[iArgCount] = anTempNode->dValue;
+            parms[iArgCount] = &anTempNode->dValue[0];
             plengths[iArgCount] = sizeof(float) * anTempNode->iListCount;
             break;
         }
@@ -832,7 +886,64 @@ int buildRIarglist(ArgNode *anNode)
     return (iArgCount);
 }
 
-void FreeNode(ArgNode *anNode)
+int 
+buildRIarglist2(ArgNode *anNode)
+{
+    int        iArgCount = 0;
+
+    vals.clear();
+    tokens.clear();
+    for (anTempNode = anNode; anTempNode; anTempNode = anTempNode->Next)
+    {
+        tokens.push_back(anTempNode->sLabel);
+        switch (anTempNode->iType)
+        {
+        case ARGSTRING:
+            parms[iArgCount] = anTempNode->sValue;
+            plengths[iArgCount] = strlen(anTempNode->sValue);
+            break;
+            
+        case ARGNUMLIST:
+            parms[iArgCount] = &anTempNode->dValue[0];
+            vals.push_back(anTempNode->vals);
+            plengths[iArgCount] = sizeof(float) * anTempNode->iListCount;
+            break;
+        }
+        iArgCount++;
+    }
+    return (iArgCount);
+}
+
+
+RtMatrix
+buildMatrix(int start)
+{
+    RtMatrix matrix;
+    int i = start;
+    
+    matrix[0][0] = numberList[i++];
+    matrix[0][1] = numberList[i++];
+    matrix[0][2] = numberList[i++];
+    matrix[0][3] = numberList[i++];
+    matrix[1][0] = numberList[i++];
+    matrix[1][1] = numberList[i++];
+    matrix[1][2] = numberList[i++];
+    matrix[1][3] = numberList[i++];
+    matrix[2][0] = numberList[i++];
+    matrix[2][1] = numberList[i++];
+    matrix[2][2] = numberList[i++];
+    matrix[2][3] = numberList[i++];
+    matrix[3][0] = numberList[i++];
+    matrix[3][1] = numberList[i++];
+    matrix[3][2] = numberList[i++];
+    matrix[3][3] = numberList[i++];
+    
+    return matrix;
+}
+
+/*
+void 
+FreeNode(ArgNode *anNode)
 {
     while(anNode->Next)
         FreeNode(anNode->Next);
@@ -840,15 +951,10 @@ void FreeNode(ArgNode *anNode)
     delete(anNode->sValue);
     delete(anNode);
 }
-
-void debug()
-{
-    printf("debug");
-}
+*/
 
 void
 Rp::Parser::error(const std::string &message)
 {
-//   std::cerr << "Error: " << err_message << "\n";
    std::cerr << "Error: " << message << " (at line " << iLineNum << " in " << "source" << ")\n";
 }

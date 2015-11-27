@@ -6,5 +6,5 @@ includedir=@includedir@
 Name: rp 
 Description: rp (rib parser) library
 Version: @VERSION@
-Libs: -L${libdir} -lrpcorenew
+Libs: -L${libdir} -lrpcore
 Cflags: -I${includedir} 

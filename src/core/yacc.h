@@ -3,8 +3,6 @@
 
 #include <string>
 
-bool parse(const std::string &filename, bool debug=false);
-
 typedef struct strArgNode
 {
     int             iType;

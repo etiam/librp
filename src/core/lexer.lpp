@@ -1,6 +1,5 @@
 %{
 #include <string>
-#include "yacc.h"
 #include "scanner.h"
 
 extern void yyerror(char*);
@@ -8,9 +7,6 @@ extern int  iLineNum;
 
 /* typedef to make the returns for the tokens shorter */
 typedef Rp::Parser::token token;
-
-/* define to keep from re-typing the same code over and over */
-#define STOKEN( x ) ( new std::string( x ) )
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wwritable-strings"
@@ -28,49 +24,30 @@ typedef Rp::Parser::token token;
 
 ws              [ \t]+
 nl              \n
-string          \"[^\"\n]*[\"\n]
-stringbracket   \[\"[^\"\n]*[\"\n]\]
+string          \"[^\n"]+\"
 number          -?([0-9]+|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
 comment         #.*\n
+
 %%
 
 {ws}            {}
+
 {nl}+           { iLineNum++; }
+
 {comment}       { iLineNum++; }
 
 {string}        {
                     auto temp = std::string(yytext);
                     temp = temp.substr(1, yyleng-2);
                     yylval->string = new std::string(temp);
-                    
-//                    yylval->string = strdup(yytext);
-//                    m_parser->error("foobar");
-                    
-//                    memcpy(&yylval->string[0], &yylval->string[1], yyleng-1);
-                    
-//                    if(yylval->string[yyleng-2] != '"')
-//                        yyerror("Unterminated character string");
-//                    else
-//                        yylval->string[yyleng-2] = 0;
-                    
                     return token::tSTRING;
                 }
-
-{stringbracket} {
+                
+"["{string}"]"  {
                     auto temp = std::string(yytext);
                     temp = temp.substr(2, yyleng-4);
                     yylval->string = new std::string(temp);
-    
-//                    yylval->string = new std::string(yytext);
-//                    yylval->string = strdup(yytext);
-//                    memcpy(&yylval->string[0], &yylval->string[2], yyleng-1);
-                    
-//                    if(yylval->string[yyleng-4] != '"')
-//                        yyerror("Unterminated character string");
-//                    else
-//                        yylval->string[yyleng-4] = 0;
-                    
-                    return token::tSTRINGBRACKET;
+                    return token::tSTRING;
                 }
 
 {number}        {

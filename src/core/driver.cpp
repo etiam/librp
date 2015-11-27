@@ -66,7 +66,8 @@ Driver::debug(bool debugLexer, bool debugParser)
 }
 
 void
-Driver::Attribute(RtToken name, RtInt n, RtToken nms[], RtPointer vals[], RtInt lengths[])
+//Driver::Attribute(RtToken name, RtInt n, RtToken nms[], RtPointer vals[], RtInt lengths[])
+Driver::Attribute(RtToken name, RtInt n, RtToken nms[], RtPointers vals, RtInt lengths[])
 {
 }
 
@@ -77,6 +78,11 @@ Driver::AttributeBegin()
 
 void
 Driver::AttributeEnd()
+{
+}
+
+void
+Driver::Basis(RtBasis u, RtInt ustep, RtBasis v, RtInt vstep)
 {
 }
 
