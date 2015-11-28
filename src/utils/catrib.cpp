@@ -27,25 +27,58 @@ dumpVector(const std::vector<boost::any> &vector)
 class Catrib : public Driver
 {
   public:
-//    virtual void    Attribute(RtToken name, RtInt n, RtToken nms[], RtPointer vals[], RtInt lengths[]);
-    virtual void    Attribute(RtToken name, RtInt n, RtToken nms[], RtPointers vals, RtInt lengths[]);
+    virtual void    Attribute(RtToken name, RtInt n, RtToken nms[], RtPointers vals);
+    virtual void    AttributeBegin();
+    virtual void    AttributeEnd();
     virtual void    Basis(RtBasis u, RtInt ustep, RtBasis v, RtInt vstep);
+    virtual void    Clipping(RtFloat nearplane, RtFloat farplane);
     virtual void    ConcatTransform(RtMatrix matrix);
-    virtual void    PointsGeneralPolygons(RtInt npolys, RtInt nloops[], RtInt nverts[], RtInt verts[], RtInt n, RtToken nms[], RtPointer vals[], RtInt lengths[]);
+    virtual void    Display(RtToken name, RtToken type, RtToken, RtInt n, RtToken nms[], RtPointers vals);
+    virtual void    Exposure(RtFloat gain, RtFloat gamma);
+    virtual void    Format(RtInt xres, RtInt yres, RtFloat pixel_ar);
+    virtual void    FrameBegin(RtInt frame);
+    virtual void    FrameEnd();
+    virtual void    Matte(bool onoff);
+    virtual void    Orientation(RtToken orient);
+    virtual void    PointsGeneralPolygons(RtInt npolys, RtInt nloops[], RtInt nverts[], RtInt verts[], RtInt n, RtToken nms[], RtPointers vals);
+    virtual void    PixelFilter(RtToken func, RtFloat xwidth, RtFloat ywidth);
+    virtual void    PixelSamples(RtFloat x, RtFloat y);
+    virtual void    Projection(RtToken, RtInt n, RtToken nms[], RtPointers vals);
+    virtual void    RelativeDetail(RtFloat rel);
     virtual void    Rotate(RtFloat angle, RtFloat dx, RtFloat dy, RtFloat dz);
+    virtual void    Scale(RtFloat sx, RtFloat sy, RtFloat sz);
+    virtual void    ScreenWindow(RtFloat left, RtFloat right, RtFloat bottom, RtFloat top);
+    virtual void    ShadingInterpolation(RtToken type);
+    virtual void    ShadingRate(RtFloat size);
+    virtual void    Sides(RtInt n);
     virtual void    TransformBegin();
+    virtual void    TransformEnd();
+    virtual void    Translate(RtFloat tx, RtFloat ty, RtFloat tz);
+    virtual void    WorldBegin();
+    virtual void    WorldEnd();
 
   private:
-    std::string     argListToString(int n, std::string nms[], RtPointer vals[], int lengths[]);
-    std::string     argListToString2(int n, std::string nms[], RtPointers vals, int lengths[]);
+//    std::string     argListToString(int n, std::string nms[], RtPointers vals, int lengths[]);
+    std::string     argListToString2(int n, std::string nms[], RtPointers vals);
 
 };
 
 void
-//Catrib::Attribute(RtToken name, int n, RtToken nms[], RtPointer vals[], int lengths[])
-Catrib::Attribute(RtToken name, int n, RtToken nms[], RtPointers vals, int lengths[])
+Catrib::Attribute(RtToken name, int n, RtToken nms[], RtPointers vals)
 {
-    std::cout << "Attribute " << "\"" << name << "\"" << argListToString2(n, nms, vals, lengths) << std::endl;
+    std::cout << "Attribute " << "\"" << name << "\"" << argListToString2(n, nms, vals) << std::endl;
+}
+
+void
+Catrib::AttributeBegin()
+{
+    std::cout << "AttributeBegin" << std::endl;
+}
+
+void
+Catrib::AttributeEnd()
+{
+    std::cout << "AttributeEnd" << std::endl;
 }
 
 void
@@ -71,19 +104,87 @@ Catrib::Basis(RtBasis u, RtInt ustep, RtBasis v, RtInt vstep)
 }
 
 void
+Catrib::Clipping(RtFloat nearplane, RtFloat farplane)
+{
+    std::cout << "Clipping " << nearplane << " " << farplane << std::endl;
+}
+
+void
 Catrib::ConcatTransform(RtMatrix matrix)
 {
     std::cout << "ConcatTransform ";
     std::cout << "[";
     std::cout << matrix[0][0] << " " << matrix[0][1] << " " <<  matrix[0][2] << " " << matrix[0][3] << " "
-              << matrix[1][0] << " " << matrix[1][1] << " " <<  matrix[1][2] << " " << matrix[0][3] << " "
-              << matrix[2][0] << " " << matrix[2][1] << " " <<  matrix[2][2] << " " << matrix[0][3] << " "
-              << matrix[3][0] << " " << matrix[3][1] << " " <<  matrix[3][2] << " " << matrix[0][3];
+              << matrix[1][0] << " " << matrix[1][1] << " " <<  matrix[1][2] << " " << matrix[1][3] << " "
+              << matrix[2][0] << " " << matrix[2][1] << " " <<  matrix[2][2] << " " << matrix[2][3] << " "
+              << matrix[3][0] << " " << matrix[3][1] << " " <<  matrix[3][2] << " " << matrix[3][3];
     std::cout << "]" << std::endl;
 }
 
 void
-Catrib::PointsGeneralPolygons(int npolys, int nloops[], int nverts[], int verts[], int n, RtToken nms[], RtPointer vals[], int lengths[])
+Catrib::Display(RtToken name, RtToken type, RtToken mode, RtInt n, RtToken nms[], RtPointers vals)
+{
+    std::cout << "Display \"" << name << "\" \"" << type << "\" \"" << mode << "\" ";
+    std::cout << argListToString2(n, nms, vals) << std::endl;
+}
+
+void
+Catrib::Exposure(RtFloat gain, RtFloat gamma)
+{
+    std::cout << "Exposure " << gain << " " << gamma << std::endl;
+}
+
+void
+Catrib::Format(RtInt xres, RtInt yres, RtFloat pixel_ar)
+{
+    std::cout << "Format " << xres << " " << yres << " " << pixel_ar << std::endl;
+}
+
+void
+Catrib::FrameBegin(RtInt frame)
+{
+    std::cout << "FrameBegin " << frame << std::endl;
+}
+
+void
+Catrib::FrameEnd()
+{
+    std::cout << "FrameEnd" << std::endl;
+}
+
+void
+Catrib::Matte(bool onoff)
+{
+    std::cout << "Matte " << onoff << std::endl;
+}
+
+void
+Catrib::Orientation(RtToken orient)
+{
+    std::cout << "Orientation \"" << orient << "\"" << std::endl;
+}
+
+void
+Catrib::PixelSamples(RtFloat x, RtFloat y)
+{
+    std::cout << "PixelSamples " << x << " " << y << std::endl;
+}
+
+void
+Catrib::Projection(RtToken name, RtInt n, RtToken nms[], RtPointers vals)
+{
+    std::cout << "Projection \"" << name << "\" ";
+    std::cout << argListToString2(n, nms, vals) << std::endl;
+}
+
+void
+Catrib::RelativeDetail(RtFloat rel)
+{
+    std::cout << "RelativeDetail " << rel << std::endl;
+}
+
+void
+Catrib::PointsGeneralPolygons(int npolys, int nloops[], int nverts[], int verts[], int n, RtToken nms[], RtPointers vals)
 {
     std::cout << "PointsGeneralPolygons ";
 
@@ -117,10 +218,16 @@ Catrib::PointsGeneralPolygons(int npolys, int nloops[], int nverts[], int verts[
     std::cout << "[";
     for (auto i=0; i < verts_size; i++)
         std::cout << verts[i] << " ";
-    std::cout << "] ";
+    std::cout << "]";
     }
 
-    std::cout << argListToString(n, nms, vals, lengths) << std::endl;
+    std::cout << argListToString2(n, nms, vals) << std::endl;
+}
+
+void
+Catrib::PixelFilter(RtToken func, RtFloat width, RtFloat height)
+{
+    std::cout << "PixelFilter \"" << func << "\" " << width << " " << height << std::endl;
 }
 
 void
@@ -130,56 +237,77 @@ Catrib::Rotate(float angle, float dx, float dy, float dz)
 }
 
 void
+Catrib::Scale(RtFloat sx, RtFloat sy, RtFloat sz)
+{
+    std::cout << "Scale " << sx << " " << sy << " " << sz << std::endl;
+}
+
+void
+Catrib::ScreenWindow(RtFloat left, RtFloat right, RtFloat bottom, RtFloat top)
+{
+    std::cout << "ScreenWindow " << left << " " << right << " " << bottom << " " << top << std::endl;
+}
+
+void
+Catrib::ShadingInterpolation(RtToken type)
+{
+    std::cout << "ShadingInterpolation \"" << type << "\"" << std::endl;
+}
+
+void
+Catrib::ShadingRate(RtFloat size)
+{
+    std::cout << "ShadingRate " << size << std::endl;
+}
+
+void
+Catrib::Sides(RtInt n)
+{
+    std::cout << "Sides " << n << std::endl;
+}
+
+void
 Catrib::TransformBegin()
 {
     std::cout << "TransformBegin" << std::endl;
 }
 
-std::string
-Catrib::argListToString(int n, std::string nms[], RtPointer vals[], int lengths[])
+void
+Catrib::TransformEnd()
 {
-    std::stringstream out;
-
-    for (auto i = 0; i < n; ++i)
-    {
-        auto v = vals[i];
-
-        out << " \"" << nms[i] << "\" [";
-
-        if (nms[i].find("string") != std::string::npos)
-            out << "\"" << static_cast<char*>(v) << "\"";
-        else if (nms[i].find("int") != std::string::npos)
-        {
-            for (auto j=0; j < lengths[i] / sizeof(float); ++j)
-            {
-                out << static_cast<int>(static_cast<float*>(v)[j]) << " ";
-            }
-        }
-        else if (nms[i].find("float") != std::string::npos ||
-                 nms[i].find("P") != std::string::npos)
-        {
-            for (auto j=0; j < lengths[i] / sizeof(float); ++j)
-            {
-                out << static_cast<float*>(v)[j] << " ";
-            }
-        }
-        out << "]";
-    }
-    return out.str();
+    std::cout << "TransformEnd" << std::endl;
 }
 
-std::string
-Catrib::argListToString2(int n, std::string nms[], RtPointers vals, int lengths[])
+void
+Catrib::Translate(RtFloat tx, RtFloat ty, RtFloat tz)
 {
-    std::stringstream out;
+    std::cout << "Translate " << tx << " " << ty << " " << tz << std::endl;
+}
 
-    for (auto i = 0; i < n; ++i)
-    {
-        auto v = vals[i];
+void
+Catrib::WorldBegin()
+{
+    std::cout << "WorldBegin" << std::endl;
+}
 
+void
+Catrib::WorldEnd()
+{
+    std::cout << "WorldEnd" << std::endl;
+}
+
+
+//std::string
+//Catrib::argListToString(int n, std::string nms[], RtPointers vals, int lengths[])
+//{
+//    std::stringstream out;
+//
+//    for (auto i = 0; i < n; ++i)
+//    {
+//        auto v = vals[i];
+//
 //        out << " \"" << nms[i] << "\" [";
-        out << " \"" << nms[i] << "\" ";
-
+//
 //        if (nms[i].find("string") != std::string::npos)
 //            out << "\"" << static_cast<char*>(v) << "\"";
 //        else if (nms[i].find("int") != std::string::npos)
@@ -189,16 +317,43 @@ Catrib::argListToString2(int n, std::string nms[], RtPointers vals, int lengths[
 //                out << static_cast<int>(static_cast<float*>(v)[j]) << " ";
 //            }
 //        }
-        if (nms[i].find("float") != std::string::npos ||
+//        else if (nms[i].find("float") != std::string::npos ||
+//                 nms[i].find("P") != std::string::npos)
+//        {
+//            for (auto j=0; j < lengths[i] / sizeof(float); ++j)
+//            {
+//                out << static_cast<float*>(v)[j] << " ";
+//            }
+//        }
+//        out << "]";
+//    }
+//    return out.str();
+//}
+
+std::string
+Catrib::argListToString2(int n, std::string nms[], RtPointers vals)
+{
+    std::stringstream out;
+
+    for (auto i = 0; i < n; ++i)
+    {
+        auto v = vals[i];
+
+        out << " \"" << nms[i] << "\" ";
+
+        if (nms[i].find("string") != std::string::npos)
+        {
+            out << "[\"" << boost::any_cast<char*>(v[0]) << "\"]";
+        }
+        else if (nms[i].find("int") != std::string::npos)
+        {
+            out << dumpVector<int>(v);
+        }
+        else if (nms[i].find("float") != std::string::npos ||
                  nms[i].find("P") != std::string::npos)
         {
             out << dumpVector<float>(v);
-//            for (auto j=0; j < lengths[i] / sizeof(float); ++j)
-//            {
-//                out << boost::any_cast<float>(v[j]) << " ";
-//            }
         }
-//        out << "]";
     }
     return out.str();
 }
@@ -209,6 +364,8 @@ main (int argc, char **argv)
     if (argc != 2)
         return (EXIT_FAILURE);
 
+    std::cout << "##Renderman RIB" << std::endl;
+    std::cout << "version 3.04" << std::endl;
     Catrib driver;
 //    driver.debug(true, true);
     driver.parse(argv[1]);

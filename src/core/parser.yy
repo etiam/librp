@@ -19,14 +19,10 @@ namespace Rp
 
 typedef struct strArgNode
 {
-    int             iType;
-    int             iListCount;
-    int             iListSize;
-    char *          sLabel;
-    char *          sValue;
-    std::vector<float>  dValue;
+    int                         type;
+    std::string                 label;
     std::vector<boost::any>     vals;
-    strArgNode *    Next;
+    strArgNode *                next;
 } ArgNode;
 
 }
@@ -64,10 +60,8 @@ enum
 };
 
 ArgNode *       NewNode();
-int             buildRIarglist(ArgNode*);
-int             buildRIarglist2(ArgNode*);
+int             buildArgList(ArgNode *node);
 RtMatrix        buildMatrix(int start);
-bool            alloctemplist(int);
 
 char *          sSource;
 int             iLineNum = 1;
@@ -76,16 +70,11 @@ int             iTLS = 0, iTLC, iTLCS;
 int             iPPnv,iPPvll,iPGPnlp;
 int             iVOrder,iVOrderL;
 int             iNC,iNO,iNK,iNMn,iNMx,iNN,iNU,iNV;
-//float *         numberList;
 ArgNode *       anTempNode;
 
-std::vector<float>  numberList;
-
+std::vector<float>          numberList;
 std::vector<std::string>    tokens;
-
-RtPointers      vals;
-RtPointer       parms[MAX_ARGS];
-int             plengths[MAX_ARGS];
+RtPointers                  vals;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wwritable-strings"
@@ -267,9 +256,8 @@ attribute:          tATTRIBUTE tSTRING {iTLC=0;} arglist
 {
     int     iArgCount;
 
-//    iArgCount = buildRIarglist($4);
-    iArgCount = buildRIarglist2($4);
-    driver.Attribute(*$2, iArgCount, &tokens[0], vals, plengths);
+    iArgCount = buildArgList($4);
+    driver.Attribute(*$2, iArgCount, &tokens[0], vals);
 };
 
 attributebegin:     tATTRIBUTEBEGIN
@@ -348,6 +336,7 @@ camera:             tCAMERA tSTRING
 
 clipping:           tCLIPPING tNUMBER tNUMBER
 {
+    driver.Clipping($2, $3);
 }
 
 color:              tCOLOR {iTLC = 0; iTLCS = 0;} bracketnumberlist
@@ -423,15 +412,15 @@ declare:            tDECLARE tSTRING tSTRING
 
 display:            tDISPLAY tSTRING tSTRING tSTRING
 {
-    driver.Display(*$2, *$3, *$4, 0, nullptr, nullptr, nullptr);
+    driver.Display(*$2, *$3, *$4, 0, nullptr, RtPointers());
 }
 
 display:            tDISPLAY tSTRING tSTRING tSTRING {iTLC = 0;} arglist
 {
     int     iArgCount;
 
-    iArgCount = buildRIarglist($6);
-    driver.Display(*$2, *$3, *$4, iArgCount, &tokens[0], parms, plengths);
+    iArgCount = buildArgList($6);
+    driver.Display(*$2, *$3, *$4, iArgCount, &tokens[0], vals);
 };
 
 errorhandler:       tERRORHANDLER tSTRING
@@ -456,10 +445,12 @@ frameaspectratio:   tFRAMEASPECTRATIO tNUMBER
 
 framebegin:         tFRAMEBEGIN tNUMBER
 {
+    driver.FrameBegin($2);
 };
 
 frameend:           tFRAMEEND
 {
+    driver.FrameEnd();
 };
 
 geometricapproximation: tGEOMETRICAPPROXIMATION tSTRING tNUMBER
@@ -471,8 +462,8 @@ hider:              tHIDER tSTRING {iTLC=0;} arglist
 {
     int     iArgCount;
 
-    iArgCount = buildRIarglist($4);
-    driver.Hider(*$2, iArgCount, &tokens[0], parms, plengths);
+    iArgCount = buildArgList($4);
+    driver.Hider(*$2, iArgCount, &tokens[0], vals);
 };
 
 identity:           tIDENTITY
@@ -483,8 +474,8 @@ lightsource:        tLIGHTSOURCE {iTLC=0;} tSTRING tNUMBER arglist
 {
     int     iArgCount;
 
-    iArgCount = buildRIarglist($5);
-    driver.LightSource(*$3, iArgCount, &tokens[0], parms, plengths);
+    iArgCount = buildArgList($5);
+    driver.LightSource(*$3, iArgCount, &tokens[0], vals);
 };
 
 matte:              tMATTE tNUMBER
@@ -507,8 +498,8 @@ nupatch:            tNUPATCH
     vknot = new float[(int)$8+(int)$9];
     for(i=iVOrder; i < iVOrderL; i++)
         vknot[i-iVOrder] = numberList[i];
-    iArgCount = buildRIarglist($15);
-    driver.NuPatch((int)$2, (int)$3, uknot, $6, $7, (int)$8, (int)$9, vknot, $12, $13, iArgCount, &tokens[0], parms, plengths);
+    iArgCount = buildArgList($15);
+    driver.NuPatch((int)$2, (int)$3, uknot, $6, $7, (int)$8, (int)$9, vknot, $12, $13, iArgCount, &tokens[0], vals);
     delete(uknot);
     delete(vknot);
 };
@@ -521,8 +512,8 @@ option:             tOPTION tSTRING {iTLC=0;} arglist
 {
     int     iArgCount;
 
-    iArgCount = buildRIarglist($4);
-    driver.Option(*$2, iArgCount, &tokens[0], parms, plengths);
+    iArgCount = buildArgList($4);
+    driver.Option(*$2, iArgCount, &tokens[0], vals); 
 };
 
 orientation:        tORIENTATION tSTRING
@@ -566,8 +557,8 @@ pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS {iTLC = 0; iTLCS = 0;} bracketn
     for(i=iPPnv; i < iPPvll; i++)
         verts[i-iPPnv] = (int)numberList[i];
         
-    iArgCount = buildRIarglist($9);
-    driver.PointsGeneralPolygons(npolys, nloops, nverts, verts, iArgCount, &tokens[0], parms, plengths);
+    iArgCount = buildArgList($9);
+    driver.PointsGeneralPolygons(npolys, nloops, nverts, verts, iArgCount, &tokens[0], vals);
     delete nverts;
     delete verts;
 };
@@ -586,30 +577,30 @@ pointspolygons:     tPOINTSPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumberlist
     for(i=iPPnv; i < iPPvll; i++)
         verts[i-iPPnv] = (int)numberList[i];
         
-    iArgCount = buildRIarglist($7);
-    driver.PointsPolygons(iPPnv, nverts, verts, iArgCount, &tokens[0], parms);
+    iArgCount = buildArgList($7);
+    driver.PointsPolygons(iPPnv, nverts, verts, iArgCount, &tokens[0], vals);
     delete nverts;
     delete verts;
 };
 
-polygon:            tPOLYGON {iTLC = 0;} arglist
+polygon:            tPOLYGON tNUMBER {iTLC = 0;} arglist
 {
     int    iArgCount;
 
-    iArgCount = buildRIarglist($3);
-    driver.Polygon($3->iListCount / 3, iArgCount, &tokens[0], parms, plengths);
+    iArgCount = buildArgList($4);
+    driver.Polygon($2, iArgCount, &tokens[0], vals);
 };
 
 projection:         tPROJECTION tSTRING
 {
-    driver.Projection(*$2, 0, NULL, NULL, NULL);
+    driver.Projection(*$2, 0, nullptr, RtPointers());
 };
         |           tPROJECTION tSTRING {iTLC = 0;} arglist
 {
     int    iArgCount;
 
-    iArgCount = buildRIarglist($4);
-    driver.Projection(*$2, iArgCount, &tokens[0], parms, plengths);
+    iArgCount = buildArgList($4);
+    driver.Projection(*$2, iArgCount, &tokens[0], vals);
 };
 
 quantize:           tQUANTIZE tSTRING tNUMBER tNUMBER tNUMBER tNUMBER
@@ -639,10 +630,12 @@ scale:              tSCALE tNUMBER tNUMBER tNUMBER
 
 screenwindow:       tSCREENWINDOW tNUMBER tNUMBER tNUMBER tNUMBER
 {
+    driver.ScreenWindow($2, $3, $4, $5);
 };
 
 shadingrate:        tSHADINGRATE tNUMBER
 {
+    driver.ShadingRate($2);
 };
 
 shadinginterpolation:   tSHADINGINTERPOLATION tSTRING
@@ -664,13 +657,13 @@ surface:            tSURFACE tSTRING {iTLC = 0;} arglist
 {
     int    iArgCount;
 
-    iArgCount = buildRIarglist($4);
-    driver.Surface(*$2, iArgCount, &tokens[0], parms, plengths);
+    iArgCount = buildArgList($4);
+    driver.Surface(*$2, iArgCount, &tokens[0], vals);
 };
 
 surface:            tSURFACE tSTRING
 {
-    driver.Surface(*$2, 0, NULL, NULL, NULL);
+    driver.Surface(*$2, 0, nullptr, RtPointers());
 };
 
 shutter:            tSHUTTER tNUMBER tNUMBER
@@ -758,37 +751,33 @@ worldend:           tWORLDEND
 arg:                tSTRING tSTRING
 {
     anTempNode = NewNode();
-    anTempNode->iType = ARGSTRING;
-    anTempNode->sLabel = const_cast<char*>($1->c_str());
-    anTempNode->sValue = const_cast<char*>($2->c_str());
+    anTempNode->type = ARGSTRING;
+    anTempNode->label = *$1;
+    anTempNode->vals.push_back(const_cast<char*>($2->c_str()));
     $$ = anTempNode;
 }
         |           tSTRING {iTLCS = iTLC;} numberlist
 {
     anTempNode = NewNode();
-    anTempNode->iType = ARGNUMLIST;
-    anTempNode->sLabel = const_cast<char*>($1->c_str());
-//    anTempNode->dValue = $3;
-    anTempNode->iListCount = iTLC - iTLCS;
+    anTempNode->type = ARGNUMLIST;
+    anTempNode->label = *$1;
+    
+    auto nums = $3;
+    anTempNode->vals.reserve(iTLC - iTLCS);
+    std::copy(nums, nums + iTLC-iTLCS, std::back_inserter(anTempNode->vals));
+    
     $$ = anTempNode;
 }
         |           tSTRING {iTLCS = iTLC;} bracketnumberlist
 {
     anTempNode = NewNode();
-    anTempNode->iType = ARGNUMLIST;
-    anTempNode->sLabel = const_cast<char*>($1->c_str());
+    anTempNode->type = ARGNUMLIST;
+    anTempNode->label = *$1;
 
-/*
-    auto p = $3;
-    anTempNode->dValue.reserve(iTLC - iTLCS);
-    std::copy(p, p + iTLC-iTLCS, std::back_inserter(anTempNode->dValue));
-*/
-    
-    auto p = $3;
+    auto nums = $3;
     anTempNode->vals.reserve(iTLC - iTLCS);
-    std::copy(p, p + iTLC-iTLCS, std::back_inserter(anTempNode->vals));
+    std::copy(nums, nums + iTLC-iTLCS, std::back_inserter(anTempNode->vals));
     
-    anTempNode->iListCount = iTLC - iTLCS;
     $$ = anTempNode;
 }
 
@@ -796,8 +785,8 @@ arglist:            arglist arg
 {
     ArgNode *   anTemp;
 
-    for(anTemp = $1; anTemp->Next; anTemp=anTemp->Next);
-    anTemp->Next = $2;
+    for(anTemp = $1; anTemp->next; anTemp=anTemp->next);
+    anTemp->next = $2;
     $$ = $1;
 };
         |           arg
@@ -834,79 +823,35 @@ bracketnumberlist:  '[' numberlist ']'
 
 #pragma clang diagnostic pop
 
-/*
-bool 
-alloctemplist(int iSize)
-{
-    numberList = (float*)realloc((void*)numberList,(iTLS*sizeof(float)));
-    if(numberList == NULL)
-    {
-        fprintf(stderr,"ERROR: alloctemplist(): outta memory\n");
-        exit(1);
-    }
-    return(true);
-}
-*/
-
 ArgNode *
 NewNode()
 {
-    ArgNode *   temp;
+    ArgNode * temp;
 
     temp = new ArgNode;
-    temp->sLabel = temp->sValue = NULL;
-    temp->Next = NULL;
-    temp->iListCount = 0;
+    temp->next = nullptr;
+    
     return(temp);
 }
 
 int 
-buildRIarglist(ArgNode *anNode)
-{
-    int        iArgCount = 0;
-
-    tokens.clear();
-    for (anTempNode = anNode; anTempNode; anTempNode = anTempNode->Next)
-    {
-        tokens.push_back(anTempNode->sLabel);
-        switch (anTempNode->iType)
-        {
-        case ARGSTRING:
-            parms[iArgCount] = anTempNode->sValue;
-            plengths[iArgCount] = strlen(anTempNode->sValue);
-            break;
-            
-        case ARGNUMLIST:
-            parms[iArgCount] = &anTempNode->dValue[0];
-            plengths[iArgCount] = sizeof(float) * anTempNode->iListCount;
-            break;
-        }
-        iArgCount++;
-    }
-    return (iArgCount);
-}
-
-int 
-buildRIarglist2(ArgNode *anNode)
+buildArgList(ArgNode *node)
 {
     int        iArgCount = 0;
 
     vals.clear();
     tokens.clear();
-    for (anTempNode = anNode; anTempNode; anTempNode = anTempNode->Next)
+    for (anTempNode = node; anTempNode; anTempNode = anTempNode->next)
     {
-        tokens.push_back(anTempNode->sLabel);
-        switch (anTempNode->iType)
+        tokens.push_back(anTempNode->label);
+        switch (anTempNode->type)
         {
         case ARGSTRING:
-            parms[iArgCount] = anTempNode->sValue;
-            plengths[iArgCount] = strlen(anTempNode->sValue);
+            vals.push_back(anTempNode->vals);
             break;
             
         case ARGNUMLIST:
-            parms[iArgCount] = &anTempNode->dValue[0];
             vals.push_back(anTempNode->vals);
-            plengths[iArgCount] = sizeof(float) * anTempNode->iListCount;
             break;
         }
         iArgCount++;
@@ -940,18 +885,6 @@ buildMatrix(int start)
     
     return matrix;
 }
-
-/*
-void 
-FreeNode(ArgNode *anNode)
-{
-    while(anNode->Next)
-        FreeNode(anNode->Next);
-    delete(anNode->sLabel);
-    delete(anNode->sValue);
-    delete(anNode);
-}
-*/
 
 void
 Rp::Parser::error(const std::string &message)
