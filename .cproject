@@ -22,34 +22,19 @@
 					<folderInfo id="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506." name="/" resourcePath="">
 						<toolChain id="org.eclipse.linuxtools.cdt.autotools.core.toolChain.1837212398" name="GNU Autotools Toolchain" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolChain">
 							<targetPlatform id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.targetPlatform.1828398895" isAbstract="false" name="GNU Autotools Target Platform" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.targetPlatform"/>
-							<builder arguments="-j${NUMCORES}" buildPath="${ProjDirPath}/build-${ConfigName}-${HostArchName}" command="soundmake" id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder.1555586686" incrementalBuildTarget="install" keepEnvironmentInBuildfile="false" managedBuildOn="true" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder">
-								<outputEntries>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="build-dbg-amd64"/>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name=""/>
-								</outputEntries>
-							</builder>
+							<builder arguments="-j${NUMCORES}" buildPath="${ProjDirPath}/build-${ConfigName}-${HostArchName}" command="soundmake" id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder.1555586686" incrementalBuildTarget="install" keepEnvironmentInBuildfile="false" managedBuildOn="true" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder"/>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure.322765075" name="configure" superClass="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure">
 								<option id="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name.345597993" name="Name" superClass="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name" value="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506" valueType="string"/>
 							</tool>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen.2070610401" name="autogen.sh" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen"/>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.1980325725" name="GCC C Compiler" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc">
-								<option id="gnu.c.compiler.option.include.paths.660127714" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1564310199" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp.138757679" name="GCC C++ Compiler" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp">
-								<option id="gnu.cpp.compiler.option.include.paths.2094678863" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths"/>
-								<option id="gnu.cpp.compiler.option.preprocessor.undef.1259104132" name="Undefined symbols (-U)" superClass="gnu.cpp.compiler.option.preprocessor.undef" valueType="undefDefinedSymbols">
-									<listOptionValue builtIn="false" value="__cpp_exceptions"/>
-									<listOptionValue builtIn="false" value="__cplusplus"/>
-									<listOptionValue builtIn="false" value="__cpp_rtti"/>
-								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1999596037" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<sourceEntries>
-						<entry excluding="c++" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>

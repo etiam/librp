@@ -833,7 +833,6 @@ buildArgList(ArgNode *node)
     return tokens.size();
 }
 
-
 RtMatrix
 buildMatrix(int start)
 {
@@ -863,5 +862,5 @@ buildMatrix(int start)
 void
 Rp::Parser::error(const std::string &message)
 {
-   std::cerr << "Error: " << message << " (at line " << linenum << " in " << "source" << ")\n";
+   std::cerr << "Error: " << message << " (at line " << linenum << " of " << scanner.filename() << ")\n";
 }

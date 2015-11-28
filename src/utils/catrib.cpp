@@ -310,14 +310,15 @@ Catrib::argListToString(int n, RtTokens nms, RtPointers vals)
 int
 main (int argc, char **argv)
 {
-    if (argc != 2)
-        return (EXIT_FAILURE);
-
     std::cout << "##Renderman RIB" << std::endl;
     std::cout << "version 3.04" << std::endl;
     Catrib driver;
 //    driver.debug(true, true);
-    driver.parse(argv[1]);
+
+    if (argc > 1)
+        driver.parse(argv[1]);
+    else
+        driver.parse();
 
     return 1;
 }

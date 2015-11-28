@@ -1,6 +1,5 @@
-#include <cctype>
-#include <cassert>
-#include <fstream>
+//#include <cctype>
+//#include <cassert>
 
 #include <ut/make_unique.h>
 
@@ -22,37 +21,14 @@ Driver::~Driver()
 void
 Driver::parse(const std::string &filename)
 {
-    assert(!filename.empty());
-
-    std::ifstream in_file(filename);
-    if (!in_file.good())
-        exit(EXIT_FAILURE);
-
-    try
-    {
-        m_scanner = std::make_unique<Scanner>(&in_file);
-    }
-    catch (std::bad_alloc &ba)
-    {
-        std::cerr << "Failed to allocate scanner: (" << ba.what() << "), exiting!!\n";
-        exit(EXIT_FAILURE);
-    }
-
-    try
-    {
-        m_parser = std::make_unique<Parser>(*m_scanner, (*this));
-    }
-    catch (std::bad_alloc &ba)
-    {
-        std::cerr << "Failed to allocate parser: (" << ba.what() << "), exiting!!\n";
-        exit(EXIT_FAILURE);
-    }
-    //    scanner->setParser(parser);
-    m_scanner->set_debug(m_debugLexer);
+    m_scanner = std::make_unique<Scanner>(filename);
+    m_parser = std::make_unique<Parser>(*m_scanner, (*this));
     m_parser->set_debug_level(m_debugParser);
 
-    const int accept(0);
-    if (m_parser->parse() != accept)
+    m_scanner->setParser(*m_parser);
+    m_scanner->set_debug(m_debugLexer);
+
+    if (m_parser->parse() != 0)
     {
         std::cerr << "Parse failed!!\n";
     }
