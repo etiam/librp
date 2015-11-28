@@ -1,9 +1,10 @@
 %{
 #include <string>
+#include <ut/make_unique.h>
 #include "scanner.h"
 
 extern void yyerror(char*);
-extern int  iLineNum;
+extern int  linenum;
 
 /* typedef to make the returns for the tokens shorter */
 typedef Rp::Parser::token token;
@@ -32,9 +33,9 @@ comment         #.*\n
 
 {ws}            {}
 
-{nl}+           { iLineNum++; }
+{nl}+           { linenum++; }
 
-{comment}       { iLineNum++; }
+{comment}       { linenum++; }
 
 {string}        {
                     auto temp = std::string(yytext);
@@ -51,7 +52,7 @@ comment         #.*\n
                 }
 
 {number}        {
-                    yylval->dval = atof(yytext);
+                    yylval->number = atof(yytext);
                     return token::tNUMBER;
                 }
 

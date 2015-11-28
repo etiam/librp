@@ -17,12 +17,10 @@ namespace Rp
   class Scanner;
 }
 
-typedef struct strArgNode
+typedef struct
 {
-    int                         type;
     std::string                 label;
     std::vector<boost::any>     vals;
-    strArgNode *                next;
 } ArgNode;
 
 }
@@ -37,12 +35,9 @@ typedef struct strArgNode
 #endif
 #undef VERSION
 
-#include <cstdlib>
-#include <cstring>
 #include <string>
-#include <iostream>
 #include <sstream>
-#include <fstream>
+#include <memory>
 
 #include "driver.h"
 #include "scanner.h"
@@ -59,20 +54,18 @@ enum
     ARGNUMLIST
 };
 
-ArgNode *       NewNode();
-int             buildArgList(ArgNode *node);
-RtMatrix        buildMatrix(int start);
+int                     buildArgList(ArgNode *node);
+RtMatrix                buildMatrix(int start);
 
-char *          sSource;
-int             iLineNum = 1;
-int             iTLS = 0, iTLC, iTLCS;
-int             iPPnv, iPPvll, iPGPnlp;
-int             iVOrder, iVOrderL;
-int             iNC, iNO, iNK, iNMn, iNMx, iNN, iNU, iNV;
+std::string             source;
+int                     linenum = 1;
+int                     iTLC, iTLCS;
+int                     iPPnv, iPPvll, iPGPnlp;
+int                     iVOrder, iVOrderL;
+int                     iNC, iNO, iNK, iNMn, iNMx, iNN, iNU, iNV;
 
-ArgNode *       anTempNode;
-
-std::vector<float>      numberList;
+std::vector<ArgNode>    nodes;
+std::vector<float>      numbers;
 RtTokens                tokens;
 RtPointers              vals;
 
@@ -83,10 +76,10 @@ RtPointers              vals;
 
 %union
 {
-   float            dval;
+   float            number;
    std::string *    string;
-   ArgNode *        anNode;
-   float *          dValue;
+   ArgNode *        node;
+   float *          numbers;
 }
 
 /* token types */
@@ -162,17 +155,17 @@ RtPointers              vals;
 %token tWORLDBEGIN
 %token tWORLDEND
 
-%token <string> tSTRING
-%token <dval>   tNUMBER 
+%token <string>  tSTRING
+%token <number>  tNUMBER 
 
-%type  <anNode> arg
-%type  <anNode> arglist
+%type  <node>    arg
+%type  <node>    arglist
 
-%type  <dValue> bracketnumberlist
-%type  <dValue> numberlist
-%type  <dValue> number
+%type  <numbers> bracketnumbers
+%type  <numbers> numbers
+%type  <numbers> number
 
-/* destructor rule for <sval> objects */
+/* destructor rule for <string> objects */
 %destructor { if ($$)  { delete ($$); ($$) = nullptr; } } <string>
 
 %%
@@ -281,7 +274,7 @@ basis:              tBASIS tSTRING tNUMBER tSTRING tNUMBER
     
     driver.Basis(umatrix, $3, vmatrix, $5);
 }
-        |           tBASIS tSTRING tNUMBER {iTLC = 0; iTLCS = 0;} bracketnumberlist tNUMBER
+        |           tBASIS tSTRING tNUMBER {iTLC = 0; iTLCS = 0;} bracketnumbers tNUMBER
 {
     RtMatrix umatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};;
     auto uname = *$2;
@@ -298,7 +291,7 @@ basis:              tBASIS tSTRING tNUMBER tSTRING tNUMBER
         driver.Basis(umatrix, $3, buildMatrix(iTLCS), $6);
     }
 }
-        |           tBASIS {iTLC = 0; iTLCS = 0;} bracketnumberlist tNUMBER tSTRING tNUMBER
+        |           tBASIS {iTLC = 0; iTLCS = 0;} bracketnumbers tNUMBER tSTRING tNUMBER
 {
     RtMatrix vmatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};;
     auto vname = *$5;
@@ -315,7 +308,7 @@ basis:              tBASIS tSTRING tNUMBER tSTRING tNUMBER
         driver.Basis(buildMatrix(iTLCS), $4, vmatrix, $6);
     }
 }
-        |           tBASIS {iTLC = 0; iTLCS = 0;} bracketnumberlist tNUMBER bracketnumberlist tNUMBER
+        |           tBASIS {iTLC = 0; iTLCS = 0;} bracketnumbers tNUMBER bracketnumbers tNUMBER
 {
     if(iTLC - iTLCS != 32)
     {
@@ -339,7 +332,7 @@ clipping:           tCLIPPING tNUMBER tNUMBER
     driver.Clipping($2, $3);
 }
 
-color:              tCOLOR {iTLC = 0; iTLCS = 0;} bracketnumberlist
+color:              tCOLOR {iTLC = 0; iTLCS = 0;} bracketnumbers
 {
     RtColor    color;
 
@@ -351,13 +344,13 @@ color:              tCOLOR {iTLC = 0; iTLCS = 0;} bracketnumberlist
     }
     else
     {
-        color[0] = numberList[0];
-        color[1] = numberList[1];
-        color[2] = numberList[2];
+        color[0] = numbers[0];
+        color[1] = numbers[1];
+        color[2] = numbers[2];
         driver.Color(color);
     }
 }
-        |           tCOLOR {iTLC = 0; iTLCS = 0;} numberlist
+        |           tCOLOR {iTLC = 0; iTLCS = 0;} numbers
 {
     RtColor    color;
 
@@ -369,14 +362,14 @@ color:              tCOLOR {iTLC = 0; iTLCS = 0;} bracketnumberlist
     }
     else
     {
-        color[0] = numberList[0];
-        color[1] = numberList[1];
-        color[2] = numberList[2];
+        color[0] = numbers[0];
+        color[1] = numbers[1];
+        color[2] = numbers[2];
         driver.Color(color);
     }
 };
 
-concattransform:    tCONCATTRANSFORM {iTLC = 0; iTLCS = 0;} bracketnumberlist
+concattransform:    tCONCATTRANSFORM {iTLC = 0; iTLCS = 0;} bracketnumbers
 {
     if(iTLC - iTLCS != 16)
     {
@@ -484,9 +477,9 @@ matte:              tMATTE tNUMBER
 } 
 
 nupatch:            tNUPATCH
-                    tNUMBER tNUMBER {iTLC = 0; iTLCS = 0;} bracketnumberlist
+                    tNUMBER tNUMBER {iTLC = 0; iTLCS = 0;} bracketnumbers
                     tNUMBER tNUMBER
-                    tNUMBER tNUMBER {iVOrder = iTLC;} bracketnumberlist
+                    tNUMBER tNUMBER {iVOrder = iTLC;} bracketnumbers
                     tNUMBER tNUMBER {iVOrderL = iTLC;} arglist
 {
     int        i,iArgCount;
@@ -494,17 +487,17 @@ nupatch:            tNUPATCH
 
     uknot = new float[(int)$2+(int)$3];
     for(i=0; i < iVOrder; i++)
-        uknot[i] = numberList[i];
+        uknot[i] = numbers[i];
     vknot = new float[(int)$8+(int)$9];
     for(i=iVOrder; i < iVOrderL; i++)
-        vknot[i-iVOrder] = numberList[i];
+        vknot[i-iVOrder] = numbers[i];
     iArgCount = buildArgList($15);
     driver.NuPatch((int)$2, (int)$3, uknot, $6, $7, (int)$8, (int)$9, vknot, $12, $13, iArgCount, tokens, vals);
     delete(uknot);
     delete(vknot);
 };
 
-opacity:            tOPACITY {iTLC = 0; iTLCS = 0;} bracketnumberlist
+opacity:            tOPACITY {iTLC = 0; iTLCS = 0;} bracketnumbers
 {
 };
 
@@ -531,48 +524,38 @@ pixelsamples:       tPIXELSAMPLES tNUMBER tNUMBER
     driver.PixelSamples($2, $3);
 };
 
-pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumberlist
-                                                 {iPGPnlp = iTLC;} bracketnumberlist
-                                                 {iPPnv = iTLC;} bracketnumberlist
+pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumbers
+                                                 {iPGPnlp = iTLC;} bracketnumbers
+                                                 {iPPnv = iTLC;} bracketnumbers
                                                  {iPPvll = iTLC;} arglist
 {
     int     i, iArgCount;
-//    int   *nverts, *verts, *nloops;
     RtInts  nloops, nverts, verts;
 
     auto npolys = iPGPnlp;
     auto nverts_size = 0;
     for(i=0; i < npolys; i++)
-        nverts_size += static_cast<int>(numberList[i]);
+        nverts_size += static_cast<int>(numbers[i]);
    
-//    nloops = new int[npolys];     
-//    nverts = new int[nverts_size];
-//    verts = new int[iPPvll-iPPnv];
-    
     nloops.reserve(npolys);     
     nverts.reserve(nverts_size);
     verts.reserve(iPPvll-iPPnv);
     
     for(i=0; i < npolys; i++)
-//        nloops[i] = static_cast<int>(numberList[i]);
-        nloops.push_back(static_cast<int>(numberList[i]));
+        nloops.push_back(static_cast<int>(numbers[i]));
     
     for(i=iPGPnlp; i < iPPnv; i++)
-//        nverts[i-iPGPnlp] = (int)numberList[i];
-        nverts.push_back(static_cast<int>(numberList[i]));
+        nverts.push_back(static_cast<int>(numbers[i]));
 
     for(i=iPPnv; i < iPPvll; i++)
-//        verts[i-iPPnv] = (int)numberList[i];
-        verts.push_back(static_cast<int>(numberList[i]));
+        verts.push_back(static_cast<int>(numbers[i]));
         
     iArgCount = buildArgList($9);
     driver.PointsGeneralPolygons(npolys, nloops, nverts, verts, iArgCount, tokens, vals);
-//    delete nverts;
-//    delete verts;
 };
 
-pointspolygons:     tPOINTSPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumberlist
-                                    {iPPnv = iTLC;} bracketnumberlist
+pointspolygons:     tPOINTSPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumbers
+                                    {iPPnv = iTLC;} bracketnumbers
                                     {iPPvll = iTLC;} arglist
 {
     int     i,iArgCount;
@@ -581,9 +564,9 @@ pointspolygons:     tPOINTSPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumberlist
     nverts = new int[iPPnv];
     verts = new int[iPPvll-iPPnv];
     for(i=0; i < iPPnv; i++)
-        nverts[i] = (int)numberList[i];
+        nverts[i] = (int)numbers[i];
     for(i=iPPnv; i < iPPvll; i++)
-        verts[i-iPPnv] = (int)numberList[i];
+        verts[i-iPPnv] = (int)numbers[i];
         
     iArgCount = buildArgList($7);
     driver.PointsPolygons(iPPnv, nverts, verts, iArgCount, tokens, vals);
@@ -683,15 +666,15 @@ translate:          tTRANSLATE tNUMBER tNUMBER tNUMBER
     driver.Translate($2, $3, $4);
 };
 
-trimcurve:          tTRIMCURVE {iTLC = 0; iTLCS = 0;} bracketnumberlist
-                               {iNC = iTLC;} bracketnumberlist
-                               {iNO = iTLC;} bracketnumberlist
-                               {iNK = iTLC;} bracketnumberlist
-                               {iNMn = iTLC;} bracketnumberlist
-                               {iNMx = iTLC;} bracketnumberlist
-                               {iNN = iTLC;} bracketnumberlist
-                               {iNU = iTLC;} bracketnumberlist
-                               {iNV = iTLC;} bracketnumberlist
+trimcurve:          tTRIMCURVE {iTLC = 0; iTLCS = 0;} bracketnumbers
+                               {iNC = iTLC;} bracketnumbers
+                               {iNO = iTLC;} bracketnumbers
+                               {iNK = iTLC;} bracketnumbers
+                               {iNMn = iTLC;} bracketnumbers
+                               {iNMx = iTLC;} bracketnumbers
+                               {iNN = iTLC;} bracketnumbers
+                               {iNU = iTLC;} bracketnumbers
+                               {iNV = iTLC;} bracketnumbers
 {
     int         i;
     int        *ncurves,*order,*n;
@@ -707,28 +690,28 @@ trimcurve:          tTRIMCURVE {iTLC = 0; iTLCS = 0;} bracketnumberlist
     v = new float[iNV-iNU];
     w = new float[iTLC-iNV];
     for(i=0; i < iNC; i++)
-        ncurves[i] = (int)numberList[i];
+        ncurves[i] = (int)numbers[i];
     for(i=iNC; i < iNO; i++)
-        order[i-iNC] = (int)numberList[i];
+        order[i-iNC] = (int)numbers[i];
     for(i=iNO; i < iNK; i++)
-        knot[i-iNO] = numberList[i];
+        knot[i-iNO] = numbers[i];
     for(i=iNK; i < iNMn; i++)
-        min[i-iNK] = numberList[i];
+        min[i-iNK] = numbers[i];
     for(i=iNMn; i < iNMx; i++)
-        max[i-iNMn] = numberList[i];
+        max[i-iNMn] = numbers[i];
     for(i=iNMx; i < iNN; i++)
-        n[i-iNMx] = (int)numberList[i];
+        n[i-iNMx] = (int)numbers[i];
     for(i=iNN; i < iNU; i++)
-        u[i-iNN] = numberList[i];
+        u[i-iNN] = numbers[i];
     for(i=iNU; i < iNV; i++)
-        v[i-iNU] = numberList[i];
+        v[i-iNU] = numbers[i];
     for(i=iNV; i < iTLC; i++)
-        w[i-iNV] = numberList[i];
+        w[i-iNV] = numbers[i];
 
     driver.TrimCurve(iNC, ncurves, order, knot, min, max, n, u, v, w);
 };
 
-transform:          tTRANSFORM bracketnumberlist
+transform:          tTRANSFORM bracketnumbers
 {
 };
 
@@ -758,43 +741,45 @@ worldend:           tWORLDEND
 
 arg:                tSTRING tSTRING
 {
-    anTempNode = NewNode();
-    anTempNode->type = ARGSTRING;
-    anTempNode->label = *$1;
-    anTempNode->vals.push_back(const_cast<char*>($2->c_str()));
-    $$ = anTempNode;
-}
-        |           tSTRING {iTLCS = iTLC;} numberlist
-{
-    anTempNode = NewNode();
-    anTempNode->type = ARGNUMLIST;
-    anTempNode->label = *$1;
+    ArgNode node;
     
-    auto nums = $3;
-    anTempNode->vals.reserve(iTLC - iTLCS);
-    std::copy(nums, nums + iTLC-iTLCS, std::back_inserter(anTempNode->vals));
-    
-    $$ = anTempNode;
+    node.label = *$1;
+    node.vals.push_back(*$2);
+    nodes.push_back(node);
+
+    $$ = &node;
 }
-        |           tSTRING {iTLCS = iTLC;} bracketnumberlist
+        |           tSTRING {iTLCS = iTLC;} numbers
 {
-    anTempNode = NewNode();
-    anTempNode->type = ARGNUMLIST;
-    anTempNode->label = *$1;
+    ArgNode node;
+    
+    node.label = *$1;
 
     auto nums = $3;
-    anTempNode->vals.reserve(iTLC - iTLCS);
-    std::copy(nums, nums + iTLC-iTLCS, std::back_inserter(anTempNode->vals));
+    node.vals.reserve(iTLC - iTLCS);
+    std::copy(nums, nums + iTLC-iTLCS, std::back_inserter(node.vals));
     
-    $$ = anTempNode;
+    nodes.push_back(node);
+
+    $$ = &node;
+}
+        |           tSTRING {iTLCS = iTLC;} bracketnumbers
+{
+    ArgNode node;
+    
+    node.label = *$1;
+
+    auto nums = $3;
+    node.vals.reserve(iTLC - iTLCS);
+    std::copy(nums, nums + iTLC-iTLCS, std::back_inserter(node.vals));
+    
+    nodes.push_back(node);
+
+    $$ = &node;
 }
 
 arglist:            arglist arg
 {
-    ArgNode *   anTemp;
-
-    for(anTemp = $1; anTemp->next; anTemp=anTemp->next);
-    anTemp->next = $2;
     $$ = $1;
 };
         |           arg
@@ -804,16 +789,16 @@ arglist:            arglist arg
 
 number:             tNUMBER
 {
-    if (iTLC+1 > numberList.capacity())
+    if (iTLC+1 > numbers.capacity())
     {
-        numberList.reserve(numberList.capacity() + 100);
-        numberList.resize(numberList.capacity() + 100);
+        numbers.reserve(numbers.capacity() + 100);
+        numbers.resize(numbers.capacity() + 100);
     }
-    numberList[iTLC++] = $1;
-    $$ = &numberList[iTLCS];
+    numbers[iTLC++] = $1;
+    $$ = &numbers[iTLCS];
 }
 
-numberlist:         numberlist number
+numbers:         numbers number
 {
     $$ = $1;
 }
@@ -822,7 +807,7 @@ numberlist:         numberlist number
     $$ = $1;
 };
 
-bracketnumberlist:  '[' numberlist ']'
+bracketnumbers:  '[' numbers ']'
 {
     $$ = $2;
 }
@@ -831,40 +816,21 @@ bracketnumberlist:  '[' numberlist ']'
 
 #pragma clang diagnostic pop
 
-ArgNode *
-NewNode()
-{
-    ArgNode * temp;
-
-    temp = new ArgNode;
-    temp->next = nullptr;
-    
-    return(temp);
-}
-
 int 
 buildArgList(ArgNode *node)
 {
-    int        iArgCount = 0;
-
     vals.clear();
     tokens.clear();
-    for (anTempNode = node; anTempNode; anTempNode = anTempNode->next)
+   
+    for (const auto &node : nodes)
     {
-        tokens.push_back(anTempNode->label);
-        switch (anTempNode->type)
-        {
-        case ARGSTRING:
-            vals.push_back(anTempNode->vals);
-            break;
-            
-        case ARGNUMLIST:
-            vals.push_back(anTempNode->vals);
-            break;
-        }
-        iArgCount++;
+        tokens.push_back(node.label);
+        vals.push_back(node.vals);
     }
-    return (iArgCount);
+     
+    nodes.clear();
+    
+    return tokens.size();
 }
 
 
@@ -874,22 +840,22 @@ buildMatrix(int start)
     RtMatrix matrix;
     int i = start;
     
-    matrix[0][0] = numberList[i++];
-    matrix[0][1] = numberList[i++];
-    matrix[0][2] = numberList[i++];
-    matrix[0][3] = numberList[i++];
-    matrix[1][0] = numberList[i++];
-    matrix[1][1] = numberList[i++];
-    matrix[1][2] = numberList[i++];
-    matrix[1][3] = numberList[i++];
-    matrix[2][0] = numberList[i++];
-    matrix[2][1] = numberList[i++];
-    matrix[2][2] = numberList[i++];
-    matrix[2][3] = numberList[i++];
-    matrix[3][0] = numberList[i++];
-    matrix[3][1] = numberList[i++];
-    matrix[3][2] = numberList[i++];
-    matrix[3][3] = numberList[i++];
+    matrix[0][0] = numbers[i++];
+    matrix[0][1] = numbers[i++];
+    matrix[0][2] = numbers[i++];
+    matrix[0][3] = numbers[i++];
+    matrix[1][0] = numbers[i++];
+    matrix[1][1] = numbers[i++];
+    matrix[1][2] = numbers[i++];
+    matrix[1][3] = numbers[i++];
+    matrix[2][0] = numbers[i++];
+    matrix[2][1] = numbers[i++];
+    matrix[2][2] = numbers[i++];
+    matrix[2][3] = numbers[i++];
+    matrix[3][0] = numbers[i++];
+    matrix[3][1] = numbers[i++];
+    matrix[3][2] = numbers[i++];
+    matrix[3][3] = numbers[i++];
     
     return matrix;
 }
@@ -897,5 +863,5 @@ buildMatrix(int start)
 void
 Rp::Parser::error(const std::string &message)
 {
-   std::cerr << "Error: " << message << " (at line " << iLineNum << " in " << "source" << ")\n";
+   std::cerr << "Error: " << message << " (at line " << linenum << " in " << "source" << ")\n";
 }

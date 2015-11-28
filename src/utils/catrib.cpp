@@ -201,39 +201,6 @@ Catrib::PointsGeneralPolygons(RtInt npolys, RtInts nloops, RtInts nverts, RtInts
     std::cout << dumpVector(nloops) << " ";
     std::cout << dumpVector(nverts) << " ";
     std::cout << dumpVector(verts) << " ";
-//    {
-//    std::cout << "[";
-//    for (auto i=0; i < npolys; i++)
-//        std::cout << nloops[i] << " ";
-//    std::cout << "] ";
-//    }
-//
-//    auto nverts_size = 0;
-//    {
-//    for(auto i=0; i < npolys; i++)
-//        nverts_size += nloops[i];
-//    }
-//
-//    {
-//    std::cout << "[";
-//    for (auto i=0; i < nverts_size; i++)
-//        std::cout << nverts[i] << " ";
-//    std::cout << "] ";
-//    }
-//
-//    auto verts_size = 0;
-//    {
-//    for(auto i=0; i < nverts_size; i++)
-//        verts_size += nverts[i];
-//    }
-//
-//    {
-//    std::cout << "[";
-//    for (auto i=0; i < verts_size; i++)
-//        std::cout << verts[i] << " ";
-//    std::cout << "]";
-//    }
-
     std::cout << argListToString(n, nms, vals) << std::endl;
 }
 
@@ -323,7 +290,7 @@ Catrib::argListToString(int n, RtTokens nms, RtPointers vals)
 
         if (nms[i].find("string") != std::string::npos)
         {
-            out << "[\"" << boost::any_cast<char*>(v[0]) << "\"]";
+            out << "[\"" << boost::any_cast<std::string>(v[0]) << "\"]";
         }
         else if (nms[i].find("int") != std::string::npos)
         {
@@ -334,6 +301,8 @@ Catrib::argListToString(int n, RtTokens nms, RtPointers vals)
         {
             out << dumpAnyVector<float>(v);
         }
+
+        out << " ";
     }
     return out.str();
 }
