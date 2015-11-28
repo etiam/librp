@@ -66,7 +66,7 @@ Driver::debug(bool debugLexer, bool debugParser)
 }
 
 void
-Driver::Attribute(RtToken name, RtInt n, RtToken nms[], RtPointers vals)
+Driver::Attribute(RtToken name, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
@@ -116,7 +116,7 @@ Driver::Declare(RtToken, RtToken)
 }
 
 void
-Driver::Display(RtToken name, RtToken type, RtToken, RtInt n, RtToken nms[], RtPointers vals)
+Driver::Display(RtToken name, RtToken type, RtToken, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
@@ -156,7 +156,7 @@ Driver::GeometricApproximation(RtToken type, RtFloat value)
 }
 
 void
-Driver::Hider(RtToken, RtInt n, RtToken nms[], RtPointers vals)
+Driver::Hider(RtToken, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
@@ -181,12 +181,12 @@ Driver::FrameAspectRatio(RtFloat RtFloat1)
 }
 
 void
-Driver::LightSource(RtToken, RtInt n, RtToken nms[], RtPointers vals)
+Driver::LightSource(RtToken, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
 void
-Driver::NuPatch(RtInt int1, RtInt int2, RtFloat[], RtFloat RtFloat1, RtFloat RtFloat2, RtInt int3, RtInt int4, RtFloat[], RtFloat RtFloat3, RtFloat RtFloat4, RtInt n, RtToken nms[], RtPointers vals)
+Driver::NuPatch(RtInt int1, RtInt int2, RtFloat[], RtFloat RtFloat1, RtFloat RtFloat2, RtInt int3, RtInt int4, RtFloat[], RtFloat RtFloat3, RtFloat RtFloat4, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
@@ -196,7 +196,7 @@ Driver::Matte(bool onoff)
 }
 
 void
-Driver::Option(RtToken, RtInt n, RtToken nms[], RtPointers vals)
+Driver::Option(RtToken, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
@@ -216,22 +216,22 @@ Driver::PixelFilter(RtToken func, RtFloat width, RtFloat height)
 }
 
 void
-Driver::PointsGeneralPolygons(RtInt npolys, RtInt nloops[], RtInt nverts[], RtInt verts[], RtInt n, RtToken nms[], RtPointers vals)
+Driver::PointsGeneralPolygons(RtInt npolys, RtInts nloops, RtInts nverts, RtInts verts, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
 void
-Driver::PointsPolygons(RtInt npolys, RtInt nverts[], RtInt verts[], RtInt n, RtToken nms[], RtPointers vals)
+Driver::PointsPolygons(RtInt npolys, RtInt nverts[], RtInt verts[], RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
 void
-Driver::Polygon(RtInt int1, RtInt n, RtToken nms[], RtPointers vals)
+Driver::Polygon(RtInt int1, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
 void
-Driver::Projection(RtToken name, RtInt n, RtToken nms[], RtPointers vals)
+Driver::Projection(RtToken name, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
@@ -286,7 +286,7 @@ Driver::Sphere(RtFloat RtFloat1, RtFloat RtFloat2, RtFloat RtFloat3, RtFloat RtF
 }
 
 void
-Driver::Surface(RtToken, RtInt n, RtToken nms[], RtPointers vals)
+Driver::Surface(RtToken, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 

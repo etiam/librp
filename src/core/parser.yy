@@ -65,16 +65,16 @@ RtMatrix        buildMatrix(int start);
 
 char *          sSource;
 int             iLineNum = 1;
-
 int             iTLS = 0, iTLC, iTLCS;
-int             iPPnv,iPPvll,iPGPnlp;
-int             iVOrder,iVOrderL;
-int             iNC,iNO,iNK,iNMn,iNMx,iNN,iNU,iNV;
+int             iPPnv, iPPvll, iPGPnlp;
+int             iVOrder, iVOrderL;
+int             iNC, iNO, iNK, iNMn, iNMx, iNN, iNU, iNV;
+
 ArgNode *       anTempNode;
 
-std::vector<float>          numberList;
-std::vector<std::string>    tokens;
-RtPointers                  vals;
+std::vector<float>      numberList;
+RtTokens                tokens;
+RtPointers              vals;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wwritable-strings"
@@ -257,7 +257,7 @@ attribute:          tATTRIBUTE tSTRING {iTLC=0;} arglist
     int     iArgCount;
 
     iArgCount = buildArgList($4);
-    driver.Attribute(*$2, iArgCount, &tokens[0], vals);
+    driver.Attribute(*$2, iArgCount, tokens, vals);
 };
 
 attributebegin:     tATTRIBUTEBEGIN
@@ -412,7 +412,7 @@ declare:            tDECLARE tSTRING tSTRING
 
 display:            tDISPLAY tSTRING tSTRING tSTRING
 {
-    driver.Display(*$2, *$3, *$4, 0, nullptr, RtPointers());
+    driver.Display(*$2, *$3, *$4, 0, RtTokens(), RtPointers());
 }
 
 display:            tDISPLAY tSTRING tSTRING tSTRING {iTLC = 0;} arglist
@@ -420,7 +420,7 @@ display:            tDISPLAY tSTRING tSTRING tSTRING {iTLC = 0;} arglist
     int     iArgCount;
 
     iArgCount = buildArgList($6);
-    driver.Display(*$2, *$3, *$4, iArgCount, &tokens[0], vals);
+    driver.Display(*$2, *$3, *$4, iArgCount, tokens, vals);
 };
 
 errorhandler:       tERRORHANDLER tSTRING
@@ -463,7 +463,7 @@ hider:              tHIDER tSTRING {iTLC=0;} arglist
     int     iArgCount;
 
     iArgCount = buildArgList($4);
-    driver.Hider(*$2, iArgCount, &tokens[0], vals);
+    driver.Hider(*$2, iArgCount, tokens, vals);
 };
 
 identity:           tIDENTITY
@@ -475,7 +475,7 @@ lightsource:        tLIGHTSOURCE {iTLC=0;} tSTRING tNUMBER arglist
     int     iArgCount;
 
     iArgCount = buildArgList($5);
-    driver.LightSource(*$3, iArgCount, &tokens[0], vals);
+    driver.LightSource(*$3, iArgCount, tokens, vals);
 };
 
 matte:              tMATTE tNUMBER
@@ -499,7 +499,7 @@ nupatch:            tNUPATCH
     for(i=iVOrder; i < iVOrderL; i++)
         vknot[i-iVOrder] = numberList[i];
     iArgCount = buildArgList($15);
-    driver.NuPatch((int)$2, (int)$3, uknot, $6, $7, (int)$8, (int)$9, vknot, $12, $13, iArgCount, &tokens[0], vals);
+    driver.NuPatch((int)$2, (int)$3, uknot, $6, $7, (int)$8, (int)$9, vknot, $12, $13, iArgCount, tokens, vals);
     delete(uknot);
     delete(vknot);
 };
@@ -513,7 +513,7 @@ option:             tOPTION tSTRING {iTLC=0;} arglist
     int     iArgCount;
 
     iArgCount = buildArgList($4);
-    driver.Option(*$2, iArgCount, &tokens[0], vals); 
+    driver.Option(*$2, iArgCount, tokens, vals); 
 };
 
 orientation:        tORIENTATION tSTRING
@@ -537,30 +537,38 @@ pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS {iTLC = 0; iTLCS = 0;} bracketn
                                                  {iPPvll = iTLC;} arglist
 {
     int     i, iArgCount;
-    int   *nverts, *verts, *nloops;
+//    int   *nverts, *verts, *nloops;
+    RtInts  nloops, nverts, verts;
 
     auto npolys = iPGPnlp;
     auto nverts_size = 0;
     for(i=0; i < npolys; i++)
         nverts_size += static_cast<int>(numberList[i]);
    
-    nloops = new int[npolys];     
-    nverts = new int[nverts_size];
-    verts = new int[iPPvll-iPPnv];
+//    nloops = new int[npolys];     
+//    nverts = new int[nverts_size];
+//    verts = new int[iPPvll-iPPnv];
+    
+    nloops.reserve(npolys);     
+    nverts.reserve(nverts_size);
+    verts.reserve(iPPvll-iPPnv);
     
     for(i=0; i < npolys; i++)
-        nloops[i] = static_cast<int>(numberList[i]);
+//        nloops[i] = static_cast<int>(numberList[i]);
+        nloops.push_back(static_cast<int>(numberList[i]));
     
     for(i=iPGPnlp; i < iPPnv; i++)
-        nverts[i-iPGPnlp] = (int)numberList[i];
+//        nverts[i-iPGPnlp] = (int)numberList[i];
+        nverts.push_back(static_cast<int>(numberList[i]));
 
     for(i=iPPnv; i < iPPvll; i++)
-        verts[i-iPPnv] = (int)numberList[i];
+//        verts[i-iPPnv] = (int)numberList[i];
+        verts.push_back(static_cast<int>(numberList[i]));
         
     iArgCount = buildArgList($9);
-    driver.PointsGeneralPolygons(npolys, nloops, nverts, verts, iArgCount, &tokens[0], vals);
-    delete nverts;
-    delete verts;
+    driver.PointsGeneralPolygons(npolys, nloops, nverts, verts, iArgCount, tokens, vals);
+//    delete nverts;
+//    delete verts;
 };
 
 pointspolygons:     tPOINTSPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumberlist
@@ -578,7 +586,7 @@ pointspolygons:     tPOINTSPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumberlist
         verts[i-iPPnv] = (int)numberList[i];
         
     iArgCount = buildArgList($7);
-    driver.PointsPolygons(iPPnv, nverts, verts, iArgCount, &tokens[0], vals);
+    driver.PointsPolygons(iPPnv, nverts, verts, iArgCount, tokens, vals);
     delete nverts;
     delete verts;
 };
@@ -588,19 +596,19 @@ polygon:            tPOLYGON tNUMBER {iTLC = 0;} arglist
     int    iArgCount;
 
     iArgCount = buildArgList($4);
-    driver.Polygon($2, iArgCount, &tokens[0], vals);
+    driver.Polygon($2, iArgCount, tokens, vals);
 };
 
 projection:         tPROJECTION tSTRING
 {
-    driver.Projection(*$2, 0, nullptr, RtPointers());
+    driver.Projection(*$2, 0, RtTokens(), RtPointers());
 };
         |           tPROJECTION tSTRING {iTLC = 0;} arglist
 {
     int    iArgCount;
 
     iArgCount = buildArgList($4);
-    driver.Projection(*$2, iArgCount, &tokens[0], vals);
+    driver.Projection(*$2, iArgCount, tokens, vals);
 };
 
 quantize:           tQUANTIZE tSTRING tNUMBER tNUMBER tNUMBER tNUMBER
@@ -658,12 +666,12 @@ surface:            tSURFACE tSTRING {iTLC = 0;} arglist
     int    iArgCount;
 
     iArgCount = buildArgList($4);
-    driver.Surface(*$2, iArgCount, &tokens[0], vals);
+    driver.Surface(*$2, iArgCount, tokens, vals);
 };
 
 surface:            tSURFACE tSTRING
 {
-    driver.Surface(*$2, 0, nullptr, RtPointers());
+    driver.Surface(*$2, 0, RtTokens(), RtPointers());
 };
 
 shutter:            tSHUTTER tNUMBER tNUMBER
