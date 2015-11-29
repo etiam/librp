@@ -51,9 +51,9 @@ class Catrib : public Driver
     virtual void    FrameEnd();
     virtual void    Matte(bool onoff);
     virtual void    Orientation(RtToken orient);
-    virtual void    PointsGeneralPolygons(RtInt npolys, RtInts nloops, RtInts nverts, RtInts verts, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    PixelFilter(RtToken func, RtFloat xwidth, RtFloat ywidth);
     virtual void    PixelSamples(RtFloat x, RtFloat y);
+    virtual void    PointsGeneralPolygons(RtInt npolys, RtInts nloops, RtInts nverts, RtInts verts, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    Projection(RtToken, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    RelativeDetail(RtFloat rel);
     virtual void    Rotate(RtFloat angle, RtFloat dx, RtFloat dy, RtFloat dz);
@@ -175,22 +175,15 @@ Catrib::Orientation(RtToken orient)
 }
 
 void
+Catrib::PixelFilter(RtToken func, RtFloat width, RtFloat height)
+{
+    std::cout << "PixelFilter \"" << func << "\" " << width << " " << height << std::endl;
+}
+
+void
 Catrib::PixelSamples(RtFloat x, RtFloat y)
 {
     std::cout << "PixelSamples " << x << " " << y << std::endl;
-}
-
-void
-Catrib::Projection(RtToken name, RtInt n, RtTokens nms, RtPointers vals)
-{
-    std::cout << "Projection \"" << name << "\" ";
-    std::cout << argListToString(n, nms, vals) << std::endl;
-}
-
-void
-Catrib::RelativeDetail(RtFloat rel)
-{
-    std::cout << "RelativeDetail " << rel << std::endl;
 }
 
 void
@@ -205,9 +198,16 @@ Catrib::PointsGeneralPolygons(RtInt npolys, RtInts nloops, RtInts nverts, RtInts
 }
 
 void
-Catrib::PixelFilter(RtToken func, RtFloat width, RtFloat height)
+Catrib::Projection(RtToken name, RtInt n, RtTokens nms, RtPointers vals)
 {
-    std::cout << "PixelFilter \"" << func << "\" " << width << " " << height << std::endl;
+    std::cout << "Projection \"" << name << "\" ";
+    std::cout << argListToString(n, nms, vals) << std::endl;
+}
+
+void
+Catrib::RelativeDetail(RtFloat rel)
+{
+    std::cout << "RelativeDetail " << rel << std::endl;
 }
 
 void
