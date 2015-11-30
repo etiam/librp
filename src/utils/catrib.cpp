@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
+#include <iterator>
 #include <vector>
 #include <boost/any.hpp>
 
@@ -50,6 +51,7 @@ class Catrib : public Driver
     virtual void    FrameBegin(RtInt frame);
     virtual void    FrameEnd();
     virtual void    Matte(bool onoff);
+    virtual void    Option(RtToken name, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    Orientation(RtToken orient);
     virtual void    PixelFilter(RtToken func, RtFloat xwidth, RtFloat ywidth);
     virtual void    PixelSamples(RtFloat x, RtFloat y);
@@ -166,6 +168,12 @@ void
 Catrib::Matte(bool onoff)
 {
     std::cout << "Matte " << onoff << std::endl;
+}
+
+void
+Catrib::Option(RtToken name, RtInt n, RtTokens nms, RtPointers vals)
+{
+    std::cout << "Option " << "\"" << name << "\" " << argListToString(n, nms, vals) << std::endl;
 }
 
 void
@@ -292,11 +300,13 @@ Catrib::argListToString(int n, RtTokens nms, RtPointers vals)
         {
             out << "[\"" << boost::any_cast<std::string>(v[0]) << "\"]";
         }
-        else if (nms[i].find("int") != std::string::npos)
+        else if (nms[i].find("int") != std::string::npos ||
+                 nms[i].find("enable") != std::string::npos)
         {
-            out << dumpAnyVector<int>(v);
+            out << dumpAnyVector<float>(v);
         }
         else if (nms[i].find("float") != std::string::npos ||
+                 nms[i].find("color") != std::string::npos ||
                  nms[i].find("P") != std::string::npos)
         {
             out << dumpAnyVector<float>(v);
@@ -313,6 +323,7 @@ main (int argc, char **argv)
     std::cout << "##Renderman RIB" << std::endl;
     std::cout << "version 3.04" << std::endl;
     Catrib driver;
+
 //    driver.debug(true, true);
 
     if (argc > 1)

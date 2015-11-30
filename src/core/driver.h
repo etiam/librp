@@ -60,7 +60,7 @@ class Driver
     virtual void    LightSource(RtToken, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    NuPatch(RtInt, RtInt, RtFloat[], RtFloat, RtFloat, RtInt, RtInt, RtFloat[], RtFloat, RtFloat, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    Matte(bool onoff);
-    virtual void    Option(RtToken, RtInt n, RtTokens nms, RtPointers vals);
+    virtual void    Option(RtToken name, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    Orientation(RtToken orient);
     virtual void    PixelFilter(RtToken func, RtFloat xwidth, RtFloat ywidth);
     virtual void    PixelSamples(RtFloat x, RtFloat y);

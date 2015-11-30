@@ -895,10 +895,10 @@
 		<scannerConfigBuildInfo instanceId="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1352221824.1688500212.364118437.793120732;org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1352221824.1688500212.364118437.793120732.;org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.741268302;cdt.managedbuild.tool.gnu.c.compiler.input.644184165">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.542002700;org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.542002700.;org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.927050875;cdt.managedbuild.tool.gnu.c.compiler.input.723514325">
+		<scannerConfigBuildInfo instanceId="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.880709720;org.eclipse.linuxtools.cdt.autotools.core.configuration.build.880709720.;org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.1695133683;cdt.managedbuild.tool.gnu.c.compiler.input.1551162266">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.880709720;org.eclipse.linuxtools.cdt.autotools.core.configuration.build.880709720.;org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.1695133683;cdt.managedbuild.tool.gnu.c.compiler.input.1551162266">
+		<scannerConfigBuildInfo instanceId="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.542002700;org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.542002700.;org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.927050875;cdt.managedbuild.tool.gnu.c.compiler.input.723514325">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506;org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.;org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp.138757679;cdt.managedbuild.tool.gnu.cpp.compiler.input.1999596037">

@@ -172,7 +172,7 @@ Driver::Matte(bool onoff)
 }
 
 void
-Driver::Option(RtToken, RtInt n, RtTokens nms, RtPointers vals)
+Driver::Option(RtToken name, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
