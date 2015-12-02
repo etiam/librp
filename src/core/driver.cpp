@@ -137,6 +137,11 @@ Driver::Hider(RtToken, RtInt n, RtTokens nms, RtPointers vals)
 }
 
 void
+Driver::Illuminate(RtLightHandle light, RtBoolean onoff)
+{
+}
+
+void
 Driver::Format(RtInt xres, RtInt yres, RtFloat pixel_ar)
 {
 }
@@ -157,7 +162,7 @@ Driver::FrameAspectRatio(RtFloat RtFloat1)
 }
 
 void
-Driver::LightSource(RtToken, RtInt n, RtTokens nms, RtPointers vals)
+Driver::LightSource(RtToken name, RtToken handle, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 

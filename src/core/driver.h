@@ -8,16 +8,19 @@
 #include <vector>
 #include <boost/any.hpp>
 
-using RtInt      = int;
-using RtFloat    = float;
-using RtToken    = std::string;
-using RtMatrix   = std::array<std::array<float, 4>, 4>;
-using RtBasis    = std::array<std::array<float, 4>, 4>;
-using RtColor    = std::array<float, 3>;
-using RtPoint    = std::array<float, 3>;
-using RtInts     = std::vector<int>;
-using RtPointers = std::vector<std::vector<boost::any>>;
-using RtTokens   = std::vector<std::string>;
+using RtBoolean         = short;
+using RtInt             = int;
+using RtFloat           = float;
+using RtToken           = std::string;
+using RtMatrix          = std::array<std::array<float, 4>, 4>;
+using RtBasis           = std::array<std::array<float, 4>, 4>;
+using RtColor           = std::array<float, 3>;
+using RtPoint           = std::array<float, 3>;
+using RtPointer         = boost::any;
+using RtInts            = std::vector<int>;
+using RtPointers        = std::vector<std::vector<boost::any>>;
+using RtTokens          = std::vector<std::string>;
+using RtLightHandle     = RtPointer;
 
 namespace Rp
 {
@@ -53,11 +56,12 @@ class Driver
     virtual void    Exposure(RtFloat gain, RtFloat gamma);
     virtual void    GeometricApproximation(RtToken type, RtFloat value);
     virtual void    Hider(RtToken, RtInt n, RtTokens nms, RtPointers vals);
+    virtual void    Illuminate(RtLightHandle light, RtBoolean onoff);
     virtual void    Format(RtInt xres, RtInt yres, RtFloat pixel_ar);
     virtual void    FrameAspectRatio(RtFloat);
     virtual void    FrameBegin(RtInt frame);
     virtual void    FrameEnd();
-    virtual void    LightSource(RtToken, RtInt n, RtTokens nms, RtPointers vals);
+    virtual void    LightSource(RtToken name, RtToken handle, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    NuPatch(RtInt, RtInt, RtFloat[], RtFloat, RtFloat, RtInt, RtInt, RtFloat[], RtFloat, RtFloat, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    Matte(bool onoff);
     virtual void    Option(RtToken name, RtInt n, RtTokens nms, RtPointers vals);

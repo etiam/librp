@@ -21,7 +21,7 @@ typedef struct
 {
     std::string                 label;
     std::vector<boost::any>     vals;
-} ArgNode;
+} Arg;
 
 }
 
@@ -51,21 +51,18 @@ typedef struct
 #define        MAX_ARGS    100
 
 void                    initNumbersList();
-int                     buildArgList(ArgNode *node);
-RtMatrix                buildMatrix(int start);
+int                     buildArgList(Arg *arg);
+RtMatrix                buildMatrix(std::vector<float> *numberlist);
 
 std::string             source;
 int                     linenum = 1;
-int                     iTLC, iTLCS;
-int                     iPPnv, iPPvll, iPGPnlp;
-int                     iVOrder, iVOrderL;
-int                     iNC, iNO, iNK, iNMn, iNMx, iNN, iNU, iNV;
 unsigned int            nl;
+unsigned int            sl;
 
-std::vector<ArgNode>    nodes;
+std::vector<Arg>    args;
 
-//std::vector<float>      numbers;
-std::map<uint, std::vector<float>>      numbers;
+std::map<uint, std::vector<float>>          numbers;
+std::map<uint, std::vector<std::string>>    strings;
 
 RtTokens                tokens;
 RtPointers              vals;
@@ -77,11 +74,11 @@ RtPointers              vals;
 
 %union
 {
-   float            number;
-   std::string *    string;
-   ArgNode *        node;
-//   float *          numbers;
-   std::vector<float> *          numbers;
+    float                       number;
+    std::string *               string;
+    Arg *                       arg;
+    std::vector<float> *        numbers;
+    std::vector<std::string> *  strings;
 }
 
 /* token types */
@@ -160,14 +157,20 @@ RtPointers              vals;
 %token <string>  tSTRING
 %token <number>  tNUMBER 
 
-%type  <node>    arg
-%type  <node>    arglist
+%type  <numbers> number
+%type  <numbers> numbers
 
 %type  <numbers> numberlist
 %type  <numbers> bracketnumberlist
 
-%type  <numbers> numbers
-%type  <numbers> number
+%type  <strings> string
+%type  <strings> strings
+
+%type  <strings> stringlist
+%type  <strings> bracketstringlist
+
+%type  <arg>     arg
+%type  <arg>     arglist
 
 /* destructor rule for <string> objects */
 %destructor { if ($$)  { delete ($$); ($$) = nullptr; } } <string>
@@ -208,7 +211,7 @@ generic:            attribute
         |           hider
 //        |           hierarchicalsubdivisionmesh
         |           identity
-//        |           illuminate
+        |           illuminate
         |           lightsource
         |           matte
 //        |           motionbegin
@@ -253,12 +256,12 @@ generic:            attribute
         |           worldbegin
         |           worldend;
         
-attribute:          tATTRIBUTE tSTRING {iTLC=0;} arglist
+attribute:          tATTRIBUTE tSTRING arglist
 {
-    int     iArgCount;
+    int     argcount;
 
-    iArgCount = buildArgList($4);
-    driver.Attribute(*$2, iArgCount, tokens, vals);
+    argcount = buildArgList($3);
+    driver.Attribute(*$2, argcount, tokens, vals);
 };
 
 attributebegin:     tATTRIBUTEBEGIN
@@ -282,51 +285,64 @@ basis:              tBASIS tSTRING tNUMBER tSTRING tNUMBER
     
     driver.Basis(umatrix, $3, vmatrix, $5);
 }
-        |           tBASIS tSTRING tNUMBER {iTLC = 0; iTLCS = 0;} bracketnumberlist tNUMBER
+        |           tBASIS tSTRING tNUMBER bracketnumberlist tNUMBER
 {
     RtMatrix umatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};;
+    auto vmatrix = buildMatrix($4);
+    
     auto uname = *$2;
     #pragma unused(uname)
     
-    if(iTLC - iTLCS != 16)
+    if(vmatrix.size() != 16)
     {
         std::stringstream err;
-        err << "Wrong number of numeric parameters to Basis: " <<  iTLC - iTLCS;
+        err << "Wrong number of numeric parameters to v basis: " << vmatrix.size();
         Rp::Parser::error(err.str());
     }
     else
     {
-        driver.Basis(umatrix, $3, buildMatrix(iTLCS), $6);
+        driver.Basis(umatrix, $3, vmatrix, $5);
     }
 }
-        |           tBASIS {iTLC = 0; iTLCS = 0;} bracketnumberlist tNUMBER tSTRING tNUMBER
+        |           tBASIS bracketnumberlist tNUMBER tSTRING tNUMBER
 {
+    auto umatrix = buildMatrix($2);
     RtMatrix vmatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};;
-    auto vname = *$5;
+    
+    auto vname = *$4;
     #pragma unused(vname)
 
-    if(iTLC - iTLCS != 16)
+    if(umatrix.size() != 16)
     {
         std::stringstream err;
-        err << "Wrong number of numeric parameters to Basis: " <<  iTLC - iTLCS;
+        err << "Wrong number of numeric parameters to u basis: " << umatrix.size();
         Rp::Parser::error(err.str());
     }
     else
     {
-        driver.Basis(buildMatrix(iTLCS), $4, vmatrix, $6);
+        driver.Basis(umatrix, $3, vmatrix, $5);
     }
 }
-        |           tBASIS {iTLC = 0; iTLCS = 0;} bracketnumberlist tNUMBER bracketnumberlist tNUMBER
+        |           tBASIS bracketnumberlist tNUMBER bracketnumberlist tNUMBER
 {
-    if(iTLC - iTLCS != 32)
+    auto umatrix = buildMatrix($2);
+    auto vmatrix = buildMatrix($4);
+    
+    if(umatrix.size() != 16)
     {
         std::stringstream err;
-        err << "Wrong number of numeric parameters to Basis: " <<  iTLC - iTLCS;
+        err << "Wrong number of numeric parameters to u basis: " << umatrix.size();
+        Rp::Parser::error(err.str());
+    }
+    else if(vmatrix.size() != 16)
+    {
+        std::stringstream err;
+        err << "Wrong number of numeric parameters to v basis: " << vmatrix.size();
         Rp::Parser::error(err.str());
     }
     else
     {
-        driver.Basis(buildMatrix(iTLCS), $4, buildMatrix(iTLCS+16), $6);
+        driver.Basis(umatrix, $3, vmatrix, $5);
     }
 }
         
@@ -340,54 +356,58 @@ clipping:           tCLIPPING tNUMBER tNUMBER
     driver.Clipping($2, $3);
 }
 
-color:              tCOLOR {iTLC = 0; iTLCS = 0;} bracketnumberlist
+color:              tCOLOR bracketnumberlist
 {
     RtColor    color;
+    const auto &numbers = *$2;
 
-    if(iTLC - iTLCS != 3)
+    if(numbers.size() != 3)
     {
         std::stringstream err;
-        err << "Wrong number of color parameters to Color: " <<  iTLC - iTLCS;
+        err << "wrong number of color parameters: " << numbers.size();
         Rp::Parser::error(err.str());
     }
     else
     {
-//        color[0] = numbers[0];
-//        color[1] = numbers[1];
-//        color[2] = numbers[2];
+        color[0] = numbers[0];
+        color[1] = numbers[1];
+        color[2] = numbers[2];
         driver.Color(color);
     }
 }
-        |           tCOLOR {iTLC = 0; iTLCS = 0;} numberlist
+        |           tCOLOR numberlist
 {
     RtColor    color;
+    const auto &numbers = *$2;
 
-    if(iTLC - iTLCS != 3)
+    if(numbers.size() != 3)
     {
         std::stringstream err;
-        err << "Wrong number of color parameters to Color: " <<  iTLC - iTLCS;
+        err << "wrong number of color parameters: " << numbers.size();
         Rp::Parser::error(err.str());
     }
     else
     {
-//        color[0] = numbers[0];
-//        color[1] = numbers[1];
-//        color[2] = numbers[2];
+        color[0] = numbers[0];
+        color[1] = numbers[1];
+        color[2] = numbers[2];
         driver.Color(color);
     }
 };
 
 concattransform:    tCONCATTRANSFORM bracketnumberlist
 {
-    if(numbers[0].size() != 16)
+    const auto &numbers = *$2;
+    
+    if(numbers.size() != 16)
     {
         std::stringstream err;
-        err << "Wrong number of numeric parameters to ConcatTransform: " <<  iTLC - iTLCS;
+        err << "wrong number of matrix parameters: " << numbers.size();
         Rp::Parser::error(err.str());
     }
     else
     {
-        driver.ConcatTransform(buildMatrix(iTLCS));
+        driver.ConcatTransform(buildMatrix($2));
     }
 }
 
@@ -416,12 +436,12 @@ display:            tDISPLAY tSTRING tSTRING tSTRING
     driver.Display(*$2, *$3, *$4, 0, RtTokens(), RtPointers());
 }
 
-display:            tDISPLAY tSTRING tSTRING tSTRING {iTLC = 0;} arglist
+display:            tDISPLAY tSTRING tSTRING tSTRING arglist
 {
-    int     iArgCount;
+    int     argcount;
 
-    iArgCount = buildArgList($6);
-    driver.Display(*$2, *$3, *$4, iArgCount, tokens, vals);
+    argcount = buildArgList($5);
+    driver.Display(*$2, *$3, *$4, argcount, tokens, vals);
 };
 
 errorhandler:       tERRORHANDLER tSTRING
@@ -459,24 +479,29 @@ geometricapproximation: tGEOMETRICAPPROXIMATION tSTRING tNUMBER
     driver.GeometricApproximation(*$2, $3);
 }
 
-hider:              tHIDER tSTRING {iTLC=0;} arglist
+hider:              tHIDER tSTRING arglist
 {
-    int     iArgCount;
+    int     argcount;
 
-    iArgCount = buildArgList($4);
-    driver.Hider(*$2, iArgCount, tokens, vals);
+    argcount = buildArgList($3);
+    driver.Hider(*$2, argcount, tokens, vals);
 };
 
 identity:           tIDENTITY
 {
 };
 
-lightsource:        tLIGHTSOURCE {iTLC=0;} tSTRING tNUMBER arglist
+illuminate:         tILLUMINATE tSTRING tNUMBER
 {
-    int     iArgCount;
+    driver.Illuminate(*$2, $3);
+};
 
-    iArgCount = buildArgList($5);
-    driver.LightSource(*$3, iArgCount, tokens, vals);
+lightsource:        tLIGHTSOURCE tSTRING tSTRING arglist
+{
+    int     argcount;
+
+    argcount = buildArgList($4);
+    driver.LightSource(*$2, *$3, argcount, tokens, vals);
 };
 
 matte:              tMATTE tNUMBER
@@ -484,24 +509,20 @@ matte:              tMATTE tNUMBER
     driver.Matte($2);
 } 
 
-nupatch:            tNUPATCH
-                    tNUMBER tNUMBER {iTLC = 0; iTLCS = 0;} bracketnumberlist
-                    tNUMBER tNUMBER
-                    tNUMBER tNUMBER {iVOrder = iTLC;} bracketnumberlist
-                    tNUMBER tNUMBER {iVOrderL = iTLC;} arglist
+nupatch:            tNUPATCH tNUMBER tNUMBER bracketnumberlist tNUMBER tNUMBER tNUMBER tNUMBER bracketnumberlist tNUMBER tNUMBER arglist
 {
 };
 
-opacity:            tOPACITY {iTLC = 0; iTLCS = 0;} bracketnumberlist
+opacity:            tOPACITY bracketnumberlist
 {
 };
 
-option:             tOPTION tSTRING {iTLC=0;} arglist
+option:             tOPTION tSTRING arglist
 {
-    int     iArgCount;
+    int     argcount;
 
-    iArgCount = buildArgList($4);
-    driver.Option(*$2, iArgCount, tokens, vals); 
+    argcount = buildArgList($3);
+    driver.Option(*$2, argcount, tokens, vals); 
 };
 
 orientation:        tORIENTATION tSTRING
@@ -519,49 +540,44 @@ pixelsamples:       tPIXELSAMPLES tNUMBER tNUMBER
     driver.PixelSamples($2, $3);
 };
 
-pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS bracketnumberlist 
-                                                 bracketnumberlist 
-                                                 bracketnumberlist
-                                                 arglist
+pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS bracketnumberlist bracketnumberlist bracketnumberlist arglist
 {
     RtInts nloops, nverts, verts;
-    const auto &nloop = *$2;
-    auto f = $2;
-    (void)f;
+    const auto &nloopslist = *$2;
+    const auto &nvertslist = *$3;
+    const auto &vertslist  = *$4;
     
-    std::copy(std::begin(nloop), std::end(nloop), std::back_inserter(nloops));
-    std::copy(std::begin(numbers[1]), std::end(numbers[1]), std::back_inserter(nverts));
-    std::copy(std::begin(numbers[2]), std::end(numbers[2]), std::back_inserter(verts));
+    std::copy(std::begin(nloopslist), std::end(nloopslist), std::back_inserter(nloops));
+    std::copy(std::begin(nvertslist), std::end(nvertslist), std::back_inserter(nverts));
+    std::copy(std::begin(vertslist), std::end(vertslist), std::back_inserter(verts));
         
     auto argcount = buildArgList($5);
 
     driver.PointsGeneralPolygons(nloops.size(), nloops, nverts, verts, argcount, tokens, vals);
 };
 
-pointspolygons:     tPOINTSPOLYGONS {iTLC = 0; iTLCS = 0;} bracketnumberlist
-                                    {iPPnv = iTLC;} bracketnumberlist
-                                    {iPPvll = iTLC;} arglist
+pointspolygons:     tPOINTSPOLYGONS bracketnumberlist bracketnumberlist arglist
 {
 };
 
-polygon:            tPOLYGON tNUMBER {iTLC = 0;} arglist
+polygon:            tPOLYGON tNUMBER arglist
 {
-    int    iArgCount;
+    int    argcount;
 
-    iArgCount = buildArgList($4);
-    driver.Polygon($2, iArgCount, tokens, vals);
+    argcount = buildArgList($3);
+    driver.Polygon($2, argcount, tokens, vals);
 };
 
 projection:         tPROJECTION tSTRING
 {
     driver.Projection(*$2, 0, RtTokens(), RtPointers());
 };
-        |           tPROJECTION tSTRING {iTLC = 0;} arglist
+        |           tPROJECTION tSTRING arglist
 {
-    int    iArgCount;
+    int    argcount;
 
-    iArgCount = buildArgList($4);
-    driver.Projection(*$2, iArgCount, tokens, vals);
+    argcount = buildArgList($3);
+    driver.Projection(*$2, argcount, tokens, vals);
 };
 
 quantize:           tQUANTIZE tSTRING tNUMBER tNUMBER tNUMBER tNUMBER
@@ -614,12 +630,12 @@ sphere:             tSPHERE tNUMBER tNUMBER tNUMBER tNUMBER
     driver.Sphere($2, $3, $4, $5);
 };
 
-surface:            tSURFACE tSTRING {iTLC = 0;} arglist
+surface:            tSURFACE tSTRING arglist
 {
-    int    iArgCount;
+    int    argcount;
 
-    iArgCount = buildArgList($4);
-    driver.Surface(*$2, iArgCount, tokens, vals);
+    argcount = buildArgList($3);
+    driver.Surface(*$2, argcount, tokens, vals);
 };
 
 surface:            tSURFACE tSTRING
@@ -636,15 +652,8 @@ translate:          tTRANSLATE tNUMBER tNUMBER tNUMBER
     driver.Translate($2, $3, $4);
 };
 
-trimcurve:          tTRIMCURVE {iTLC = 0; iTLCS = 0;} bracketnumberlist
-                               {iNC = iTLC;} bracketnumberlist
-                               {iNO = iTLC;} bracketnumberlist
-                               {iNK = iTLC;} bracketnumberlist
-                               {iNMn = iTLC;} bracketnumberlist
-                               {iNMx = iTLC;} bracketnumberlist
-                               {iNN = iTLC;} bracketnumberlist
-                               {iNU = iTLC;} bracketnumberlist
-                               {iNV = iTLC;} bracketnumberlist
+trimcurve:          tTRIMCURVE bracketnumberlist bracketnumberlist bracketnumberlist bracketnumberlist bracketnumberlist
+                               bracketnumberlist bracketnumberlist bracketnumberlist bracketnumberlist
 {
 };
 
@@ -676,43 +685,58 @@ worldend:           tWORLDEND
     driver.WorldEnd();
 };
 
-arg:                tSTRING tSTRING
+arg:                tSTRING stringlist
 {
-    ArgNode node;
+    Arg arg;
     
-    node.label = *$1;
-    node.vals.push_back(*$2);
-    nodes.push_back(node);
+    arg.label = *$1;
+    arg.vals.push_back(*$2);
+    args.push_back(arg);
 
-    $$ = &node;
+    $$ = &arg;
 }
+        |           tSTRING bracketstringlist
+{
+    Arg arg;
+    
+    arg.label = *$1;
+    
+    const auto &strs = *$2;
+    arg.vals.reserve(strs.size());
+    std::copy(std::begin(strs), std::end(strs), std::back_inserter(arg.vals));
+    
+    args.push_back(arg);
+
+    $$ = &arg;
+}
+
         |           tSTRING numberlist
 {
-    ArgNode node;
+    Arg arg;
     
-    node.label = *$1;
+    arg.label = *$1;
 
     const auto &nums = *$2;
-    node.vals.reserve(nums.size());
-    std::copy(std::begin(nums), std::end(nums), std::back_inserter(node.vals));
+    arg.vals.reserve(nums.size());
+    std::copy(std::begin(nums), std::end(nums), std::back_inserter(arg.vals));
     
-    nodes.push_back(node);
+    args.push_back(arg);
 
-    $$ = &node;
+    $$ = &arg;
 }
         |           tSTRING bracketnumberlist
 {
-    ArgNode node;
+    Arg arg;
     
-    node.label = *$1;
+    arg.label = *$1;
 
     const auto &nums = *$2;
-    node.vals.reserve(nums.size());
-    std::copy(std::begin(nums), std::end(nums), std::back_inserter(node.vals));
+    arg.vals.reserve(nums.size());
+    std::copy(std::begin(nums), std::end(nums), std::back_inserter(arg.vals));
     
-    nodes.push_back(node);
+    args.push_back(arg);
 
-    $$ = &node;
+    $$ = &arg;
 }
 
 arglist:            arglist arg
@@ -726,10 +750,6 @@ arglist:            arglist arg
 
 number:             tNUMBER
 {
-    // grow numbers[] array if needed    
-//    if (nl+1 > numbers.size())
-//        numbers.push_back(std::vector<float>());
-        
     auto &nums = numbers[nl];
     nums.push_back($1);
     
@@ -747,18 +767,48 @@ numbers:            numbers number
 
 numberlist:         numbers
 {
-    $$ = $1;
-//    std::cout << std::endl << "FOOBAR " << nl << " " << $1->size() << std::endl;
     nl++;
+    $$ = $1;
 }
 
-bracketnumberlist:     '[' numbers ']'
+bracketnumberlist:  '[' numbers ']'
 {
-    $$ = $2;
-//    auto f = $2;
-//    std::cout << std::endl << "[FOOBAR] " << nl << " " << f->size() << " " << f << std::endl;
     nl++;
+    $$ = $2;
 }
+
+
+
+string:             tSTRING
+{
+    auto &strs = strings[sl];
+    strs.push_back(*$1);
+        
+    $$ = &strs;
+}
+
+strings:            strings string
+{
+    $$ = $1; 
+}
+        |           string
+{
+    $$ = $1; 
+};
+
+stringlist:         strings
+{
+    sl++;
+    $$ = $1; 
+}
+
+bracketstringlist:  '[' strings ']' 
+{
+    sl++;
+    $$ = $2; 
+}
+
+
 
 %%
 
@@ -772,46 +822,44 @@ initNumbersList()
 }
 
 int 
-buildArgList(ArgNode *node)
+buildArgList(Arg *arg)
 {
     vals.clear();
     tokens.clear();
    
-    for (const auto &node : nodes)
+    for (const auto &arg : args)
     {
-        tokens.push_back(node.label);
-        vals.push_back(node.vals);
+        tokens.push_back(arg.label);
+        vals.push_back(arg.vals);
     }
      
-    nodes.clear();
+    args.clear();
     
     return tokens.size();
 }
 
 RtMatrix
-buildMatrix(int start)
+buildMatrix(std::vector<float> *numberlist)
 {
     RtMatrix matrix;
-    auto i = start;
-    const auto &nums = numbers[0];
+    const auto &nums = *numberlist;
     
-
-    matrix[0][0] = nums[i++];
-    matrix[0][1] = nums[i++];
-    matrix[0][2] = nums[i++];
-    matrix[0][3] = nums[i++];
-    matrix[1][0] = nums[i++];
-    matrix[1][1] = nums[i++];
-    matrix[1][2] = nums[i++];
-    matrix[1][3] = nums[i++];
-    matrix[2][0] = nums[i++];
-    matrix[2][1] = nums[i++];
-    matrix[2][2] = nums[i++];
-    matrix[2][3] = nums[i++];
-    matrix[3][0] = nums[i++];
-    matrix[3][1] = nums[i++];
-    matrix[3][2] = nums[i++];
-    matrix[3][3] = nums[i++];
+    matrix[0][0] = nums[0];
+    matrix[0][1] = nums[1];
+    matrix[0][2] = nums[2];
+    matrix[0][3] = nums[3];
+    matrix[1][0] = nums[4];
+    matrix[1][1] = nums[5];
+    matrix[1][2] = nums[6];
+    matrix[1][3] = nums[7];
+    matrix[2][0] = nums[8];
+    matrix[2][1] = nums[9];
+    matrix[2][2] = nums[10];
+    matrix[2][3] = nums[11];
+    matrix[3][0] = nums[12];
+    matrix[3][1] = nums[13];
+    matrix[3][2] = nums[14];
+    matrix[3][3] = nums[15];
     
     return matrix;
 }

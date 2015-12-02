@@ -24,6 +24,16 @@ dumpVector(const std::vector<T> &vector)
     return "[" + stream.str().substr(0, stream.str().size()-1) + "]";
 }
 
+std::string
+dumpAnyVector(const std::vector<boost::any> &vector)
+{
+    std::stringstream stream;
+    std::for_each(std::begin(vector), std::end(vector),
+                  [&stream](const typename std::vector<boost::any>::value_type &n) { stream << "\"" << boost::any_cast<std::string>(n) << "\" "; });
+
+    return "[" + stream.str().substr(0, stream.str().size()-1) + "]";
+}
+
 template <class T>
 std::string
 dumpAnyVector(const std::vector<boost::any> &vector)
@@ -70,9 +80,8 @@ class Catrib : public Driver
     virtual void    WorldBegin();
     virtual void    WorldEnd();
 
-  private:
+  protected:
     std::string     argListToString(int n, RtTokens nms, RtPointers vals);
-
 };
 
 void
@@ -298,7 +307,7 @@ Catrib::argListToString(int n, RtTokens nms, RtPointers vals)
 
         if (nms[i].find("string") != std::string::npos)
         {
-            out << "[\"" << boost::any_cast<std::string>(v[0]) << "\"]";
+            out << dumpAnyVector(v);
         }
         else if (nms[i].find("int") != std::string::npos ||
                  nms[i].find("enable") != std::string::npos)

@@ -25,9 +25,9 @@ typedef Rp::Parser::token token;
 
 ws                  [ \t]+
 nl                  \n
-emptystring         \"\"
+emptystring         \"\"[ \t]*
 string              \"[^\n"]+\"
-number              -?([0-9]+|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?)
+number              [-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?
 comment             #.*\n
 
 %%
@@ -42,22 +42,10 @@ comment             #.*\n
                         yylval->string = new std::string("");
                         return token::tSTRING;
                     }
-                
-"["{emptystring}"]" {
-                        yylval->string = new std::string("");
-                        return token::tSTRING;
-                    }
-                
+
 {string}            {
                         auto temp = std::string(yytext);
                         temp = temp.substr(1, yyleng-2);
-                        yylval->string = new std::string(temp);
-                        return token::tSTRING;
-                    }
-                
-"["{string}"]"      {
-                        auto temp = std::string(yytext);
-                        temp = temp.substr(2, yyleng-4);
                         yylval->string = new std::string(temp);
                         return token::tSTRING;
                     }
