@@ -307,7 +307,8 @@ Catrib::argListToString(int n, RtTokens nms, RtPointers vals)
         }
         else if (nms[i].find("float") != std::string::npos ||
                  nms[i].find("color") != std::string::npos ||
-                 nms[i].find("P") != std::string::npos)
+                 nms[i].find("P") != std::string::npos ||
+                 nms[i].find("N") != std::string::npos)
         {
             out << dumpAnyVector<float>(v);
         }
