@@ -37,6 +37,8 @@ typedef struct
 
 #include <string>
 #include <sstream>
+#include <vector>
+#include <map>
 #include <memory>
 
 #include "driver.h"
@@ -63,7 +65,7 @@ unsigned int            nl;
 std::vector<ArgNode>    nodes;
 
 //std::vector<float>      numbers;
-std::vector<std::vector<float>>      numbers;
+std::map<uint, std::vector<float>>      numbers;
 
 RtTokens                tokens;
 RtPointers              vals;
@@ -517,19 +519,21 @@ pixelsamples:       tPIXELSAMPLES tNUMBER tNUMBER
     driver.PixelSamples($2, $3);
 };
 
-pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS bracketnumberlist {nl++;}
-                                                 bracketnumberlist {nl++;}
+pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS bracketnumberlist 
+                                                 bracketnumberlist 
                                                  bracketnumberlist
                                                  arglist
 {
     RtInts nloops, nverts, verts;
     const auto &nloop = *$2;
+    auto f = $2;
+    (void)f;
     
     std::copy(std::begin(nloop), std::end(nloop), std::back_inserter(nloops));
     std::copy(std::begin(numbers[1]), std::end(numbers[1]), std::back_inserter(nverts));
     std::copy(std::begin(numbers[2]), std::end(numbers[2]), std::back_inserter(verts));
         
-    auto argcount = buildArgList($7);
+    auto argcount = buildArgList($5);
 
     driver.PointsGeneralPolygons(nloops.size(), nloops, nverts, verts, argcount, tokens, vals);
 };
@@ -682,13 +686,13 @@ arg:                tSTRING tSTRING
 
     $$ = &node;
 }
-        |           tSTRING {nl++;} numberlist
+        |           tSTRING numberlist
 {
     ArgNode node;
     
     node.label = *$1;
 
-    const auto &nums = *$3;
+    const auto &nums = *$2;
     node.vals.reserve(nums.size());
     std::copy(std::begin(nums), std::end(nums), std::back_inserter(node.vals));
     
@@ -696,13 +700,13 @@ arg:                tSTRING tSTRING
 
     $$ = &node;
 }
-        |           tSTRING {nl++;} bracketnumberlist
+        |           tSTRING bracketnumberlist
 {
     ArgNode node;
     
     node.label = *$1;
 
-    const auto &nums = *$3;
+    const auto &nums = *$2;
     node.vals.reserve(nums.size());
     std::copy(std::begin(nums), std::end(nums), std::back_inserter(node.vals));
     
@@ -723,8 +727,8 @@ arglist:            arglist arg
 number:             tNUMBER
 {
     // grow numbers[] array if needed    
-    if (nl+1 > numbers.size())
-        numbers.push_back(std::vector<float>());
+//    if (nl+1 > numbers.size())
+//        numbers.push_back(std::vector<float>());
         
     auto &nums = numbers[nl];
     nums.push_back($1);
@@ -744,13 +748,16 @@ numbers:            numbers number
 numberlist:         numbers
 {
     $$ = $1;
-    std::cout << std::endl << "FOOBAR " << nl << " " << $1->size() << std::endl;
+//    std::cout << std::endl << "FOOBAR " << nl << " " << $1->size() << std::endl;
+    nl++;
 }
 
 bracketnumberlist:     '[' numbers ']'
 {
     $$ = $2;
-    std::cout << std::endl << "[FOOBAR] " << nl << " " << $2->size() << std::endl;
+//    auto f = $2;
+//    std::cout << std::endl << "[FOOBAR] " << nl << " " << f->size() << " " << f << std::endl;
+    nl++;
 }
 
 %%
@@ -762,7 +769,6 @@ initNumbersList()
 {
     nl = 0;
     numbers.clear();
-    numbers.push_back(std::vector<float>());
 }
 
 int 
