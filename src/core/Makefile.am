@@ -16,7 +16,6 @@ librpcore_la_CPPFLAGS     =                                             \
                               -I$(top_builddir)/src/core                \
                               -I$(top_srcdir)                           \
                               -I$(top_srcdir)/src/core                  \
-                              @LIBLOG_CFLAGS@                           \
                               @LIBUT_CFLAGS@
 
 # lexer.lpp does an "#include "parser.hh" (built from parser.yy)

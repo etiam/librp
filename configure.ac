@@ -62,9 +62,6 @@ AC_HEADER_STDBOOL
 # libut
 PKG_CHECK_MODULES(LIBUT, libut >= 0.0.1)
 
-# liblog
-PKG_CHECK_MODULES(LIBLOG, liblog >= 0.0.1)
-
 # ilmbase
 PKG_CHECK_MODULES(ILMBASE, IlmBase >= 2.1.0)
 

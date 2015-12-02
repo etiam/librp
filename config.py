@@ -8,7 +8,9 @@ def appendenv(var, val):
 
 def appendpkgconfig(val):
     global home, builddir
-    appendenv('PKG_CONFIG_PATH', os.path.join(workspacedir, val,  builddir, 'install/lib/pkgconfig'))
+    path = os.path.join(workspacedir, val,  builddir, 'install/lib/pkgconfig')
+    appendenv('PKG_CONFIG_PATH', path)
+    print 'appended %s to PKG_CONFIG_PATH' % (path)
 
 workspacedir = os.path.dirname(os.getcwd())
 projectdir = os.getcwd()
@@ -31,6 +33,6 @@ cmd  = 'cd {builddir}; ../configure -C CXX="ccache-clang++" CC="ccache-clang" \
 
 cmd += '; cd ..'
 
-appendpkgconfig('liblog')
+appendpkgconfig('libut')
 
 os.system(cmd)
