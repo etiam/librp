@@ -501,10 +501,12 @@ lightsource:        tLIGHTSOURCE tSTRING tSTRING arglist
     int     argcount;
 
     argcount = buildArgList($4);
+    (void)$3;
     driver.LightSource(*$2, 0, argcount, tokens, vals);
 }
         |           tLIGHTSOURCE tSTRING tSTRING
 {
+    (void)$3;
     driver.LightSource(*$2, 0, 0, RtTokens(), RtPointers());
 }
         |           tLIGHTSOURCE tSTRING tNUMBER arglist
