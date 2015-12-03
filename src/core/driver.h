@@ -61,7 +61,7 @@ class Driver
     virtual void    FrameAspectRatio(RtFloat);
     virtual void    FrameBegin(RtInt frame);
     virtual void    FrameEnd();
-    virtual void    LightSource(RtToken name, RtToken handle, RtInt n, RtTokens nms, RtPointers vals);
+    virtual void    LightSource(RtToken name, RtInt handle, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    NuPatch(RtInt, RtInt, RtFloat[], RtFloat, RtFloat, RtInt, RtInt, RtFloat[], RtFloat, RtFloat, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    Matte(bool onoff);
     virtual void    Option(RtToken name, RtInt n, RtTokens nms, RtPointers vals);

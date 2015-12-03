@@ -262,22 +262,22 @@ attribute:          tATTRIBUTE tSTRING arglist
 
     argcount = buildArgList($3);
     driver.Attribute(*$2, argcount, tokens, vals);
-};
+}
 
 attributebegin:     tATTRIBUTEBEGIN
 {
     driver.AttributeBegin();
-};
+}
 
 attributeend:       tATTRIBUTEEND
 {
     driver.AttributeEnd();
-};
+}
 
 basis:              tBASIS tSTRING tNUMBER tSTRING tNUMBER
 {
-    RtMatrix umatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};;
-    RtMatrix vmatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};;
+    RtMatrix umatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};
+    RtMatrix vmatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};
     auto uname = *$2;
     auto vname = *$4;
     #pragma unused(uname)
@@ -287,7 +287,7 @@ basis:              tBASIS tSTRING tNUMBER tSTRING tNUMBER
 }
         |           tBASIS tSTRING tNUMBER bracketnumberlist tNUMBER
 {
-    RtMatrix umatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};;
+    RtMatrix umatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};
     auto vmatrix = buildMatrix($4);
     
     auto uname = *$2;
@@ -307,7 +307,7 @@ basis:              tBASIS tSTRING tNUMBER tSTRING tNUMBER
         |           tBASIS bracketnumberlist tNUMBER tSTRING tNUMBER
 {
     auto umatrix = buildMatrix($2);
-    RtMatrix vmatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};;
+    RtMatrix vmatrix = {{{{0, 0, 0, 0}}, {{0, 0, 0, 0}}, {{0, 0, 0, 0}}}};
     
     auto vname = *$4;
     #pragma unused(vname)
@@ -393,7 +393,7 @@ color:              tCOLOR bracketnumberlist
         color[2] = numbers[2];
         driver.Color(color);
     }
-};
+}
 
 concattransform:    tCONCATTRANSFORM bracketnumberlist
 {
@@ -414,17 +414,17 @@ concattransform:    tCONCATTRANSFORM bracketnumberlist
 coordinatesystem:   tCOORDINATESYSTEM tSTRING
 {
     driver.CoordinateSystem(*$2);
-};
+}
 
 cropwindow:         tCROPWINDOW tNUMBER tNUMBER tNUMBER tNUMBER
 {
     driver.CropWindow($2,$3,$4,$5);
-};
+}
 
 cylinder:           tCYLINDER tNUMBER tNUMBER tNUMBER tNUMBER
 {
     driver.Cylinder($2, $3, $4, $5);
-};
+}
 
 declare:            tDECLARE tSTRING tSTRING
 {
@@ -442,37 +442,37 @@ display:            tDISPLAY tSTRING tSTRING tSTRING arglist
 
     argcount = buildArgList($5);
     driver.Display(*$2, *$3, *$4, argcount, tokens, vals);
-};
+}
 
 errorhandler:       tERRORHANDLER tSTRING
 {
     driver.ErrorHandler(*$2);
-};
+}
 
 exposure:           tEXPOSURE tNUMBER tNUMBER
 {
     driver.Exposure($2, $3);
-};
+}
 
 format:             tFORMAT tNUMBER tNUMBER tNUMBER
 {
     driver.Format((int)$2, (int)$3, (float)$4);
-};
+}
 
 frameaspectratio:   tFRAMEASPECTRATIO tNUMBER
 {
     driver.FrameAspectRatio($2);
-};
+}
 
 framebegin:         tFRAMEBEGIN tNUMBER
 {
     driver.FrameBegin($2);
-};
+}
 
 frameend:           tFRAMEEND
 {
     driver.FrameEnd();
-};
+}
 
 geometricapproximation: tGEOMETRICAPPROXIMATION tSTRING tNUMBER
 {
@@ -485,24 +485,40 @@ hider:              tHIDER tSTRING arglist
 
     argcount = buildArgList($3);
     driver.Hider(*$2, argcount, tokens, vals);
-};
+}
 
 identity:           tIDENTITY
 {
-};
+}
 
 illuminate:         tILLUMINATE tSTRING tNUMBER
 {
     driver.Illuminate(*$2, $3);
-};
+}
 
 lightsource:        tLIGHTSOURCE tSTRING tSTRING arglist
 {
     int     argcount;
 
     argcount = buildArgList($4);
-    driver.LightSource(*$2, *$3, argcount, tokens, vals);
-};
+    driver.LightSource(*$2, 0, argcount, tokens, vals);
+}
+        |           tLIGHTSOURCE tSTRING tSTRING
+{
+    driver.LightSource(*$2, 0, 0, RtTokens(), RtPointers());
+}
+        |           tLIGHTSOURCE tSTRING tNUMBER arglist
+{
+    int     argcount;
+
+    argcount = buildArgList($4);
+    driver.LightSource(*$2, $3, argcount, tokens, vals);
+}
+        |           tLIGHTSOURCE tSTRING tNUMBER
+{
+    driver.LightSource(*$2, $3, 0, RtTokens(), RtPointers());
+}
+
 
 matte:              tMATTE tNUMBER
 {
@@ -511,11 +527,11 @@ matte:              tMATTE tNUMBER
 
 nupatch:            tNUPATCH tNUMBER tNUMBER bracketnumberlist tNUMBER tNUMBER tNUMBER tNUMBER bracketnumberlist tNUMBER tNUMBER arglist
 {
-};
+}
 
 opacity:            tOPACITY bracketnumberlist
 {
-};
+}
 
 option:             tOPTION tSTRING arglist
 {
@@ -523,12 +539,12 @@ option:             tOPTION tSTRING arglist
 
     argcount = buildArgList($3);
     driver.Option(*$2, argcount, tokens, vals); 
-};
+}
 
 orientation:        tORIENTATION tSTRING
 {
     driver.Orientation(*$2);
-};
+}
 
 pixelfilter:        tPIXELFILTER tSTRING tNUMBER tNUMBER
 {
@@ -538,7 +554,7 @@ pixelfilter:        tPIXELFILTER tSTRING tNUMBER tNUMBER
 pixelsamples:       tPIXELSAMPLES tNUMBER tNUMBER
 {
     driver.PixelSamples($2, $3);
-};
+}
 
 pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS bracketnumberlist bracketnumberlist bracketnumberlist arglist
 {
@@ -554,11 +570,11 @@ pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS bracketnumberlist bracketnumber
     auto argcount = buildArgList($5);
 
     driver.PointsGeneralPolygons(nloops.size(), nloops, nverts, verts, argcount, tokens, vals);
-};
+}
 
 pointspolygons:     tPOINTSPOLYGONS bracketnumberlist bracketnumberlist arglist
 {
-};
+}
 
 polygon:            tPOLYGON tNUMBER arglist
 {
@@ -566,19 +582,19 @@ polygon:            tPOLYGON tNUMBER arglist
 
     argcount = buildArgList($3);
     driver.Polygon($2, argcount, tokens, vals);
-};
+}
 
 projection:         tPROJECTION tSTRING
 {
     driver.Projection(*$2, 0, RtTokens(), RtPointers());
-};
+}
         |           tPROJECTION tSTRING arglist
 {
     int    argcount;
 
     argcount = buildArgList($3);
     driver.Projection(*$2, argcount, tokens, vals);
-};
+}
 
 quantize:           tQUANTIZE tSTRING tNUMBER tNUMBER tNUMBER tNUMBER
 {
@@ -593,32 +609,32 @@ relativedetail:     tRELATIVEDETAIL tNUMBER
 reverseorientation: tREVERSEORIENTATION
 {
     driver.ReverseOrientation();
-};
+}
 
 rotate:             tROTATE tNUMBER tNUMBER tNUMBER tNUMBER
 {
     driver.Rotate($2, $3, $4, $5);
-};
+}
 
 scale:              tSCALE tNUMBER tNUMBER tNUMBER
 {
     driver.Scale($2, $3, $4);
-};
+}
 
 screenwindow:       tSCREENWINDOW tNUMBER tNUMBER tNUMBER tNUMBER
 {
     driver.ScreenWindow($2, $3, $4, $5);
-};
+}
 
 shadingrate:        tSHADINGRATE tNUMBER
 {
     driver.ShadingRate($2);
-};
+}
 
 shadinginterpolation:   tSHADINGINTERPOLATION tSTRING
 {
     driver.ShadingInterpolation(*$2);
-};
+}
 
 sides:              tSIDES tNUMBER
 {
@@ -628,7 +644,7 @@ sides:              tSIDES tNUMBER
 sphere:             tSPHERE tNUMBER tNUMBER tNUMBER tNUMBER
 {
     driver.Sphere($2, $3, $4, $5);
-};
+}
 
 surface:            tSURFACE tSTRING arglist
 {
@@ -636,54 +652,54 @@ surface:            tSURFACE tSTRING arglist
 
     argcount = buildArgList($3);
     driver.Surface(*$2, argcount, tokens, vals);
-};
+}
 
 surface:            tSURFACE tSTRING
 {
     driver.Surface(*$2, 0, RtTokens(), RtPointers());
-};
+}
 
 shutter:            tSHUTTER tNUMBER tNUMBER
 {
-};
+}
 
 translate:          tTRANSLATE tNUMBER tNUMBER tNUMBER
 {
     driver.Translate($2, $3, $4);
-};
+}
 
 trimcurve:          tTRIMCURVE bracketnumberlist bracketnumberlist bracketnumberlist bracketnumberlist bracketnumberlist
                                bracketnumberlist bracketnumberlist bracketnumberlist bracketnumberlist
 {
-};
+}
 
 transform:          tTRANSFORM bracketnumberlist
 {
-};
+}
 
 transformbegin:     tTRANSFORMBEGIN
 {
     driver.TransformBegin();
-};
+}
 
 transformend:       tTRANSFORMEND
 {
     driver.TransformEnd();
-};
+}
 
 version:            tVERSION tNUMBER
 {
-};
+}
 
 worldbegin:         tWORLDBEGIN
 {
     driver.WorldBegin();
-};
+}
 
 worldend:           tWORLDEND
 {
     driver.WorldEnd();
-};
+}
 
 arg:                tSTRING stringlist
 {
@@ -742,11 +758,11 @@ arg:                tSTRING stringlist
 arglist:            arglist arg
 {
     $$ = $1;
-};
+}
         |           arg
 {
     $$ = $1;
-};
+}
 
 number:             tNUMBER
 {
@@ -763,7 +779,7 @@ numbers:            numbers number
         |           number
 {
     $$ = $1;
-};
+}
 
 numberlist:         numbers
 {
@@ -794,7 +810,7 @@ strings:            strings string
         |           string
 {
     $$ = $1; 
-};
+}
 
 stringlist:         strings
 {

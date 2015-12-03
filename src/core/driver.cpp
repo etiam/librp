@@ -162,7 +162,7 @@ Driver::FrameAspectRatio(RtFloat RtFloat1)
 }
 
 void
-Driver::LightSource(RtToken name, RtToken handle, RtInt n, RtTokens nms, RtPointers vals)
+Driver::LightSource(RtToken name, RtInt handle, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
