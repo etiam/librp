@@ -18,9 +18,6 @@ environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.buil
 environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.542002700/CXX/delimiter=\:
 environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.542002700/CXX/operation=append
 environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.542002700/CXX/value=ccache-clang++
-environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.542002700/PKG_CONFIG_PATH/delimiter=\:
-environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.542002700/PKG_CONFIG_PATH/operation=append
-environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.542002700/PKG_CONFIG_PATH/value=${workspace_loc}/libut/build-${ConfigName}-${HostArchName}/install/lib/pkgconfig\:${workspace_loc}/libil/build-${ConfigName}-${HostArchName}/install/lib/pkgconfig\:${workspace_loc}/liblog/build-${ConfigName}-${HostArchName}/install/lib/pkgconfig
 environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.542002700/V/delimiter=\:
 environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.542002700/V/operation=remove
 environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506.542002700/append=true
@@ -31,9 +28,6 @@ environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.buil
 environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506/CXX/delimiter=\:
 environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506/CXX/operation=append
 environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506/CXX/value=ccache-clang++
-environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506/PKG_CONFIG_PATH/delimiter=\:
-environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506/PKG_CONFIG_PATH/operation=replace
-environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506/PKG_CONFIG_PATH/value=\:/home/jasonr/lib/pkgconfig\:/home/jasonr/local/lib/pkgconfig\:/usr/local/lib/pkgconfig\:/usr/local/lib64/pkgconfig\:${workspace_loc}/libut/build-${ConfigName}-${HostArchName}/install/lib/pkgconfig\:${workspace_loc}/libil/build-${ConfigName}-${HostArchName}/install/lib/pkgconfig\:${workspace_loc}/liblog/build-${ConfigName}-${HostArchName}/install/lib/pkgconfig
 environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506/V/delimiter=\:
 environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506/V/operation=remove
 environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1983666506/append=true

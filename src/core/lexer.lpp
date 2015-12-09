@@ -14,6 +14,7 @@ typedef Rp::Parser::token token;
 #pragma clang diagnostic ignored "-Wdeprecated-register"
 #pragma clang diagnostic ignored "-Wunused-function"
 #pragma clang diagnostic ignored "-Wunneeded-internal-declaration"
+#pragma clang diagnostic ignored "-Wnull-conversion"
 
 %}
 
