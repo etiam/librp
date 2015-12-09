@@ -60,12 +60,14 @@ class Catrib : public Driver
     virtual void    Format(RtInt xres, RtInt yres, RtFloat pixel_ar);
     virtual void    FrameBegin(RtInt frame);
     virtual void    FrameEnd();
+    virtual void    Illuminate(RtLightHandle light, RtBoolean onoff);
     virtual void    Matte(bool onoff);
     virtual void    Option(RtToken name, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    Orientation(RtToken orient);
     virtual void    PixelFilter(RtToken func, RtFloat xwidth, RtFloat ywidth);
     virtual void    PixelSamples(RtFloat x, RtFloat y);
     virtual void    PointsGeneralPolygons(RtInt npolys, RtInts nloops, RtInts nverts, RtInts verts, RtInt n, RtTokens nms, RtPointers vals);
+    virtual void    PointsPolygons(RtInt npolys, RtInts nverts, RtInts verts, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    Projection(RtToken, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    RelativeDetail(RtFloat rel);
     virtual void    Rotate(RtFloat angle, RtFloat dx, RtFloat dy, RtFloat dz);
@@ -174,6 +176,11 @@ Catrib::FrameEnd()
 }
 
 void
+Catrib::Illuminate(RtLightHandle light, RtBoolean onoff)
+{
+}
+
+void
 Catrib::Matte(bool onoff)
 {
     std::cout << "Matte " << onoff << std::endl;
@@ -201,6 +208,16 @@ void
 Catrib::PixelSamples(RtFloat x, RtFloat y)
 {
     std::cout << "PixelSamples " << x << " " << y << std::endl;
+}
+
+void
+Catrib::PointsPolygons(RtInt npolys, RtInts nverts, RtInts verts, RtInt n, RtTokens nms, RtPointers vals)
+{
+    std::cout << "PointsPolygons ";
+
+    std::cout << dumpVector(nverts) << " ";
+    std::cout << dumpVector(verts) << " ";
+    std::cout << argListToString(n, nms, vals) << std::endl;
 }
 
 void

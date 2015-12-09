@@ -6,6 +6,7 @@
 #include <memory>
 #include <array>
 #include <vector>
+#include <type_traits>
 #include <boost/any.hpp>
 
 using RtBoolean         = short;
@@ -21,6 +22,7 @@ using RtInts            = std::vector<int>;
 using RtPointers        = std::vector<std::vector<boost::any>>;
 using RtTokens          = std::vector<std::string>;
 using RtLightHandle     = RtPointer;
+using RtArchiveCallback = std::add_pointer<void(RtToken, char *, ...)>::type;
 
 namespace Rp
 {
@@ -69,10 +71,11 @@ class Driver
     virtual void    PixelFilter(RtToken func, RtFloat xwidth, RtFloat ywidth);
     virtual void    PixelSamples(RtFloat x, RtFloat y);
     virtual void    PointsGeneralPolygons(RtInt npolys, RtInts nloops, RtInts nverts, RtInts verts, RtInt n, RtTokens nms, RtPointers vals);
-    virtual void    PointsPolygons(RtInt npolys, RtInt nverts[], RtInt verts[], RtInt n, RtTokens nms, RtPointers vals);
+    virtual void    PointsPolygons(RtInt npolys, RtInts nverts, RtInts verts, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    Polygon(RtInt, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    Projection(RtToken name, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    Quantize(RtToken type, RtInt one, RtInt min, RtInt max, RtFloat dither);
+    virtual void    ReadArchive(RtToken name, RtArchiveCallback callback, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    RelativeDetail(RtFloat rel);
     virtual void    ReverseOrientation();
     virtual void    Rotate(RtFloat angle, RtFloat dx, RtFloat dy, RtFloat dz);

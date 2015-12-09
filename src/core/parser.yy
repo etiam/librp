@@ -229,7 +229,7 @@ generic:            attribute
 //        |           procedural
         |           projection
         |           quantize
-//        |           readarchive
+        |           readarchive
         |           relativedetail
 //        |           resource
 //        |           resourcebegin
@@ -495,6 +495,10 @@ illuminate:         tILLUMINATE tSTRING tNUMBER
 {
     driver.Illuminate(*$2, $3);
 }
+        |           tILLUMINATE tNUMBER tNUMBER
+{
+    driver.Illuminate($2, $3);
+}
 
 lightsource:        tLIGHTSOURCE tSTRING tSTRING arglist
 {
@@ -576,6 +580,16 @@ pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS bracketnumberlist bracketnumber
 
 pointspolygons:     tPOINTSPOLYGONS bracketnumberlist bracketnumberlist arglist
 {
+    RtInts nloops, nverts, verts;
+    const auto &nvertslist = *$2;
+    const auto &vertslist  = *$3;
+    
+    std::copy(std::begin(nvertslist), std::end(nvertslist), std::back_inserter(nverts));
+    std::copy(std::begin(vertslist), std::end(vertslist), std::back_inserter(verts));
+        
+    auto argcount = buildArgList($4);
+
+    driver.PointsPolygons(nloops.size(), nverts, verts, argcount, tokens, vals);
 }
 
 polygon:            tPOLYGON tNUMBER arglist
@@ -601,6 +615,11 @@ projection:         tPROJECTION tSTRING
 quantize:           tQUANTIZE tSTRING tNUMBER tNUMBER tNUMBER tNUMBER
 {
     driver.Quantize(*$2, $3, $4, $5, $6);
+}
+
+readarchive:        tREADARCHIVE tSTRING
+{
+    driver.ReadArchive(*$2, nullptr, 0, RtTokens(), RtPointers());
 }
 
 relativedetail:     tRELATIVEDETAIL tNUMBER

@@ -202,7 +202,7 @@ Driver::PointsGeneralPolygons(RtInt npolys, RtInts nloops, RtInts nverts, RtInts
 }
 
 void
-Driver::PointsPolygons(RtInt npolys, RtInt nverts[], RtInt verts[], RtInt n, RtTokens nms, RtPointers vals)
+Driver::PointsPolygons(RtInt npolys, RtInts nverts, RtInts verts, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
@@ -218,6 +218,11 @@ Driver::Projection(RtToken name, RtInt n, RtTokens nms, RtPointers vals)
 
 void
 Driver::Quantize(RtToken type, RtInt one, RtInt min, RtInt max, RtFloat dither)
+{
+}
+
+void
+Driver::ReadArchive(RtToken name, RtArchiveCallback callback, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
