@@ -36,8 +36,9 @@ class Driver
     Driver();
     virtual ~Driver();
 
-    virtual void    parse(const std::string &filename = "");
-    virtual void    debug(bool debugLexer, bool debugParser);
+    void            parse(const std::string &filename = "");
+    void            debug(bool debugLexer, bool debugParser);
+    std::string     filename() const;
 
     virtual void    Attribute(RtToken name, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    AttributeBegin();

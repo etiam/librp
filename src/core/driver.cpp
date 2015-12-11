@@ -41,6 +41,12 @@ Driver::debug(bool debugLexer, bool debugParser)
     m_debugParser = debugParser;
 }
 
+std::string
+Driver::filename() const
+{
+    return m_scanner->filename();
+}
+
 void
 Driver::Attribute(RtToken name, RtInt n, RtTokens nms, RtPointers vals)
 {
