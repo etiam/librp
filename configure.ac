@@ -66,9 +66,9 @@ PKG_CHECK_MODULES(LIBUT, libut >= 0.0.1)
 PKG_CHECK_MODULES(ILMBASE, IlmBase >= 2.1.0)
 
 # boost
-BOOST_REQUIRE(1.55)
-BOOST_TEST
-BOOST_IOSTREAMS
+AX_BOOST_BASE([1.55],, [AC_MSG_ERROR([librp needs Boost, but it was not found in your system])])
+AX_BOOST_UNIT_TEST_FRAMEWORK
+AX_BOOST_IOSTREAMS
 
 ## ----------------------- ##
 ## Optional arguments      ##

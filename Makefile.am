@@ -1,4 +1,4 @@
-ACLOCAL_AMFLAGS           = -I m4 
+ACLOCAL_AMFLAGS           = -I m4 -I /usr/local/share/aclocal
 
 lib_LTLIBRARIES           =
 check_PROGRAMS            =
