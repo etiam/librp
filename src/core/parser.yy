@@ -199,7 +199,7 @@ generic:            attribute
         |           declare
 //        |           displacement
         |           display
-//        |           displaychannel
+        |           displaychannel
 //        |           end
         |           errorhandler
         |           exposure
@@ -442,6 +442,19 @@ display:            tDISPLAY tSTRING tSTRING tSTRING arglist
 
     argcount = buildArgList($5);
     driver.Display(*$2, *$3, *$4, argcount, tokens, vals);
+}
+
+displaychannel:            tDISPLAYCHANNEL tSTRING 
+{
+    driver.DisplayChannel(*$2, 0, RtTokens(), RtPointers());
+}
+
+displaychannel:            tDISPLAYCHANNEL tSTRING arglist
+{
+    int     argcount;
+
+    argcount = buildArgList($3);
+    driver.DisplayChannel(*$2, argcount, tokens, vals);
 }
 
 errorhandler:       tERRORHANDLER tSTRING

@@ -50,7 +50,8 @@ class Driver
     virtual void    ConcatTransform(RtMatrix matrix);
     virtual void    CropWindow(RtFloat, RtFloat, RtFloat, RtFloat);
     virtual void    Declare(RtToken, RtToken);
-    virtual void    Display(RtToken name, RtToken type, RtToken, RtInt n, RtTokens nms, RtPointers vals);
+    virtual void    Display(RtToken name, RtToken type, RtToken mode, RtInt n, RtTokens nms, RtPointers vals);
+    virtual void    DisplayChannel(RtToken channel, RtInt n, RtTokens nms, RtPointers vals);
     virtual void    Camera(RtToken);
     virtual void    Clipping(RtFloat nearplane, RtFloat farplane);
     virtual void    Cylinder(RtFloat, RtFloat, RtFloat, RtFloat);

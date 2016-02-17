@@ -98,7 +98,12 @@ Driver::Declare(RtToken, RtToken)
 }
 
 void
-Driver::Display(RtToken name, RtToken type, RtToken, RtInt n, RtTokens nms, RtPointers vals)
+Driver::Display(RtToken name, RtToken type, RtToken mode, RtInt n, RtTokens nms, RtPointers vals)
+{
+}
+
+void
+Driver::DisplayChannel(RtToken channel, RtInt n, RtTokens nms, RtPointers vals)
 {
 }
 
