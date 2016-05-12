@@ -555,6 +555,30 @@
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>false</runAllBuilders>
 			</target>
+			<target name="docs/librp.tag" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>docs/librp.tag</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
+			<target name="doxygen-doc" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>doxygen-doc</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
+			<target name="doxygen-run" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>soundmake</buildCommand>
+				<buildArguments>-j${NUMCORES}</buildArguments>
+				<buildTarget>doxygen-run</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>false</runAllBuilders>
+			</target>
 			<target name="dvi" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>soundmake</buildCommand>
 				<buildArguments>-j${NUMCORES}</buildArguments>

@@ -98,7 +98,7 @@ CXXFLAGS=`echo $CXXFLAGS | sed 's/-O//g'`
 CXXFLAGS=`echo $CXXFLAGS | sed 's/-g//g'`
 
 CFLAGS="${CFLAGS} -fno-strict-aliasing -Wall -Werror"
-CXXFLAGS="${CXXFLAGS} -fno-strict-aliasing -Wall -Werror -std=c++11"
+CXXFLAGS="${CXXFLAGS} -fno-strict-aliasing -Wall -Werror -std=c++14"
 
 # --enable-debug
 AC_ARG_ENABLE([debug],
