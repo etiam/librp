@@ -147,7 +147,7 @@
 					<parser enabled="true"/>
 				</buildOutputProvider>
 				<scannerInfoProvider id="specsFile">
-					<runAction arguments="-E -P -v -dD -std=c++11 &quot;${plugin_state_location}/specs.cpp&quot;" command="c++" useDefault="true"/>
+					<runAction arguments="-E -P -v -dD -std=c++14 &quot;${plugin_state_location}/specs.cpp&quot;" command="c++" useDefault="true"/>
 					<parser enabled="true"/>
 				</scannerInfoProvider>
 			</profile>
@@ -160,7 +160,7 @@
 					<parser enabled="true"/>
 				</buildOutputProvider>
 				<scannerInfoProvider id="specsFile">
-					<runAction arguments="-E -P -v -dD -std=c++11 &quot;${plugin_state_location}/specs.cpp&quot;" command="c++" useDefault="true"/>
+					<runAction arguments="-E -P -v -dD -std=c++14 &quot;${plugin_state_location}/specs.cpp&quot;" command="c++" useDefault="true"/>
 					<parser enabled="true"/>
 				</scannerInfoProvider>
 			</profile>
@@ -195,7 +195,7 @@
 					<parser enabled="true"/>
 				</buildOutputProvider>
 				<scannerInfoProvider id="specsFile">
-					<runAction arguments="-E -P -v -dD -std=c++11 &quot;${plugin_state_location}/specs.cpp&quot;" command="c++" useDefault="true"/>
+					<runAction arguments="-E -P -v -dD -std=c++14 &quot;${plugin_state_location}/specs.cpp&quot;" command="c++" useDefault="true"/>
 					<parser enabled="true"/>
 				</scannerInfoProvider>
 			</profile>
@@ -211,7 +211,7 @@
 					<parser enabled="true"/>
 				</buildOutputProvider>
 				<scannerInfoProvider id="specsFile">
-					<runAction arguments="-E -P -v -dD -std=c++11 &quot;${plugin_state_location}/specs.cpp&quot;" command="c++" useDefault="true"/>
+					<runAction arguments="-E -P -v -dD -std=c++14 &quot;${plugin_state_location}/specs.cpp&quot;" command="c++" useDefault="true"/>
 					<parser enabled="true"/>
 				</scannerInfoProvider>
 			</profile>
@@ -230,7 +230,7 @@
 					<parser enabled="true"/>
 				</buildOutputProvider>
 				<scannerInfoProvider id="specsFile">
-					<runAction arguments="-E -P -v -dD -std=c++11 &quot;${plugin_state_location}/specs.cpp&quot;" command="c++" useDefault="true"/>
+					<runAction arguments="-E -P -v -dD -std=c++14 &quot;${plugin_state_location}/specs.cpp&quot;" command="c++" useDefault="true"/>
 					<parser enabled="true"/>
 				</scannerInfoProvider>
 			</profile>
@@ -264,7 +264,7 @@
 					<parser enabled="true"/>
 				</buildOutputProvider>
 				<scannerInfoProvider id="specsFile">
-					<runAction arguments="-E -P -v -dD  -std=c++11 &quot;${plugin_state_location}/specs.cpp&quot;" command="clang++" useDefault="true"/>
+					<runAction arguments="-E -P -v -dD  -std=c++14 &quot;${plugin_state_location}/specs.cpp&quot;" command="clang++" useDefault="true"/>
 					<parser enabled="true"/>
 				</scannerInfoProvider>
 			</profile>
