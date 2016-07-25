@@ -69,6 +69,10 @@ PKG_CHECK_MODULES(ILMBASE, IlmBase >= 2.1.0)
 AX_BOOST_BASE([1.55],, [AC_MSG_ERROR([librp needs Boost, but it was not found in your system])])
 AX_BOOST_UNIT_TEST_FRAMEWORK
 AX_BOOST_IOSTREAMS
+AX_BOOST_REGEX
+AX_BOOST_SYSTEM
+AX_BOOST_FILESYSTEM
+AX_BOOST_PROGRAM_OPTIONS
 
 ## ----------------------- ##
 ## Optional arguments      ##
