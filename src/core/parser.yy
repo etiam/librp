@@ -593,7 +593,7 @@ pointsgeneralpolygons:    tPOINTSGENERALPOLYGONS bracketnumberlist bracketnumber
 
 pointspolygons:     tPOINTSPOLYGONS bracketnumberlist bracketnumberlist arglist
 {
-    RtInts nloops, nverts, verts;
+    RtInts nverts, verts;
     const auto &nvertslist = *$2;
     const auto &vertslist  = *$3;
     
@@ -602,7 +602,7 @@ pointspolygons:     tPOINTSPOLYGONS bracketnumberlist bracketnumberlist arglist
         
     auto argcount = buildArgList($4);
 
-    driver.PointsPolygons(nloops.size(), nverts, verts, argcount, tokens, vals);
+    driver.PointsPolygons(nverts.size(), nverts, verts, argcount, tokens, vals);
 }
 
 polygon:            tPOLYGON tNUMBER arglist
